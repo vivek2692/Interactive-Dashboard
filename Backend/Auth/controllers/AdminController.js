@@ -1,4 +1,3 @@
-const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/adminModel.js");
 const bcrypt = require("bcrypt");
@@ -24,7 +23,7 @@ const AdminRegister = async (req, res) => {
 
       try {
         const user = await newAdmin.save();
-        const { password, ...others } = user._doc;
+        const { password, otp, ...others } = user._doc;
         res.status(200).json({ ...others });
       } catch (error) {
         res.send({ status: "failed", msg: "Unable to register" });
@@ -36,7 +35,6 @@ const AdminRegister = async (req, res) => {
 };
 
 // Login Admin
-
 const AdminLogin = async (req, res) => {
   const { email, password } = req.body;
 
@@ -50,7 +48,7 @@ const AdminLogin = async (req, res) => {
           const token = jwt.sign({ userID: user._id }, process.env.JWT_SEC, {
             expiresIn: "5d",
           });
-          const { password, ...others } = user._doc;
+          const { password, otp, ...others } = user._doc;
           res.send({ status: "success", data: { ...others }, "token": token });
         } else {
           res.send({ status: "failed", msg: "Email or Password is not valid" });
@@ -66,4 +64,63 @@ const AdminLogin = async (req, res) => {
   }
 };
 
-module.exports = { AdminRegister, AdminLogin };
+const AdminForgotPassword = async(req, res) => {
+  const {email} = req.body;
+  
+  if(email){
+    const user = await Admin.findOne({email})
+
+    if(user){
+      const otp = Math.floor(Math.random()*(10000-1000+1)+1000)
+      // console.log(otp)
+      const admin = await Admin.findOneAndUpdate({email:email},{otp:otp},{new:true,runValidators:true})
+      res.send({ status: "success", msg: "OTP sent successfully"});
+    }
+    else{
+      res.send({ status: "failed", msg: "Please provide valid email" });
+    }
+  } else{
+    res.send({ status: "failed", msg: "Please provide email" });
+  }
+}
+
+const AdminValidateOTP = async(req, res) => {
+  const {email, otp} = req.body;
+  
+  if(email && otp){
+    const admin = await Admin.findOne({email});
+
+    if(admin){
+      if(otp !== admin.otp){
+        res.send({ status: "failed", msg: "Please provide valid OTP" });
+      }
+      else{
+        res.send({ status: "success", msg: "OTP matched" });
+      }
+    }
+    else{
+      res.send({ status: "failed", msg: "Please provide valid email" });
+    }
+
+  }
+  else{
+    res.send({ status: "failed", msg: "All fields are required" });
+  }
+}
+
+const AdminUpdatePassword = async(req, res) => {
+  const {email, password} = req.body;
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  if(email && password){
+    const admin = await Admin.findOneAndUpdate({email}, {password: hashedPassword},{ runValidators: true, new: true, setDefaultsOnInsert: true })
+    res.send({ status: "success", msg: "Password Changed successfully" });
+  }
+  else{
+    res.send({ status: "failed", msg: "All fields are required" });
+  }
+}
+
+module.exports = { AdminRegister, AdminLogin, AdminForgotPassword, AdminValidateOTP, AdminUpdatePassword };

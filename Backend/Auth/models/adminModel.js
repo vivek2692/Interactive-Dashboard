@@ -10,6 +10,9 @@ const AdminSchema = new mongoose.Schema(
     email: {
       type: String,
       unique: true,
+      match: [
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      ],
       required: true,
     },
 
@@ -17,6 +20,11 @@ const AdminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    otp:{
+      type: Number,
+      default: 0
+    }
   },
   {
     timestamps: true,
