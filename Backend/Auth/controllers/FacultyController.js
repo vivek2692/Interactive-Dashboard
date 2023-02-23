@@ -1,29 +1,33 @@
 const jwt = require("jsonwebtoken");
-const Admin = require("../models/adminModel.js");
+const Faculty = require("../models/facultyModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
-//Register Admin
-const AdminRegister = async (req, res) => {
-  const { name, email, password } = req.body;
+//Register Faculty
+const FacultyRegister = async (req, res) => {
+  const { name, email, password, college, branch, position, contact } = req.body;
 
-  if (name && email && password) {
-    const user = await Admin.findOne({ email: email });
+  if (name && email && password && college && branch && position && contact) {
+    const user = await Faculty.findOne({ email: email });
 
     if (user) {
-      res.status(500).send({ status: "failed", msg: "Email already exists" });
+      res.send({ status: "failed", msg: "Email already exists" });
     } else {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      const newAdmin = new Admin({
+      const newFaculty = new Faculty({
         name: name,
         email: email,
         password: hashedPassword,
+        college: college,
+        branch: branch,
+        position: position,
+        contact: contact
       });
 
       try {
-        const user = await newAdmin.save();
+        const user = await newFaculty.save();
         const { password, otp, ...others } = user._doc;
         res.status(200).json({ ...others });
       } catch (error) {
@@ -35,13 +39,13 @@ const AdminRegister = async (req, res) => {
   }
 };
 
-// Login Admin
-const AdminLogin = async (req, res) => {
+// Login Faculty
+const FacultyLogin = async (req, res) => {
   const { email, password } = req.body;
 
   if (email && password) {
     try {
-      const user = await Admin.findOne({ email: email });
+      const user = await Faculty.findOne({ email: email });
       if (user != null) {
         const isMatch = await bcrypt.compare(password, user.password);
 
@@ -65,16 +69,16 @@ const AdminLogin = async (req, res) => {
   }
 };
 
-const AdminForgotPassword = async (req, res) => {
+const FacultyForgotPassword = async (req, res) => {
   const { email } = req.body;
 
   if (email) {
-    const user = await Admin.findOne({ email });
+    const user = await Faculty.findOne({ email });
 
     if (user) {
       const otp = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000);
       // console.log(otp)
-      const admin = await Admin.findOneAndUpdate(
+      const Faculty = await Faculty.findOneAndUpdate(
         { email: email },
         { otp: otp },
         { new: true, runValidators: true }
@@ -115,14 +119,14 @@ const AdminForgotPassword = async (req, res) => {
   }
 };
 
-const AdminValidateOTP = async (req, res) => {
+const FacultyValidateOTP = async (req, res) => {
   const { email, otp } = req.body;
 
   if (email && otp) {
-    const admin = await Admin.findOne({ email });
+    const faculty = await Faculty.findOne({ email });
 
-    if (admin) {
-      if (otp !== admin.otp) {
+    if (faculty) {
+      if (otp !== faculty.otp) {
         res.status(500).send({ status: "failed", msg: "Please provide valid OTP" });
       } else {
         res.send({ status: "success", msg: "OTP matched" });
@@ -135,14 +139,14 @@ const AdminValidateOTP = async (req, res) => {
   }
 };
 
-const AdminUpdatePassword = async (req, res) => {
+const FacultyUpdatePassword = async (req, res) => {
   const { email, password } = req.body;
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   if (email && password) {
-    const admin = await Admin.findOneAndUpdate(
+    const faculty = await Faculty.findOneAndUpdate(
       { email },
       { password: hashedPassword },
       { runValidators: true, new: true, setDefaultsOnInsert: true }
@@ -154,9 +158,9 @@ const AdminUpdatePassword = async (req, res) => {
 };
 
 module.exports = {
-  AdminRegister,
-  AdminLogin,
-  AdminForgotPassword,
-  AdminValidateOTP,
-  AdminUpdatePassword,
+  FacultyRegister,
+  FacultyLogin,
+  FacultyForgotPassword,
+  FacultyValidateOTP,
+  FacultyUpdatePassword,
 };

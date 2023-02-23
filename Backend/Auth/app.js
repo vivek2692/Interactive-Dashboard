@@ -5,6 +5,8 @@ const cors = require('cors');
 
 const connectDB = require("./config/connectDB.js");
 const AdminRoute = require("./routes/adminRoute.js");
+const FacultyRoute = require("./routes/facultyRoute.js");
+const StudentRoute = require("./routes/studentRoute.js");
 
 dotenv.config()
 mongoose.set('strictQuery', true);
@@ -24,6 +26,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/admin", AdminRoute);
+app.use("/api/faculty", FacultyRoute);
+app.use("/api/student", StudentRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}...`);

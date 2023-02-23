@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
-const Admin = require("../models/adminModel.js");
+const Student = require("../models/studentModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
-//Register Admin
-const AdminRegister = async (req, res) => {
-  const { name, email, password } = req.body;
+//Register Student
+const StudentRegister = async (req, res) => {
+  const { name, email, password, enrollment_no, branch, college, contact } = req.body;
 
-  if (name && email && password) {
-    const user = await Admin.findOne({ email: email });
+  if (name && email && password && enrollment_no && branch && college && contact) {
+    const user = await Student.findOne({ email: email });
 
     if (user) {
       res.status(500).send({ status: "failed", msg: "Email already exists" });
@@ -16,14 +16,18 @@ const AdminRegister = async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      const newAdmin = new Admin({
+      const newStudent = new Student({
         name: name,
         email: email,
         password: hashedPassword,
+        enrollment_no: enrollment_no,
+        branch: branch,
+        college: college,
+        contact: contact
       });
 
       try {
-        const user = await newAdmin.save();
+        const user = await newStudent.save();
         const { password, otp, ...others } = user._doc;
         res.status(200).json({ ...others });
       } catch (error) {
@@ -35,13 +39,13 @@ const AdminRegister = async (req, res) => {
   }
 };
 
-// Login Admin
-const AdminLogin = async (req, res) => {
+// Login Student
+const StudentLogin = async (req, res) => {
   const { email, password } = req.body;
 
   if (email && password) {
     try {
-      const user = await Admin.findOne({ email: email });
+      const user = await Student.findOne({ email: email });
       if (user != null) {
         const isMatch = await bcrypt.compare(password, user.password);
 
@@ -65,16 +69,16 @@ const AdminLogin = async (req, res) => {
   }
 };
 
-const AdminForgotPassword = async (req, res) => {
+const StudentForgotPassword = async (req, res) => {
   const { email } = req.body;
 
   if (email) {
-    const user = await Admin.findOne({ email });
+    const user = await Student.findOne({ email });
 
     if (user) {
       const otp = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000);
       // console.log(otp)
-      const admin = await Admin.findOneAndUpdate(
+      const Student = await Student.findOneAndUpdate(
         { email: email },
         { otp: otp },
         { new: true, runValidators: true }
@@ -115,14 +119,14 @@ const AdminForgotPassword = async (req, res) => {
   }
 };
 
-const AdminValidateOTP = async (req, res) => {
+const StudentValidateOTP = async (req, res) => {
   const { email, otp } = req.body;
 
   if (email && otp) {
-    const admin = await Admin.findOne({ email });
+    const student = await Student.findOne({ email });
 
-    if (admin) {
-      if (otp !== admin.otp) {
+    if (student) {
+      if (otp !== student.otp) {
         res.status(500).send({ status: "failed", msg: "Please provide valid OTP" });
       } else {
         res.send({ status: "success", msg: "OTP matched" });
@@ -135,14 +139,14 @@ const AdminValidateOTP = async (req, res) => {
   }
 };
 
-const AdminUpdatePassword = async (req, res) => {
+const StudentUpdatePassword = async (req, res) => {
   const { email, password } = req.body;
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   if (email && password) {
-    const admin = await Admin.findOneAndUpdate(
+    const student = await Student.findOneAndUpdate(
       { email },
       { password: hashedPassword },
       { runValidators: true, new: true, setDefaultsOnInsert: true }
@@ -154,9 +158,9 @@ const AdminUpdatePassword = async (req, res) => {
 };
 
 module.exports = {
-  AdminRegister,
-  AdminLogin,
-  AdminForgotPassword,
-  AdminValidateOTP,
-  AdminUpdatePassword,
+  StudentRegister,
+  StudentLogin,
+  StudentForgotPassword,
+  StudentValidateOTP,
+  StudentUpdatePassword,
 };
