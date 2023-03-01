@@ -21,6 +21,11 @@ const AdminSchema = new mongoose.Schema(
       required: true,
     },
 
+    gender: {
+      type: String,
+      required: true,
+    },
+
     otp:{
       type: Number,
       default: 0
