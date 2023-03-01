@@ -7,11 +7,17 @@ const AdminSchema = new mongoose.Schema(
       required: true,
     },
 
+    admin_id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     email: {
       type: String,
       unique: true,
       match: [
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       ],
       required: true,
     },
@@ -21,10 +27,36 @@ const AdminSchema = new mongoose.Schema(
       required: true,
     },
 
-    otp:{
+    gender: {
+      type: String,
+      required: true,
+    },
+
+    qualification: {
+      type: String,
+      required: true,
+    },
+
+    address: {
+      type: String,
+      required: true,
+    },
+
+    role: {
+      type: String,
+      required: true,
+      default: "faculty",
+    },
+
+    contact: {
+      type: String,
+      required: true,
+    },
+
+    otp: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   {
     timestamps: true,
