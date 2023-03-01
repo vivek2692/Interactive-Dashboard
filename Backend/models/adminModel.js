@@ -32,7 +32,6 @@ const AdminSchema = new mongoose.Schema(
       required: true,
     },
 
-<<<<<<< HEAD
     qualification: {
       type: String,
       required: true,
@@ -55,9 +54,6 @@ const AdminSchema = new mongoose.Schema(
     },
 
     otp: {
-=======
-    otp:{
->>>>>>> d6887227aef64035c355e4371cc6bc967fb604f4
       type: Number,
       default: 0,
     },
