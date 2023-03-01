@@ -27,7 +27,7 @@ const StudentSchema = new mongoose.Schema(
         unique: true
     },
 
-    branch: {
+    department: {
         type: String,
         required: true,
     },
@@ -37,11 +37,56 @@ const StudentSchema = new mongoose.Schema(
         required: true
     },
 
+    gender: {
+      type: String,
+      required: true
+    },
+
     contact: {
         type: String,
         required: true,
         unique: true
     },
+
+    admission_source: {
+      type: String,
+      required: true
+    },
+
+    address: {
+      type: String,
+      required: true
+    },
+
+    state: {
+      type: String,
+      required: true
+    },
+
+    documents: [
+      {
+        name: {
+          type: String
+        },
+        image: {
+          type: String
+        }
+      }
+    ],
+
+    // documents: [
+    //   {
+    //     name: {
+    //       type: String,
+    //       required: true
+    //     },
+
+    //     image: {
+    //       type: String,
+    //       required: true
+    //     }
+    //   }
+    // ],
 
     otp:{
       type: Number,

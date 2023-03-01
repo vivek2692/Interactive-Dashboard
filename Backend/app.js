@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const bodyParser = require('body-parser')
 
 const connectDB = require("./config/connectDB.js");
 const AdminRoute = require("./routes/adminRoute.js");
@@ -23,6 +24,10 @@ connectDB(DATABASE_URL);
 
 // JSON Middleware
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use('/uploads', express.static('uploads'));
+
 
 // Routes
 app.use("/api/admin", AdminRoute);

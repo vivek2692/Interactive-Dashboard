@@ -1,33 +1,46 @@
 const jwt = require("jsonwebtoken");
-const Faculty = require("../models/facultyModel.js");
+const Student = require("../models/studentModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
-//Register Faculty
-const FacultyRegister = async (req, res) => {
-  const { name, email, password, college, branch, position, contact } = req.body;
+//Register Student
+const StudentRegister = async (req, res) => {
+  console.log(req.file);
+  const { name, email, password, enrollment_no, department, college, gender, contact, admission_source, address, state } = req.body;
 
-  if (name && email && password && college && branch && position && contact) {
-    const user = await Faculty.findOne({ email: email });
+  if (name && email && password && enrollment_no && department && college && gender && contact && admission_source && address && state) {
+    const user = await Student.findOne({ email: email });
 
     if (user) {
-      res.send({ status: "failed", msg: "Email already exists" });
+      res.status(500).send({ status: "failed", msg: "Email already exists" });
     } else {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      const newFaculty = new Faculty({
-        name: name,
-        email: email,
+      const imageUrl = req.file.path;
+
+      const newStudent = new Student({
+        name,
+        email,
         password: hashedPassword,
-        college: college,
-        branch: branch,
-        position: position,
-        contact: contact
+        enrollment_no,
+        department,
+        college,
+        gender,
+        contact,
+        admission_source,
+        address,
+        state,
+        documents: [
+          {
+            name: req.file.originalname,
+            image: imageUrl
+          }
+        ]
       });
 
       try {
-        const user = await newFaculty.save();
+        const user = await newStudent.save();
         const { password, otp, ...others } = user._doc;
         res.status(200).json({ ...others });
       } catch (error) {
@@ -39,13 +52,13 @@ const FacultyRegister = async (req, res) => {
   }
 };
 
-// Login Faculty
-const FacultyLogin = async (req, res) => {
+// Login Student
+const StudentLogin = async (req, res) => {
   const { email, password } = req.body;
 
   if (email && password) {
     try {
-      const user = await Faculty.findOne({ email: email });
+      const user = await Student.findOne({ email: email });
       if (user != null) {
         const isMatch = await bcrypt.compare(password, user.password);
 
@@ -69,16 +82,16 @@ const FacultyLogin = async (req, res) => {
   }
 };
 
-const FacultyForgotPassword = async (req, res) => {
+const StudentForgotPassword = async (req, res) => {
   const { email } = req.body;
 
   if (email) {
-    const user = await Faculty.findOne({ email });
+    const user = await Student.findOne({ email });
 
     if (user) {
       const otp = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000);
       // console.log(otp)
-      const Faculty = await Faculty.findOneAndUpdate(
+      const Student = await Student.findOneAndUpdate(
         { email: email },
         { otp: otp },
         { new: true, runValidators: true }
@@ -119,14 +132,14 @@ const FacultyForgotPassword = async (req, res) => {
   }
 };
 
-const FacultyValidateOTP = async (req, res) => {
+const StudentValidateOTP = async (req, res) => {
   const { email, otp } = req.body;
 
   if (email && otp) {
-    const faculty = await Faculty.findOne({ email });
+    const student = await Student.findOne({ email });
 
-    if (faculty) {
-      if (otp !== faculty.otp) {
+    if (student) {
+      if (otp !== student.otp) {
         res.status(500).send({ status: "failed", msg: "Please provide valid OTP" });
       } else {
         res.send({ status: "success", msg: "OTP matched" });
@@ -139,14 +152,14 @@ const FacultyValidateOTP = async (req, res) => {
   }
 };
 
-const FacultyUpdatePassword = async (req, res) => {
+const StudentUpdatePassword = async (req, res) => {
   const { email, password } = req.body;
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   if (email && password) {
-    const faculty = await Faculty.findOneAndUpdate(
+    const student = await Student.findOneAndUpdate(
       { email },
       { password: hashedPassword },
       { runValidators: true, new: true, setDefaultsOnInsert: true }
@@ -158,9 +171,9 @@ const FacultyUpdatePassword = async (req, res) => {
 };
 
 module.exports = {
-  FacultyRegister,
-  FacultyLogin,
-  FacultyForgotPassword,
-  FacultyValidateOTP,
-  FacultyUpdatePassword,
+  StudentRegister,
+  StudentLogin,
+  StudentForgotPassword,
+  StudentValidateOTP,
+  StudentUpdatePassword,
 };
