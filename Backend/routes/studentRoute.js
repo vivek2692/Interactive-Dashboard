@@ -7,7 +7,10 @@ const {
   StudentForgotPassword,
   StudentValidateOTP,
   StudentUpdatePassword,
+  StudentCourseraUpload
 } = require("../controllers/StudentController.js");
+
+// For documents
 
 var storage = multer.diskStorage({
   destination: "./uploads/",
@@ -29,9 +32,24 @@ const cpUpload = upload.fields([
   { name: "migration_certificate", maxCount: 1 },
 ]);
 
+// For Coursera
+
+var storage1 = multer.diskStorage({
+    destination: "./coursera/",
+    filename: function (req, file, cb) {
+      //req.body is empty...
+      //How could I get the new_file_name property sent from client here?
+      cb(null, Date.now() + "_" + "coursera_" + file.originalname);
+    },
+  });
+const upload1 = multer({ storage: storage1 });
+  
+const cpUpload1 = upload1.single('image');
+
 const router = express.Router();
 
 router.post("/register", cpUpload, StudentRegister);
+router.post("/coursera", cpUpload1,StudentCourseraUpload);
 router.post("/login", StudentLogin);
 router.post("/forgot-password", StudentForgotPassword);
 router.post("/validateOTP", StudentValidateOTP);

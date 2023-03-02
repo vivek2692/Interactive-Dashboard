@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Student = require("../models/studentModel.js");
+const Coursera = require("../models/courseraModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
@@ -272,10 +273,50 @@ const StudentUpdatePassword = async (req, res) => {
   }
 };
 
+const StudentCourseraUpload = async(req,res) => {
+  
+  const {name, enrollment_no, semester, college, department} = req.body;
+  
+  if(name && enrollment_no && semester && college && department){
+    const student = await Coursera.findOne({enrollment_no,semester});
+
+    if(student){
+      student.courses.push({name: name, image: req.file.path});
+      student.save();
+      res.status(200).json(student);
+    }else{
+      const newStudent = new Coursera({
+        enrollment_no,
+        semester,
+        college,
+        department,
+        courses: [
+          {
+            name,
+            image: req.file.path
+          }
+        ]
+      })
+
+      try {
+        const coursera = await newStudent.save();
+        res.status(200).json(coursera);
+      } catch (error) {
+        res.status(500).send({ status: "failed", msg: "Not Uploaded!" });
+      }
+    }
+  }
+  else{
+    res.status(500).send({ status: "failed", msg: "All feilds are required" });
+  }
+
+}
+
 module.exports = {
   StudentRegister,
   StudentLogin,
   StudentForgotPassword,
   StudentValidateOTP,
   StudentUpdatePassword,
+  StudentCourseraUpload
 };
