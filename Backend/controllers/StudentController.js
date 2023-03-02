@@ -5,46 +5,138 @@ const nodemailer = require("nodemailer");
 
 //Register Student
 const StudentRegister = async (req, res) => {
-  console.log(req.file);
-  const { name, email, password, enrollment_no, department, college, gender, contact, admission_source, address, state } = req.body;
+  const {
+    name,
+    email,
+    password,
+    enrollment_no,
+    department,
+    college,
+    gender,
+    contact,
+    admission_source,
+    admission_year,
+    current_semester,
+    address,
+    state,
+    category
+  } = req.body;
 
-  if (name && email && password && enrollment_no && department && college && gender && contact && admission_source && address && state) {
+  if (
+    name &&
+    email &&
+    password &&
+    enrollment_no &&
+    department &&
+    college &&
+    gender &&
+    contact &&
+    admission_source &&
+    admission_year &&
+    current_semester &&
+    address &&
+    state &&
+    category
+  ) {
     const user = await Student.findOne({ email: email });
 
     if (user) {
       res.status(500).send({ status: "failed", msg: "Email already exists" });
     } else {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+      let uploaded = [];
+      let notUploaded = [];
 
-      const imageUrl = req.file.path;
-
-      const newStudent = new Student({
-        name,
-        email,
-        password: hashedPassword,
-        enrollment_no,
-        department,
-        college,
-        gender,
-        contact,
-        admission_source,
-        address,
-        state,
-        documents: [
-          {
-            name: req.file.originalname,
-            image: imageUrl
-          }
-        ]
-      });
-
+      // Aadhar Card
       try {
-        const user = await newStudent.save();
-        const { password, otp, ...others } = user._doc;
-        res.status(200).json({ ...others });
+        var doc = req.files["AadharCard"][0];
+        uploaded.push({ name: doc.fieldname, image: doc.path });
       } catch (error) {
-        res.status(500).send({ status: "failed", msg: "Unable to register" });
+        notUploaded.push("Aadhar Card is not uploaded.");
+      }
+
+      // 12th Marksheet
+      try {
+        var doc = req.files["hsc_marksheet"][0];
+        uploaded.push({ name: doc.fieldname, image: doc.path });
+      } catch (error) {
+        notUploaded.push("HSC Marksheet is not uploaded.");
+      }
+
+      // 10th Marksheet
+      try {
+        var doc = req.files["ssc_marksheet"][0];
+        uploaded.push({ name: doc.fieldname, image: doc.path });
+      } catch (error) {
+        notUploaded.push("SSC Marksheet is not uploaded.");
+      }
+
+      // LC
+      try {
+        var doc = req.files["lc"][0];
+        uploaded.push({ name: doc.fieldname, image: doc.path });
+      } catch (error) {
+        notUploaded.push("LC is not uploaded.");
+      }
+
+      // GUJCET Marksheet
+      try {
+        var doc = req.files["gujcet_marksheet"][0];
+        uploaded.push({ name: doc.fieldname, image: doc.path });
+      } catch (error) {
+        notUploaded.push("Gujcet Marksheet is not uploaded.");
+      }
+
+      if (admission_source === "ACPC") {
+        // ACPC Admission letter
+        try {
+          var doc = req.files["acpc_admission_letter"][0];
+          uploaded.push({ name: doc.fieldname, image: doc.path });
+        } catch (error) {
+          notUploaded.push("ACPC Admission letter is not uploaded.");
+        }
+      }
+
+      if (state !== "Gujarat") {
+        // Migration Certificate
+        try {
+          var doc = req.files["migration_certificate"][0];
+          uploaded.push({ name: doc.fieldname, image: doc.path });
+        } catch (error) {
+          notUploaded.push("Migration Certificate is not uploaded.");
+        }
+      }
+      
+      if (notUploaded.length > 0) {
+        res.status(500).send({ status: "failed", data: notUploaded });
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newStudent = new Student({
+          name,
+          email,
+          password: hashedPassword,
+          enrollment_no,
+          department,
+          college,
+          gender,
+          contact,
+          admission_source,
+          admission_year,
+          current_semester,
+          address,
+          state,
+          category,
+          documents: uploaded
+        });
+
+        try {
+          const user = await newStudent.save();
+          const { password, otp, ...others } = user._doc;
+          res.status(200).json({ ...others });
+        } catch (error) {
+          res.status(500).send({ status: "failed", msg: "Unable to register" });
+        }
       }
     }
   } else {
@@ -69,10 +161,14 @@ const StudentLogin = async (req, res) => {
           const { password, otp, ...others } = user._doc;
           res.send({ status: "success", data: { ...others }, token: token });
         } else {
-          res.status(500).send({ status: "failed", msg: "Email or Password is not valid" });
+          res
+            .status(500)
+            .send({ status: "failed", msg: "Email or Password is not valid" });
         }
       } else {
-        res.status(500).send({ status: "failed", msg: "You are not registered" });
+        res
+          .status(500)
+          .send({ status: "failed", msg: "You are not registered" });
       }
     } catch (error) {
       console.log(error);
@@ -125,7 +221,9 @@ const StudentForgotPassword = async (req, res) => {
         res.send({ status: "success", msg: "OTP sent successfully" });
       });
     } else {
-      res.status(500).send({ status: "failed", msg: "Please provide valid email" });
+      res
+        .status(500)
+        .send({ status: "failed", msg: "Please provide valid email" });
     }
   } else {
     res.status(500).send({ status: "failed", msg: "Please provide email" });
@@ -140,12 +238,16 @@ const StudentValidateOTP = async (req, res) => {
 
     if (student) {
       if (otp !== student.otp) {
-        res.status(500).send({ status: "failed", msg: "Please provide valid OTP" });
+        res
+          .status(500)
+          .send({ status: "failed", msg: "Please provide valid OTP" });
       } else {
         res.send({ status: "success", msg: "OTP matched" });
       }
     } else {
-      res.status(500).send({ status: "failed", msg: "Please provide valid email" });
+      res
+        .status(500)
+        .send({ status: "failed", msg: "Please provide valid email" });
     }
   } else {
     res.status(500).send({ status: "failed", msg: "All fields are required" });

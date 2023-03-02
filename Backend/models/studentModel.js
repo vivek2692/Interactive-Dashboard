@@ -53,6 +53,16 @@ const StudentSchema = new mongoose.Schema(
       required: true
     },
 
+    admission_year: {
+      type: String,
+      required: true
+    },
+
+    current_semester: {
+      type: Number,
+      default: 1
+    },
+
     address: {
       type: String,
       required: true
@@ -61,6 +71,11 @@ const StudentSchema = new mongoose.Schema(
     state: {
       type: String,
       required: true
+    },
+
+    category: {
+      type: String,
+      required: true,
     },
 
     documents: [
@@ -73,20 +88,6 @@ const StudentSchema = new mongoose.Schema(
         }
       }
     ],
-
-    // documents: [
-    //   {
-    //     name: {
-    //       type: String,
-    //       required: true
-    //     },
-
-    //     image: {
-    //       type: String,
-    //       required: true
-    //     }
-    //   }
-    // ],
 
     otp:{
       type: Number,
