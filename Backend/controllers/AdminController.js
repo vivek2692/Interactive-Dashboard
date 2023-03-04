@@ -80,21 +80,21 @@ const AdminForgotPassword = async (req, res) => {
         { new: true, runValidators: true }
       );
 
-      let testAccount = await nodemailer.createTestAccount();
+      // let testAccount = await nodemailer.createTestAccount();
 
       const transporter = nodemailer.createTransport({
         host: "smtp-mail.outlook.com",
         secureConnection: false, // TLS requires secureConnection to be false
         port: 587,
         auth: {
-          user: "cvmtestdemo@outlook.com",
-          pass: "Cvmhackathon",
+          user: "cvmhackathon@outlook.com",
+          pass: "Cvmtestdemo",
         },
       });
 
       const mailOptions = {
-        from: '"CVM University" <cvmtestdemo@outlook.com>', // sender address
-        to: `${email}`, // list of receivers
+        from: '"CVM University" <cvmhackathon@outlook.com>', // sender address
+        to: "cvivek546@gmail.com", // list of receivers
         subject: "Forgot Password OTP", // Subject line
         text: `Hello ${user.name}`, // plain text body
         html: `<b>Your OTP : ${otp}</b>`, // html body
@@ -136,7 +136,7 @@ const AdminValidateOTP = async (req, res) => {
 };
 
 const AdminUpdatePassword = async (req, res) => {
-  const { email, password } = req.body;
+  const { password, email } = req.body;
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);

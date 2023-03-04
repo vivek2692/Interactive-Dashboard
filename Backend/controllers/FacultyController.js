@@ -82,7 +82,7 @@ const FacultyForgotPassword = async (req, res) => {
     if (user) {
       const otp = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000);
       // console.log(otp)
-      const Faculty = await Faculty.findOneAndUpdate(
+      const faculty = await Faculty.findOneAndUpdate(
         { email: email },
         { otp: otp },
         { new: true, runValidators: true }
@@ -95,14 +95,14 @@ const FacultyForgotPassword = async (req, res) => {
         secureConnection: false, // TLS requires secureConnection to be false
         port: 587,
         auth: {
-          user: "cvmtestdemo@outlook.com",
-          pass: "Cvmhackathon",
+          user: "cvmhackathon@outlook.com",
+          pass: "Cvmtestdemo",
         },
       });
 
       const mailOptions = {
-        from: '"CVM University" <cvmtestdemo@outlook.com>', // sender address
-        to: `${email}`, // list of receivers
+        from: '"CVM University" <cvmhackathon@outlook.com>', // sender address
+        to: `cvivek546@gmail.com`, // list of receivers
         subject: "Forgot Password OTP", // Subject line
         text: `Hello ${user.name}`, // plain text body
         html: `<b>Your OTP : ${otp}</b>`, // html body

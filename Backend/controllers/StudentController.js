@@ -147,11 +147,11 @@ const StudentRegister = async (req, res) => {
 
 // Login Student
 const StudentLogin = async (req, res) => {
-  const { email, password } = req.body;
+  const { enrollment_no, password } = req.body;
 
-  if (email && password) {
+  if (enrollment_no && password) {
     try {
-      const user = await Student.findOne({ email: email });
+      const user = await Student.findOne({ enrollment_no: enrollment_no });
       if (user != null) {
         const isMatch = await bcrypt.compare(password, user.password);
 
@@ -164,7 +164,7 @@ const StudentLogin = async (req, res) => {
         } else {
           res
             .status(500)
-            .send({ status: "failed", msg: "Email or Password is not valid" });
+            .send({ status: "failed", msg: "Enrollment No or Password is not valid" });
         }
       } else {
         res
@@ -188,7 +188,7 @@ const StudentForgotPassword = async (req, res) => {
     if (user) {
       const otp = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000);
       // console.log(otp)
-      const Student = await Student.findOneAndUpdate(
+      const student = await Student.findOneAndUpdate(
         { email: email },
         { otp: otp },
         { new: true, runValidators: true }
@@ -201,14 +201,14 @@ const StudentForgotPassword = async (req, res) => {
         secureConnection: false, // TLS requires secureConnection to be false
         port: 587,
         auth: {
-          user: "cvmtestdemo@outlook.com",
-          pass: "Cvmhackathon",
+          user: "cvmhackathon@outlook.com",
+          pass: "Cvmtestdemo",
         },
       });
 
       const mailOptions = {
-        from: '"CVM University" <cvmtestdemo@outlook.com>', // sender address
-        to: `${email}`, // list of receivers
+        from: '"CVM University" <cvmhackathon@outlook.com>', // sender address
+        to: `cvivek546@gmail.com`, // list of receivers
         subject: "Forgot Password OTP", // Subject line
         text: `Hello ${user.name}`, // plain text body
         html: `<b>Your OTP : ${otp}</b>`, // html body
