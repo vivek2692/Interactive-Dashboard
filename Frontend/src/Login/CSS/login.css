@@ -128,13 +128,3 @@ button.sendOtpBtn {
     margin: 5px;
     margin-bottom: 1vh;
 }
-
-.err-msg{
-    color: red;
-    font-weight: 600;
-    /* margin-bottom: 5px; */
-    text-align: left;
-    /* margin-right: 14rem; */
-    margin-top: -8px;
-    margin-bottom: -1px;
-}

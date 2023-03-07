@@ -1,43 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import LoginNav from "./login_navbar";
-import axios from "axios";
+import { Link } from "react-router-dom";
+import LoginNav from "./Components/login_navbar";
 
 function NewPwdAdmin() {
   const [adminPassword, setAdminPassword] = useState("");
   const [confirmAdminPassword, setConfirmAdminPassword] = useState("");
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState("");
-
-  const navigate = useNavigate();
-
-  const handleSubmit = async() => {
-    if(adminPassword !== confirmAdminPassword){
-      setIsError(true);
-      setError("Passwords are not same")
-    }
-    else{
-      setIsError(false);
-
-      const email = localStorage.getItem("email");
-
-      const obj = {
-        email: email,
-        password: adminPassword
-      }
-
-      axios.patch("http://localhost:8000/api/admin/update-password",obj)
-      .then((res) => {
-        const data = res;
-        navigate("/admin-login");
-        alert(data.data.msg)
-      })
-      .catch((err) => {
-        setIsError(true);
-        setError(err.response.data.msg)
-      })
-    }
-  }
 
   return (
     <section className="login-container">
@@ -63,12 +30,11 @@ function NewPwdAdmin() {
             onChange={(e) => setConfirmAdminPassword(e.target.value)}
             required
           />
-          {isError && <p className="err-msg">{error}</p>}
-          {/* <Link to="/admin-login"> */}
-            <button className="sendOtpBtn" type="button" onClick={handleSubmit}>
+          <Link to="/admin-login">
+            <button className="sendOtpBtn" type="submit">
               Submit
             </button>
-          {/* </Link> */}
+          </Link>
         </form>
       </div>
     </section>
