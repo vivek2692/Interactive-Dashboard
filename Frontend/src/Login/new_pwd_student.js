@@ -1,10 +1,43 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import LoginNav from "./Components/login_navbar";
+import { useNavigate } from "react-router-dom";
+import LoginNav from "./login_navbar";
+import axios from "axios";
 
 function NewPwdStudent() {
   const [studentPassword, setStudentPassword] = useState("");
   const [confirmStudentPassword, setConfirmStudentPassword] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async() => {
+    if(studentPassword !== confirmStudentPassword){
+      setIsError(true);
+      setError("Passwords are not same")
+    }
+    else{
+      setIsError(false);
+
+      const email = localStorage.getItem("email");
+
+      const obj = {
+        email: email,
+        password: studentPassword
+      }
+
+      axios.patch("http://localhost:8000/api/student/update-password",obj)
+      .then((res) => {
+        const data = res;
+        navigate("/");
+        alert(data.data.msg)
+      })
+      .catch((err) => {
+        setIsError(true);
+        setError(err.response.data.msg)
+      })
+    }
+  }
 
   return (
     <section className="login-container">
@@ -30,11 +63,12 @@ function NewPwdStudent() {
             onChange={(e) => setConfirmStudentPassword(e.target.value)}
             required
           />
-          <Link to="/student-login">
-            <button className="sendOtpBtn" type="submit">
+          {isError && <p className="err-msg">{error}</p>}
+          {/* <Link to="/student-login"> */}
+            <button className="sendOtpBtn" type="button" onClick={handleSubmit}>
               Submit
             </button>
-          </Link>
+          {/* </Link> */}
         </form>
       </div>
     </section>
