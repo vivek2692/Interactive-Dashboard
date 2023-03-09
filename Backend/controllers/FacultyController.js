@@ -1,13 +1,40 @@
 const jwt = require("jsonwebtoken");
 const Faculty = require("../models/facultyModel.js");
+const Subject = require("../models/subjectModel.js");
+const Student = require("../models/studentModel.js");
+const Result = require("../models/resultModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
 //Register Faculty
 const FacultyRegister = async (req, res) => {
-  const { name, faculty_id, email, password, gender, qualification, address, college, department, role, contact } = req.body;
+  const {
+    name,
+    faculty_id,
+    email,
+    password,
+    gender,
+    qualification,
+    address,
+    college,
+    department,
+    role,
+    contact,
+  } = req.body;
 
-  if (name && faculty_id && email && password && gender && qualification && address && college && department && role && contact) {
+  if (
+    name &&
+    faculty_id &&
+    email &&
+    password &&
+    gender &&
+    qualification &&
+    address &&
+    college &&
+    department &&
+    role &&
+    contact
+  ) {
     const user = await Faculty.findOne({ email: email });
 
     if (user) {
@@ -27,7 +54,7 @@ const FacultyRegister = async (req, res) => {
         college,
         department,
         role,
-        contact
+        contact,
       });
 
       try {
@@ -60,10 +87,14 @@ const FacultyLogin = async (req, res) => {
           const { password, otp, ...others } = user._doc;
           res.send({ status: "success", data: { ...others }, token: token });
         } else {
-          res.status(500).send({ status: "failed", msg: "Email or Password is not valid" });
+          res
+            .status(500)
+            .send({ status: "failed", msg: "Email or Password is not valid" });
         }
       } else {
-        res.status(500).send({ status: "failed", msg: "You are not registered" });
+        res
+          .status(500)
+          .send({ status: "failed", msg: "You are not registered" });
       }
     } catch (error) {
       console.log(error);
@@ -116,7 +147,9 @@ const FacultyForgotPassword = async (req, res) => {
         res.send({ status: "success", msg: "OTP sent successfully" });
       });
     } else {
-      res.status(500).send({ status: "failed", msg: "Please provide valid email" });
+      res
+        .status(500)
+        .send({ status: "failed", msg: "Please provide valid email" });
     }
   } else {
     res.status(500).send({ status: "failed", msg: "Please provide email" });
@@ -131,12 +164,16 @@ const FacultyValidateOTP = async (req, res) => {
 
     if (faculty) {
       if (otp !== faculty.otp) {
-        res.status(500).send({ status: "failed", msg: "Please provide valid OTP" });
+        res
+          .status(500)
+          .send({ status: "failed", msg: "Please provide valid OTP" });
       } else {
         res.send({ status: "success", msg: "OTP matched" });
       }
     } else {
-      res.status(500).send({ status: "failed", msg: "Please provide valid email" });
+      res
+        .status(500)
+        .send({ status: "failed", msg: "Please provide valid email" });
     }
   } else {
     res.status(500).send({ status: "failed", msg: "All fields are required" });
@@ -161,10 +198,203 @@ const FacultyUpdatePassword = async (req, res) => {
   }
 };
 
+// Adding subjects semesterwise
+const AddSubjects = async (req, res) => {
+  const { college, department, subjects_array, semester } = req.body;
+  if (college && department && semester) {
+    const item = await Subject.findOne({ college, department });
+
+    if (item) {
+      // console.log(item);
+      let subs = [];
+
+      item.subjects.map((sem) => {
+        if (sem.semester === semester) {
+          subs = sem.subs;
+        }
+      });
+
+      subjects_array.map((sub) => {
+        subs.push(sub);
+      });
+
+      // console.log(subs);
+
+      try {
+        let appear = false;
+        item.subjects.map((sem) => {
+          if (sem.semester === semester) {
+            sem.subs = subs;
+            appear = true;
+          }
+        });
+
+        if (appear === false) {
+          item.subjects.push({ semester: semester, subs: subs });
+        }
+        // const newer = await item.findOne({college, department, "subjects.semester": semester},{$set: {subjects: subs}},{ runValidators: true, new: true, setDefaultsOnInsert: true });
+        // console.log(newer);
+        await item.save();
+        res
+          .status(200)
+          .send({ status: "success", msg: "Subject added successfully" });
+      } catch (error) {
+        res
+          .status(500)
+          .send({ status: "failure", msg: "Something went wrong" });
+      }
+    } else {
+      const newCourse = new Subject({
+        college,
+        department,
+        subjects: {
+          semester,
+          subs: subjects_array,
+        },
+      });
+
+      try {
+        const newSub = await newCourse.save();
+        res
+          .status(200)
+          .send({ status: "success", msg: "Subject added successfully" });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  } else {
+    res.status(500).send({ status: "failure", msg: "All fields are required" });
+  }
+};
+
+// Assigning subjects to student (for Marksheet model)
+const SubjectsAssign = async (req, res) => {
+  const { enrollment_no, subjects, college, department, semester } = req.body;
+
+  if (enrollment_no && college && department && semester) {
+    const isAvailable = await Student.findOne({ enrollment_no });
+
+    if (!isAvailable) {
+      res
+        .status(500)
+        .send({ status: "failure", msg: "Student is not available" });
+    } else {
+      const student = await Result.findOne({
+        enrollment_no,
+        college,
+        department,
+      });
+
+      if (student) {
+        student.results.map((sem) => {
+          if (sem.semester === semester) {
+            subjects.map((sub) => {
+              sem.result.push(sub);
+            });
+          }
+        });
+
+        try {
+          await student.save();
+          res
+            .status(200)
+            .send({ status: "success", msg: "Subjects assigned successfully" });
+        } catch (error) {
+          console.log(error);
+          res
+            .status(500)
+            .send({ status: "failure", msg: "Something went wrong" });
+        }
+      } else {
+        const item = await Subject.findOne({ college, department });
+
+        let subs = [];
+
+        item.subjects.map((sem) => {
+          if (sem.semester === semester) {
+            sem.subs.map((sub) => {
+              subs.push(sub);
+            });
+          }
+        });
+
+        const newStudent = new Result({
+          enrollment_no,
+          college,
+          year: new Date().getFullYear(),
+          department,
+          results: {
+            semester: semester,
+            result: subs,
+          },
+        });
+
+        try {
+          await newStudent.save();
+          res
+            .status(200)
+            .send({ status: "success", msg: "Subjects assigned successfully" });
+        } catch (error) {
+          console.log(error);
+          res
+            .status(500)
+            .send({ status: "failure", msg: "Something went wrong" });
+        }
+      }
+    }
+  } else {
+    res.status(500).send({ status: "failure", msg: "All fields are required" });
+  }
+};
+
+// Giving marks to students
+const GiveMarks = async (req, res) => {
+  const { enrollment_no, college, department, exam_marks, semester } = req.body;
+
+  if (enrollment_no && college && department && exam_marks) {
+    const student = await Result.findOne({
+      enrollment_no,
+      college,
+      department,
+    });
+
+    if (student) {
+      // console.log(student);
+
+      student.results.map((sem) => {
+        if (sem.semester === semester) {
+          sem.result = exam_marks;
+        }
+      });
+
+      try {
+        await student.save();
+        res
+          .status(200)
+          .send({ status: "success", msg: "Marks uploaded succesfully" });
+      } catch (error) {
+        console.log(error);
+        res
+          .status(500)
+          .send({ status: "failure", msg: "All fields are required" });
+      }
+    } else {
+      res
+        .status(500)
+        .send({ status: "failure", msg: "Student is Not Available" });
+    }
+  } else {
+    res.status(500).send({ status: "failure", msg: "All fields are required" });
+  }
+};
+
 module.exports = {
   FacultyRegister,
   FacultyLogin,
   FacultyForgotPassword,
   FacultyValidateOTP,
   FacultyUpdatePassword,
+  AddSubjects,
+  SubjectsAssign,
+  GiveMarks,
 };
