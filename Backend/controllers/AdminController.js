@@ -3,6 +3,8 @@ const Admin = require("../models/adminModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
+const Student = require("../models/studentModel");
+
 //Register Admin
 const AdminRegister = async (req, res) => {
   const { name, email, password } = req.body;
@@ -52,10 +54,14 @@ const AdminLogin = async (req, res) => {
           const { password, otp, ...others } = user._doc;
           res.send({ status: "success", data: { ...others }, token: token });
         } else {
-          res.status(500).send({ status: "failed", msg: "Email or Password is not valid" });
+          res
+            .status(500)
+            .send({ status: "failed", msg: "Email or Password is not valid" });
         }
       } else {
-        res.status(500).send({ status: "failed", msg: "You are not registered" });
+        res
+          .status(500)
+          .send({ status: "failed", msg: "You are not registered" });
       }
     } catch (error) {
       console.log(error);
@@ -108,7 +114,9 @@ const AdminForgotPassword = async (req, res) => {
         res.send({ status: "success", msg: "OTP sent successfully" });
       });
     } else {
-      res.status(500).send({ status: "failed", msg: "Please provide valid email" });
+      res
+        .status(500)
+        .send({ status: "failed", msg: "Please provide valid email" });
     }
   } else {
     res.status(500).send({ status: "failed", msg: "Please provide email" });
@@ -123,12 +131,16 @@ const AdminValidateOTP = async (req, res) => {
 
     if (admin) {
       if (otp !== admin.otp) {
-        res.status(500).send({ status: "failed", msg: "Please provide valid OTP" });
+        res
+          .status(500)
+          .send({ status: "failed", msg: "Please provide valid OTP" });
       } else {
         res.send({ status: "success", msg: "OTP matched" });
       }
     } else {
-      res.status(500).send({ status: "failed", msg: "Please provide valid email" });
+      res
+        .status(500)
+        .send({ status: "failed", msg: "Please provide valid email" });
     }
   } else {
     res.status(500).send({ status: "failed", msg: "All fields are required" });
@@ -153,10 +165,76 @@ const AdminUpdatePassword = async (req, res) => {
   }
 };
 
+// Admin Functionality
+const postSelectStudent = async (req, res, next) => {
+  const { college, department, current_semester, enrollment_no } = req.query;
+  const queryObject = {};
+  if (college) {
+    queryObject.college = { $regex: college, $options: "i" };
+  } else {
+    queryObject.college = null;
+  }
+  if (department) {
+    queryObject.department = { $regex: department, $options: "i" };
+  } else {
+    queryObject.department = null;
+  }
+  if (current_semester) {
+    queryObject.current_semester = { $regex: current_semester, $options: "i" };
+  } else {
+    queryObject.current_semester = null;
+  }
+  if (enrollment_no) {
+    queryObject.enrollment_no = enrollment_no;
+  } else {
+    queryObject.enrollment_no = null;
+  }
+  await Student.find({
+    $or: [
+      { college: college },
+      { department: department },
+      { current_semester: current_semester },
+      { enrollment_no: enrollment_no },
+    ],
+  })
+    .exec()
+    .then((students) => {
+      console.log(students);
+      return res.json({
+        data: students,
+        hasError: false,
+      });
+    })
+    .catch((err) => {
+      return res.json({
+        data: err,
+        hasError: true,
+      });
+    });
+};
+
+const patchUpdateStudent = async (req, res, next) => {
+  const data = req.body;
+  const enrollment_no = req.body.enrollment_no;
+  console.log(data);
+  await Student.findOneAndUpdate(
+    { enrollment_no: enrollment_no },
+    { $set: { data } }
+  ).then((error, writeOpResult) => {
+    console.log(error);
+    res.json({
+      data: writeOpResult,
+      hasError: false,
+    });
+  });
+};
+
 module.exports = {
   AdminRegister,
   AdminLogin,
   AdminForgotPassword,
   AdminValidateOTP,
   AdminUpdatePassword,
+  postSelectStudent,
+  patchUpdateStudent,
 };
