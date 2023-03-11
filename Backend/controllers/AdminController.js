@@ -222,13 +222,13 @@ const deleteStudent = async (req, res, next) => {
     enrollment_no: enrollment_no,
   })
     .then((result) => {
-      return res.json({
+      return res.status(200).json({
         msg: "Student deleted successfully",
         hasError: false,
       });
     })
     .catch((err) => {
-      return res.json({
+      return res.status(500).json({
         data: err,
         hasError: true,
       });
@@ -270,13 +270,13 @@ const postSelectFaculty = async (req, res, next) => {
     .exec()
     .then((faculty) => {
       console.log(faculty);
-      return res.json({
+      return res.status(200).json({
         data: faculty,
         hasError: false,
       });
     })
     .catch((err) => {
-      return res.json({
+      return res.status(500).json({
         data: err,
         hasError: true,
       });
@@ -291,13 +291,13 @@ const deleteFaculty = async (req, res, next) => {
     faculty_id: faculty_id,
   })
     .then((result) => {
-      return res.json({
+      return res.status(200).json({
         msg: "Faculty deleted successfully",
         hasError: false,
       });
     })
     .catch((err) => {
-      return res.json({
+      return res.status(500).json({
         data: err,
         hasError: true,
       });
@@ -313,13 +313,13 @@ const deleteAdmin = async (req, res, next) => {
     admin_id: admin_id,
   })
     .then((result) => {
-      return res.json({
+      return res.status(200).json({
         msg: "Admin deleted successfully",
         hasError: false,
       });
     })
     .catch((err) => {
-      return res.json({
+      return res.status(500).json({
         data: err,
         hasError: true,
       });
