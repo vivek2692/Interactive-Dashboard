@@ -11,7 +11,7 @@ const StudentSchema = new mongoose.Schema(
       type: String,
       unique: true,
       match: [
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       ],
       required: true,
     },
@@ -22,55 +22,55 @@ const StudentSchema = new mongoose.Schema(
     },
 
     enrollment_no: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
 
     department: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
 
     college: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     gender: {
       type: String,
-      required: true
+      required: true,
     },
 
     contact: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
 
     admission_source: {
       type: String,
-      required: true
+      required: true,
     },
 
     admission_year: {
       type: String,
-      required: true
+      required: true,
     },
 
     current_semester: {
       type: Number,
-      default: 1
+      default: 1,
     },
 
     address: {
       type: String,
-      required: true
+      required: true,
     },
 
-    state: {
+    board: {
       type: String,
-      required: true
+      required: true,
     },
 
     category: {
@@ -81,18 +81,18 @@ const StudentSchema = new mongoose.Schema(
     documents: [
       {
         name: {
-          type: String
+          type: String,
         },
         image: {
-          type: String
-        }
-      }
+          type: String,
+        },
+      },
     ],
 
-    otp:{
+    otp: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   {
     timestamps: true,

@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
 const Student = require("../models/studentModel");
+const Faculty = require("../models/facultyModel");
 
 //Register Admin
 const AdminRegister = async (req, res) => {
@@ -165,7 +166,7 @@ const AdminUpdatePassword = async (req, res) => {
   }
 };
 
-// Admin Functionality
+// Admin Student Functionality
 const postSelectStudent = async (req, res, next) => {
   const { college, department, current_semester, enrollment_no } = req.query;
   const queryObject = {};
@@ -200,8 +201,29 @@ const postSelectStudent = async (req, res, next) => {
     .exec()
     .then((students) => {
       console.log(students);
-      return res.json({
+      return res.status(200).json({
         data: students,
+        hasError: false,
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        data: err,
+        hasError: true,
+      });
+    });
+};
+
+const patchUpdateStudent = async (req, res, next) => {};
+
+const deleteStudent = async (req, res, next) => {
+  const enrollment_no = req.body.enrollment_no;
+  const result = await Student.findOneAndDelete({
+    enrollment_no: enrollment_no,
+  })
+    .then((result) => {
+      return res.json({
+        msg: "Student deleted successfully",
         hasError: false,
       });
     })
@@ -213,20 +235,95 @@ const postSelectStudent = async (req, res, next) => {
     });
 };
 
-const patchUpdateStudent = async (req, res, next) => {
-  const data = req.body;
-  const enrollment_no = req.body.enrollment_no;
-  console.log(data);
-  await Student.findOneAndUpdate(
-    { enrollment_no: enrollment_no },
-    { $set: { data } }
-  ).then((error, writeOpResult) => {
-    console.log(error);
-    res.json({
-      data: writeOpResult,
-      hasError: false,
+//Faculty Functionality
+const postSelectFaculty = async (req, res, next) => {
+  const { college, position, department, faculty_id } = req.query;
+  const queryObject = {};
+  if (college) {
+    queryObject.college = { $regex: college, $options: "i" };
+  } else {
+    queryObject.college = null;
+  }
+  if (position) {
+    queryObject.position = { $regex: position, $options: "i" };
+  } else {
+    queryObject.position = null;
+  }
+  if (department) {
+    queryObject.department = { $regex: department, $options: "i" };
+  } else {
+    queryObject.department = null;
+  }
+  if (faculty_id) {
+    queryObject.faculty_id = enrollment_no;
+  } else {
+    queryObject.faculty_id = null;
+  }
+  await Faculty.find({
+    $or: [
+      { college: college },
+      { position: position },
+      { department: department },
+      { faculty_id: faculty_id },
+    ],
+  })
+    .exec()
+    .then((faculty) => {
+      console.log(faculty);
+      return res.json({
+        data: faculty,
+        hasError: false,
+      });
+    })
+    .catch((err) => {
+      return res.json({
+        data: err,
+        hasError: true,
+      });
     });
-  });
+};
+
+const patchUpdateFaculty = async (req, res, next) => {};
+
+const deleteFaculty = async (req, res, next) => {
+  const faculty_id = req.body.faculty_id;
+  const result = await Faculty.findOneAndDelete({
+    faculty_id: faculty_id,
+  })
+    .then((result) => {
+      return res.json({
+        msg: "Faculty deleted successfully",
+        hasError: false,
+      });
+    })
+    .catch((err) => {
+      return res.json({
+        data: err,
+        hasError: true,
+      });
+    });
+};
+
+//Admin Functionality
+const patchUpdateAdmin = async (req, res, next) => {};
+
+const deleteAdmin = async (req, res, next) => {
+  const admin_id = req.body.admin_id;
+  Admin.findOneAndDelete({
+    admin_id: admin_id,
+  })
+    .then((result) => {
+      return res.json({
+        msg: "Admin deleted successfully",
+        hasError: false,
+      });
+    })
+    .catch((err) => {
+      return res.json({
+        data: err,
+        hasError: true,
+      });
+    });
 };
 
 module.exports = {
@@ -237,4 +334,10 @@ module.exports = {
   AdminUpdatePassword,
   postSelectStudent,
   patchUpdateStudent,
+  deleteStudent,
+  postSelectFaculty,
+  patchUpdateFaculty,
+  deleteFaculty,
+  patchUpdateAdmin,
+  deleteAdmin,
 };

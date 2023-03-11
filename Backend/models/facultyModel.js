@@ -10,14 +10,14 @@ const FacultySchema = new mongoose.Schema(
     faculty_id: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
 
     email: {
       type: String,
       unique: true,
       match: [
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       ],
       required: true,
     },
@@ -29,44 +29,47 @@ const FacultySchema = new mongoose.Schema(
 
     gender: {
       type: String,
-      required: true
+      required: true,
     },
 
     qualification: {
       type: String,
-      required: true
+      required: true,
     },
-
+    position: {
+      type: String,
+      required: true,
+    },
     address: {
       type: String,
-      required: true
+      required: true,
     },
 
     college: {
       type: String,
-      required: true
+      required: true,
     },
 
     department: {
       type: String,
-      required: true
+      required: true,
     },
 
     role: {
       type: String,
       required: true,
-      default: "faculty"
+      default: "faculty",
     },
 
     contact: {
       type: String,
-      required: true
+      required: true,
     },
 
-    otp:{
+    otp: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   {
     timestamps: true,
