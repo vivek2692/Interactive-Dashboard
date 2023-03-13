@@ -1,0 +1,134 @@
+.admin-add-student {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+.student-form {
+    color: rgb(143, 143, 145);
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    padding: 1vh 2vw 3vh;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+
+.student-form .mutlistep-form {
+    width: 100%;
+    color: black;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-form table {
+    border-spacing: 30px;
+    margin-top: 30px;
+}
+
+.sub-form table tr td:nth-child(2) {
+    width: 400px;
+}
+
+.sub-form input {
+    width: 85%;
+    font-size: 17px;
+    border: none;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    padding: 3px;
+    outline: none;
+}
+
+.sub-form input.file-upload {
+    border-bottom: none;
+}
+
+.sub-form input.radio {
+    width: auto;
+}
+
+.sub-form textarea {
+    width: 85%;
+    font-size: 17px;
+    border: none;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    padding: 3px;
+    outline: none;
+    resize: none;
+}
+
+.sub-form select {
+    width: 60%;
+    font-size: 14px;
+    background-color: #edf2ff;
+    border-radius: 3px;
+    border: 1px solid #afc5fd;
+    outline: none;
+    padding: 3px;
+    color: rgb(85, 84, 84);
+}
+
+.multistep-form-nav {
+    width: 65%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.multistep-form-btn {
+    margin: 25px;
+    padding: 8px 14px;
+    font-size: 16px;
+    color: white;
+    background-color: #46a094;
+    border: none;
+    border-radius: 3px;
+}
+
+/* .student-form form table {
+    border-spacing: 20px;
+}
+
+.student-form form input {
+    width: 85%;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    padding: 3px;
+    outline: none;
+}
+
+.student-form select {
+    font-size: 14px;
+    background-color: #edf2ff;
+    border-radius: 3px;
+    border: 1px solid #afc5fd;
+    outline: none;
+    padding: 3px;
+    color: rgb(85, 84, 84);
+}
+
+button.addstdBtn {
+    margin: 25px;
+    padding: 8px 14px;
+    font-size: 16px;
+    color: white;
+    background-color: #46a094;
+    border: none;
+    border-radius: 3px;
+} */

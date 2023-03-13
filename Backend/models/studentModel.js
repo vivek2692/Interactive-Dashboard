@@ -73,6 +73,11 @@ const StudentSchema = new mongoose.Schema(
       required: true
     },
 
+    board: {
+      type: String,
+      required: true
+    },
+
     category: {
       type: String,
       required: true,

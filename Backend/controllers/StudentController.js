@@ -6,10 +6,11 @@ const nodemailer = require("nodemailer");
 
 //Register Student
 const StudentRegister = async (req, res) => {
+  // console.log("files",req.files);
+  // console.log("body",req.body);
   const {
     name,
     email,
-    password,
     enrollment_no,
     department,
     college,
@@ -20,13 +21,13 @@ const StudentRegister = async (req, res) => {
     current_semester,
     address,
     state,
+    board,
     category
   } = req.body;
 
   if (
     name &&
     email &&
-    password &&
     enrollment_no &&
     department &&
     college &&
@@ -37,6 +38,7 @@ const StudentRegister = async (req, res) => {
     current_semester &&
     address &&
     state &&
+    board &&
     category
   ) {
     const user = await Student.findOne({ email: email });
@@ -80,11 +82,13 @@ const StudentRegister = async (req, res) => {
       }
 
       // GUJCET Marksheet
-      try {
-        var doc = req.files["gujcet_marksheet"][0];
-        uploaded.push({ name: doc.fieldname, image: doc.path });
-      } catch (error) {
-        notUploaded.push("Gujcet Marksheet is not uploaded.");
+      if(admission_source === "ACPC"){
+        try {
+          var doc = req.files["gujcet_marksheet"][0];
+          uploaded.push({ name: doc.fieldname, image: doc.path });
+        } catch (error) {
+          notUploaded.push("Gujcet Marksheet is not uploaded.");
+        }
       }
 
       if (admission_source === "ACPC") {
@@ -97,7 +101,7 @@ const StudentRegister = async (req, res) => {
         }
       }
 
-      if (state !== "Gujarat") {
+      if (board !== "GSEB") {
         // Migration Certificate
         try {
           var doc = req.files["migration_certificate"][0];
@@ -111,7 +115,7 @@ const StudentRegister = async (req, res) => {
         res.status(500).send({ status: "failed", data: notUploaded });
       } else {
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(enrollment_no, salt);
 
         const newStudent = new Student({
           name,
@@ -127,6 +131,7 @@ const StudentRegister = async (req, res) => {
           current_semester,
           address,
           state,
+          board,
           category,
           documents: uploaded
         });
@@ -312,11 +317,47 @@ const StudentCourseraUpload = async(req,res) => {
 
 }
 
+// Searching
+const Searching = async(req, res) => {
+  const {enrollment_no} = req.query;
+
+  let queryObject = {};
+
+  if(enrollment_no !== ""){
+    queryObject.enrollment_no = { $regex: enrollment_no, $options: "i" };
+  }
+
+  const data = await Student.find(queryObject);
+
+  if(data){
+    res.status(200).send({"status": "success", data: data});
+  }
+}
+
+const GetStudent = async(req, res) => {
+  const {enrollment_no} = req.body;
+
+  try {
+    const student = await Student.findOne({enrollment_no});
+
+    if(student){
+      const { password, otp, ...others } = student._doc;
+      res.status(200).send({"status": "success", data: others});
+    }else{
+      res.status(404).send({"status": "failed", "msg": "Student doesn't exist"});
+    }
+  } catch (error) {
+    res.status(500).send({"status": "failed", "msg": "Something went wrong"})
+  }
+}
+
 module.exports = {
   StudentRegister,
   StudentLogin,
   StudentForgotPassword,
   StudentValidateOTP,
   StudentUpdatePassword,
-  StudentCourseraUpload
+  StudentCourseraUpload,
+  Searching,
+  GetStudent
 };

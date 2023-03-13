@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, Router } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, Router, useNavigate, NavLink } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { TfiDashboard } from "react-icons/tfi";
 import { FiUsers } from "react-icons/fi";
@@ -9,6 +9,8 @@ import { MdOutlineCoPresent } from "react-icons/md";
 import { BsFileSpreadsheet } from "react-icons/bs";
 
 function AdminNavBar() {
+  //const navigate = useNavigate();
+
   const [openMenu, setOpenMenu] = useState(false);
   const iconStyles = {
     color: "white",
@@ -30,46 +32,60 @@ function AdminNavBar() {
       </div>
       <ul>
         <li>
-          <span>
-            <TfiDashboard style={iconStyles} />
-          </span>
-          {openMenu && <span className="text">Home</span>}
+          <Link to="/admin/home">
+            <span>
+              <TfiDashboard style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Home</span>}
+          </Link>
         </li>
         <li>
-          <span>
-            <FiUsers style={iconStyles} />
-          </span>
-          {openMenu && <span className="text">Users</span>}
+          <Link to="/admin/users">
+            <span>
+              <FiUsers style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Users</span>}
+          </Link>
         </li>
         <li>
-          <span>
-            <AiOutlineUserAdd style={iconStyles} />
-          </span>
-          {openMenu && <span className="text">Add Student</span>}
+          <Link to="/admin/add-student">
+            <span>
+              <AiOutlineUserAdd style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Add Student</span>}
+          </Link>
         </li>
         <li>
-          <span>
-            <AiOutlineUserAdd style={iconStyles} />
-          </span>
-          {openMenu && <span className="text">Add Faculty</span>}
+          <Link to="/admin/add-faculty">
+            <span>
+              <AiOutlineUserAdd style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Add Faculty</span>}
+          </Link>
         </li>
         <li>
-          <span>
-            <CgOrganisation style={iconStyles} />
-          </span>
-          {openMenu && <span className="text">Placement Details</span>}
+          <Link to="/admin/placement-details">
+            <span>
+              <CgOrganisation style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Placement Details</span>}
+          </Link>
         </li>
         <li>
-          <span>
-            <MdOutlineCoPresent style={iconStyles} />
-          </span>
-          {openMenu && <span className="text">Student Attendance</span>}
+          <Link>
+            <span>
+              <MdOutlineCoPresent style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Student Attendance</span>}
+          </Link>
         </li>
         <li>
-          <span>
-            <BsFileSpreadsheet style={iconStyles} />
-          </span>
-          {openMenu && <span className="text">Student Result</span>}
+          <Link>
+            <span>
+              <BsFileSpreadsheet style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Student Result</span>}
+          </Link>
         </li>
       </ul>
     </div>

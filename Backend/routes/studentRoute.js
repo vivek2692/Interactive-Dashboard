@@ -7,7 +7,9 @@ const {
   StudentForgotPassword,
   StudentValidateOTP,
   StudentUpdatePassword,
-  StudentCourseraUpload
+  StudentCourseraUpload,
+  Searching,
+  GetStudent
 } = require("../controllers/StudentController.js");
 
 // For documents
@@ -54,5 +56,7 @@ router.post("/login", StudentLogin);
 router.post("/forgot-password", StudentForgotPassword);
 router.post("/validateOTP", StudentValidateOTP);
 router.patch("/update-password", StudentUpdatePassword);
+router.get("/search", Searching);
+router.post("/getStudent", GetStudent);
 
 module.exports = router;

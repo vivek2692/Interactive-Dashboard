@@ -12,9 +12,9 @@ const FacultyRegister = async (req, res) => {
     name,
     faculty_id,
     email,
-    password,
     gender,
     qualification,
+    position,
     address,
     college,
     department,
@@ -26,9 +26,9 @@ const FacultyRegister = async (req, res) => {
     name &&
     faculty_id &&
     email &&
-    password &&
     gender &&
     qualification &&
+    position &&
     address &&
     college &&
     department &&
@@ -41,7 +41,7 @@ const FacultyRegister = async (req, res) => {
       res.send({ status: "failed", msg: "Email already exists" });
     } else {
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+      const hashedPassword = await bcrypt.hash(faculty_id, salt);
 
       const newFaculty = new Faculty({
         name,
@@ -50,6 +50,7 @@ const FacultyRegister = async (req, res) => {
         password: hashedPassword,
         gender,
         qualification,
+        position,
         address,
         college,
         department,
@@ -388,6 +389,23 @@ const GiveMarks = async (req, res) => {
   }
 };
 
+// Searching
+const Searching = async(req, res) => {
+  const {faculty_id} = req.query;
+
+  let queryObject = {};
+
+  if(faculty_id !== ""){
+    queryObject.faculty_id = { $regex: faculty_id, $options: "i" };
+  }
+
+  const data = await Faculty.find(queryObject);
+
+  if(data){
+    res.status(200).send({"status": "success", data: data});
+  }
+}
+
 module.exports = {
   FacultyRegister,
   FacultyLogin,
@@ -397,4 +415,5 @@ module.exports = {
   AddSubjects,
   SubjectsAssign,
   GiveMarks,
+  Searching
 };

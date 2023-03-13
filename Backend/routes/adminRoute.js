@@ -5,8 +5,12 @@ const {
   AdminForgotPassword,
   AdminValidateOTP,
   AdminUpdatePassword,
+  getAllStudents,
   postSelectStudent,
   patchUpdateStudent,
+  AdminStats,
+  postSelectFaculty,
+  getAllFaculties
 } = require("../controllers/AdminController");
 const adminController = require("../controllers/AdminController");
 const router = express.Router();
@@ -18,7 +22,15 @@ router.post("/validateOTP", AdminValidateOTP);
 router.patch("/update-password", AdminUpdatePassword);
 
 //Admin-Student Routes
+router.get("/all-students", getAllStudents)
 router.post("/select-student", postSelectStudent);
-router.patch("/update-student", patchUpdateStudent);
+router.patch("/update-student/:id", patchUpdateStudent);
+
+//Admin-Faculty Routes
+router.get("/all-faculties", getAllFaculties)
+router.post("/select-faculty", postSelectFaculty);
+
+//Admin Dashboard Routes
+router.get("/stats", AdminStats)
 
 module.exports = router;

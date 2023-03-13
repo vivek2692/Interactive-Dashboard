@@ -37,6 +37,11 @@ const FacultySchema = new mongoose.Schema(
       required: true
     },
 
+    position: {
+      type: String,
+      required: true
+    },
+
     address: {
       type: String,
       required: true

@@ -1,51 +1,55 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const ResultSchema = new mongoose.Schema({
-    enrollment_no: {
+  enrollment_no: {
+    type: String,
+    required: true,
+  },
+
+  college: {
+    type: String,
+    required: true,
+  },
+
+  department: {
+    type: String,
+    required: true,
+  },
+
+  semester: {
+    type: Number,
+    required: true
+  },
+
+  subjects: [String],
+
+  result: [
+    {
+      sub_name: {
         type: String,
-        required: true
+      },
+
+      midsem_exam: {
+        type: Number,
+        default: 0,
+      },
+
+      final_exam: {
+        type: Number,
+        default: 0,
+      },
+
+      viva_marks: {
+        type: Number,
+        default: 0,
+      },
+
+      credit: {
+        type: Number,
+        default: 0
+      }
     },
-
-    year: {
-        type: String,
-        required: true
-    },
-
-    college: {
-        type: String,
-        required: true
-    },
-
-    department: {
-        type: String,
-        required: true
-    },
-
-    results: [
-        {
-            semester: {
-                type: Number
-            },
-
-            result: [
-                {
-                    sub_name: {
-                        type: String
-                    },
-
-                    sub_credits: {
-                        type: Number
-                    },
-
-                    marks: {
-                        type: Number,
-                        default: 0
-                    }
-                }
-            ]
-        }
-    ]
-}
-);
+  ],
+});
 
 module.exports = mongoose.model("Result", ResultSchema);

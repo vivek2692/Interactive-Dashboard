@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
 const Student = require("../models/studentModel");
+const Faculty = require("../models/facultyModel");
 
 //Register Admin
 const AdminRegister = async (req, res) => {
@@ -166,47 +167,65 @@ const AdminUpdatePassword = async (req, res) => {
 };
 
 // Admin Functionality
+const getAllStudents = async (req, res) => {
+  try {
+    const students = await Student.find().sort({ enrollment_no: 1 });
+    res.status(200).send({ status: "success", data: students });
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
+
 const postSelectStudent = async (req, res, next) => {
-  const { college, department, current_semester, enrollment_no } = req.query;
+  const { college, department, semester, enrollment_no } = req.query;
   const queryObject = {};
-  if (college) {
+  if (college !== "") {
     queryObject.college = { $regex: college, $options: "i" };
-  } else {
-    queryObject.college = null;
   }
-  if (department) {
+  // else {
+  //   queryObject.college = "";
+  // }
+  if (department !== "") {
     queryObject.department = { $regex: department, $options: "i" };
-  } else {
-    queryObject.department = null;
   }
-  if (current_semester) {
-    queryObject.current_semester = { $regex: current_semester, $options: "i" };
-  } else {
-    queryObject.current_semester = null;
+  // else {
+  //   queryObject.department = "";
+  // }
+  // let current_semester = Number(semester);
+  if (semester !== "") {
+    let current_semester = Number(semester);
+    queryObject.current_semester = current_semester;
   }
-  if (enrollment_no) {
-    queryObject.enrollment_no = enrollment_no;
-  } else {
-    queryObject.enrollment_no = null;
-  }
-  await Student.find({
-    $or: [
-      { college: college },
-      { department: department },
-      { current_semester: current_semester },
-      { enrollment_no: enrollment_no },
-    ],
-  })
+  // else {
+  //   queryObject.current_semester = null;
+  // }
+  // if (enrollment_no) {
+  //   queryObject.enrollment_no = enrollment_no;
+  // } else {
+  //   queryObject.enrollment_no = null;
+  // }
+
+  await Student.find(
+    //   {
+    //   $and: [
+    //     { college: college },
+    //     { department: department },
+    //     // { current_semester: current_semester },
+    //     // { enrollment_no: enrollment_no },
+    //   ],
+    // }
+    queryObject
+  )
     .exec()
     .then((students) => {
-      console.log(students);
-      return res.json({
+      // console.log(students);
+      return res.status(200).json({
         data: students,
         hasError: false,
       });
     })
     .catch((err) => {
-      return res.json({
+      return res.status(500).json({
         data: err,
         hasError: true,
       });
@@ -215,18 +234,198 @@ const postSelectStudent = async (req, res, next) => {
 
 const patchUpdateStudent = async (req, res, next) => {
   const data = req.body;
-  const enrollment_no = req.body.enrollment_no;
+  const enrollment_no = req.params.id;
   console.log(data);
-  await Student.findOneAndUpdate(
-    { enrollment_no: enrollment_no },
-    { $set: { data } }
-  ).then((error, writeOpResult) => {
-    console.log(error);
-    res.json({
-      data: writeOpResult,
-      hasError: false,
+
+  try {
+    const updatedStudent = await Student.findOneAndUpdate(
+      { enrollment_no: enrollment_no },
+      data,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedStudent) {
+      return res
+        .status(404)
+        .json({ status: "failed", msg: "Student not found" });
+    }
+
+    return res.status(200).json({ status: "success", data: updatedStudent });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ status: "failed", msg: "Update failed" });
+  }
+};
+
+// For Faculties
+const getAllFaculties = async (req, res) => {
+  try {
+    const faculties = await Faculty.find().sort({ faculty_id: 1 });
+    res.status(200).send({ status: "success", data: faculties });
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
+
+const postSelectFaculty = async (req, res, next) => {
+  const { college, department } = req.query;
+  const queryObject = {};
+  if (college !== "") {
+    queryObject.college = { $regex: college, $options: "i" };
+  }
+
+  if (department !== "") {
+    queryObject.department = { $regex: department, $options: "i" };
+  }
+
+  await Faculty.find(queryObject)
+    .exec()
+    .then((faculties) => {
+      // console.log(students);
+      return res.status(200).json({
+        data: faculties,
+        hasError: false,
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        data: err,
+        hasError: true,
+      });
     });
+};
+
+const AdminStats = async (req, res) => {
+  let obj = {};
+
+  const gcet_students = await Student.find({ college: "GCET" });
+  const mbit_students = await Student.find({ college: "MBIT" });
+  const adit_students = await Student.find({ college: "ADIT" });
+
+  let gcet_fy = [];
+  let gcet_sy = [];
+  let gcet_ty = [];
+  let gcet_fiy = [];
+
+  gcet_students.map((student) => {
+    if (student.current_semester === 1 || student.current_semester === 2) {
+      gcet_fy.push(student);
+    } else if (
+      student.current_semester === 3 ||
+      student.current_semester === 4
+    ) {
+      gcet_sy.push(student);
+    } else if (
+      student.current_semester === 5 ||
+      student.current_semester === 6
+    ) {
+      gcet_ty.push(student);
+    } else if (
+      student.current_semester === 7 ||
+      student.current_semester === 8
+    ) {
+      gcet_fiy.push(student);
+    }
   });
+
+  let mbit_fy = [];
+  let mbit_sy = [];
+  let mbit_ty = [];
+  let mbit_fiy = [];
+
+  mbit_students.map((student) => {
+    if (student.current_semester === 1 || student.current_semester === 2) {
+      mbit_fy.push(student);
+    } else if (
+      student.current_semester === 3 ||
+      student.current_semester === 4
+    ) {
+      mbit_sy.push(student);
+    } else if (
+      student.current_semester === 5 ||
+      student.current_semester === 6
+    ) {
+      mbit_ty.push(student);
+    } else if (
+      student.current_semester === 7 ||
+      student.current_semester === 8
+    ) {
+      mbit_fiy.push(student);
+    }
+  });
+
+  let adit_fy = [];
+  let adit_sy = [];
+  let adit_ty = [];
+  let adit_fiy = [];
+
+  adit_students.map((student) => {
+    if (student.current_semester === 1 || student.current_semester === 2) {
+      adit_fy.push(student);
+    } else if (
+      student.current_semester === 3 ||
+      student.current_semester === 4
+    ) {
+      adit_sy.push(student);
+    } else if (
+      student.current_semester === 5 ||
+      student.current_semester === 6
+    ) {
+      adit_ty.push(student);
+    } else if (
+      student.current_semester === 7 ||
+      student.current_semester === 8
+    ) {
+      adit_fiy.push(student);
+    }
+  });
+
+  const total_students = await Student.find();
+
+  const total_faculties = await Faculty.find();
+
+  let gcet_faculties = [];
+  let mbit_faculties = [];
+  let adit_faculties = [];
+
+  total_faculties.map((faculty) => {
+    if (faculty.college === "GCET") {
+      gcet_faculties.push(faculty);
+    } else if (faculty.college === "ADIT") {
+      adit_faculties.push(faculty);
+    } else if (faculty.college === "MBIT") {
+      mbit_faculties.push(faculty);
+    }
+  });
+
+  obj.gcet_students = gcet_students.length;
+  obj.mbit_students = mbit_students.length;
+  obj.adit_students = adit_students.length;
+  obj.total_students = total_students.length;
+  obj.total_faculties = total_faculties.length;
+  obj.total_departments = 7;
+  obj.placement = 100;
+
+  obj.gcet_first_year = gcet_fy.length;
+  obj.gcet_second_year = gcet_sy.length;
+  obj.gcet_third_year = gcet_ty.length;
+  obj.gcet_fourth_year = gcet_fiy.length;
+
+  obj.mbit_first_year = mbit_fy.length;
+  obj.mbit_second_year = mbit_sy.length;
+  obj.mbit_third_year = mbit_ty.length;
+  obj.mbit_fourth_year = mbit_fiy.length;
+
+  obj.adit_first_year = adit_fy.length;
+  obj.adit_second_year = adit_sy.length;
+  obj.adit_third_year = adit_ty.length;
+  obj.adit_fourth_year = adit_fiy.length;
+
+  obj.gcet_faculties = gcet_faculties.length;
+  obj.mbit_faculties = mbit_faculties.length;
+  obj.adit_faculties = adit_faculties.length;
+
+  res.status(200).json({ status: "success", data: obj });
 };
 
 module.exports = {
@@ -235,6 +434,10 @@ module.exports = {
   AdminForgotPassword,
   AdminValidateOTP,
   AdminUpdatePassword,
+  getAllStudents,
   postSelectStudent,
   patchUpdateStudent,
+  AdminStats,
+  postSelectFaculty,
+  getAllFaculties,
 };
