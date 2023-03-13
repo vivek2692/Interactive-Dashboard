@@ -23,6 +23,8 @@ const ResultSchema = new mongoose.Schema({
 
   subjects: [String],
 
+  backlog_subs: [String],
+
   result: [
     {
       sub_name: {

@@ -110,7 +110,7 @@ const StudentRegister = async (req, res) => {
           notUploaded.push("Migration Certificate is not uploaded.");
         }
       }
-      
+
       if (notUploaded.length > 0) {
         res.status(500).send({ status: "failed", data: notUploaded });
       } else {
@@ -133,7 +133,7 @@ const StudentRegister = async (req, res) => {
           state,
           board,
           category,
-          documents: uploaded
+          documents: uploaded,
         });
 
         try {
@@ -169,7 +169,10 @@ const StudentLogin = async (req, res) => {
         } else {
           res
             .status(500)
-            .send({ status: "failed", msg: "Enrollment No or Password is not valid" });
+            .send({
+              status: "failed",
+              msg: "Enrollment No or Password is not valid",
+            });
         }
       } else {
         res
@@ -278,18 +281,17 @@ const StudentUpdatePassword = async (req, res) => {
   }
 };
 
-const StudentCourseraUpload = async(req,res) => {
-  
-  const {name, enrollment_no, semester, college, department} = req.body;
-  
-  if(name && enrollment_no && semester && college && department){
-    const student = await Coursera.findOne({enrollment_no,semester});
+const StudentCourseraUpload = async (req, res) => {
+  const { name, enrollment_no, semester, college, department } = req.body;
 
-    if(student){
-      student.courses.push({name: name, image: req.file.path});
+  if (name && enrollment_no && semester && college && department) {
+    const student = await Coursera.findOne({ enrollment_no, semester });
+
+    if (student) {
+      student.courses.push({ name: name, image: req.file.path });
       student.save();
       res.status(200).json(student);
-    }else{
+    } else {
       const newStudent = new Coursera({
         enrollment_no,
         semester,
@@ -298,10 +300,10 @@ const StudentCourseraUpload = async(req,res) => {
         courses: [
           {
             name,
-            image: req.file.path
-          }
-        ]
-      })
+            image: req.file.path,
+          },
+        ],
+      });
 
       try {
         const coursera = await newStudent.save();
@@ -310,12 +312,10 @@ const StudentCourseraUpload = async(req,res) => {
         res.status(500).send({ status: "failed", msg: "Not Uploaded!" });
       }
     }
-  }
-  else{
+  } else {
     res.status(500).send({ status: "failed", msg: "All feilds are required" });
   }
-
-}
+};
 
 // Searching
 const Searching = async(req, res) => {
@@ -350,6 +350,7 @@ const GetStudent = async(req, res) => {
     res.status(500).send({"status": "failed", "msg": "Something went wrong"})
   }
 }
+
 
 module.exports = {
   StudentRegister,
