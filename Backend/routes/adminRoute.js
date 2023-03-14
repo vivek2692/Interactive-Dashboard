@@ -10,7 +10,8 @@ const {
   patchUpdateStudent,
   AdminStats,
   postSelectFaculty,
-  getAllFaculties
+  getAllFaculties,
+  GetAllCoursera
 } = require("../controllers/AdminController");
 const adminController = require("../controllers/AdminController");
 const router = express.Router();
@@ -32,5 +33,8 @@ router.post("/select-faculty", postSelectFaculty);
 
 //Admin Dashboard Routes
 router.get("/stats", AdminStats)
+
+//Admin Coursera
+router.get("/coursera", GetAllCoursera);
 
 module.exports = router;

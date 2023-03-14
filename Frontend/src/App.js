@@ -14,6 +14,7 @@ import AdminAddStudent from "./Admin/Add Student/admin-add-student";
 import AdminAddFaculty from "./Admin/Add Faculty/admin-add-faculty";
 import AdminPlacement from "./Admin/Placement-details/admin-placement-details";
 import ViewPlacement from "./Admin/Placement-details/placement-info";
+import AdminCoursera from "./Admin/Coursera/admin-coursera";
 import ErrorPage from "./Admin/Users/Error";
 
 function App() {
@@ -49,6 +50,10 @@ function App() {
             <Route
               path="/admin/placement-details/student/:id"
               element={<ViewPlacement />}
+            />
+            <Route
+              path="/admin/coursera"
+              element={<AdminCoursera />}
             />
           <Route path="/admin/users/student/*" element={<ErrorPage />} />
         </Routes>

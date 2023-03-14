@@ -72,11 +72,11 @@ function AdminNavBar() {
           </Link>
         </li>
         <li>
-          <Link>
+          <Link to="/admin/coursera">
             <span>
               <MdOutlineCoPresent style={iconStyles} />
             </span>
-            {openMenu && <span className="text">Student Attendance</span>}
+            {openMenu && <span className="text">Coursera</span>}
           </Link>
         </li>
         <li>

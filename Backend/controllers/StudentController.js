@@ -282,25 +282,49 @@ const StudentUpdatePassword = async (req, res) => {
 };
 
 const StudentCourseraUpload = async (req, res) => {
-  const { name, enrollment_no, semester, college, department } = req.body;
+  const { name, fname,enrollment_no, college, department, current_semester } = req.body;
 
-  if (name && enrollment_no && semester && college && department) {
-    const student = await Coursera.findOne({ enrollment_no, semester });
+  if (name && fname && enrollment_no && current_semester && college && department) {
+    const student = await Coursera.findOne({ enrollment_no });
 
     if (student) {
-      student.courses.push({ name: name, image: req.file.path });
+      let isExist = false;
+      student.courses.map((std) => {
+        // console.log(std);
+        if(std.semester === Number(current_semester)){
+          // console.log(std.semester);
+          std.certificates.push({name: fname, image: req.file.path});
+          isExist = true;
+        }
+      })
+
+      if(!isExist){
+        student.courses.push({semester: current_semester, certificates: [{name:fname, image:req.file.path}]});
+      }
+
+      // student.courses.map((std) => {
+      //   if(std.semester === current_semester){
+      //     std.certificates.push({name: fname, image: req.file.path})
+      //   }
+      // })
+      // student.courses.push({ name: name, image: req.file.path });
       student.save();
       res.status(200).json(student);
     } else {
       const newStudent = new Coursera({
-        enrollment_no,
-        semester,
+        name,
+        enrollment_no,   
         college,
         department,
         courses: [
           {
-            name,
-            image: req.file.path,
+            semester: current_semester,
+            certificates: [
+              {
+                name: fname,
+                image: req.file.path,
+              }
+            ]
           },
         ],
       });

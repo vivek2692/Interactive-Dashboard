@@ -1,37 +1,45 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const CourseraSchema = new mongoose.Schema({
-    enrollment_no: {
-        type: String,
-        required: true
-    },
+  name: {
+    type: String,
+    required: true,
+  },
 
-    semester: {
+  enrollment_no: {
+    type: String,
+    required: true,
+  },
+
+  college: {
+    type: String,
+    required: true,
+  },
+
+  department: {
+    type: String,
+    required: true,
+  },
+
+  courses: [
+    {
+      semester: {
         type: Number,
-        required: true
-    },
+      },
 
-    college: {
-        type: String,
-        required: true
-    },
-
-    department: {
-        type: String,
-        required: true
-    },
-
-    courses: [
+      certificates: [
         {
-            name: {
-                type: String
-            },
+          name: {
+            type: String,
+          },
 
-            image: {
-                type: String
-            }
-        }
-    ]
+          image: {
+            type: String,
+          },
+        },
+      ],
+    },
+  ],
 });
 
 module.exports = mongoose.model("Coursera", CourseraSchema);
