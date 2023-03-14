@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 
 const Student = require("../models/studentModel");
 const Faculty = require("../models/facultyModel");
+const Coursera = require("../models/courseraModel");
 
 //Register Admin
 const AdminRegister = async (req, res) => {
@@ -428,6 +429,37 @@ const AdminStats = async (req, res) => {
   res.status(200).json({ status: "success", data: obj });
 };
 
+const GetAllCoursera = async(req,res) =>  {
+  const {college, department} = req.query;
+  const queryObject = {};
+
+  if(college !== ""){
+    queryObject.college = { $regex: college, $options: "i" };
+  }
+
+  if(department !== ""){
+    queryObject.department = { $regex: department, $options: "i" };
+  }
+
+  // if(current_semester !== ""){
+  //   const semester = Number(current_semester);
+  //   queryObject.current_semester = semester;
+  // }
+
+  try{
+    if(Object.keys(queryObject).length === 0){
+      const data = await Coursera.find();
+      res.status(200).send({"status": "success", data: data});
+    }
+    else{
+      const data = await Coursera.find(queryObject);
+      res.status(200).send({"status": "success", data: data});
+    }
+  }catch(err){
+    res.status(500).send({"status": "failed", "msg": "Something went wrong"});
+  }
+}
+
 module.exports = {
   AdminRegister,
   AdminLogin,
@@ -440,4 +472,5 @@ module.exports = {
   AdminStats,
   postSelectFaculty,
   getAllFaculties,
+  GetAllCoursera
 };
