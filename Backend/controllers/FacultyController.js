@@ -3,6 +3,7 @@ const Faculty = require("../models/facultyModel.js");
 const Subject = require("../models/subjectModel.js");
 const Student = require("../models/studentModel.js");
 const Result = require("../models/resultModel.js");
+const Placement = require("../models/placementModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
@@ -390,21 +391,172 @@ const GiveMarks = async (req, res) => {
 };
 
 // Searching
-const Searching = async(req, res) => {
-  const {faculty_id} = req.query;
+const Searching = async (req, res) => {
+  const { faculty_id } = req.query;
 
   let queryObject = {};
 
-  if(faculty_id !== ""){
+  if (faculty_id !== "") {
     queryObject.faculty_id = { $regex: faculty_id, $options: "i" };
   }
 
   const data = await Faculty.find(queryObject);
 
-  if(data){
-    res.status(200).send({"status": "success", data: data});
+  if (data) {
+    res.status(200).send({ status: "success", data: data });
   }
-}
+};
+
+const PlacementRegister = async (req, res, next) => {
+  if (!req.body.enrollment_no) {
+    return res
+      .status(500)
+      .send({ status: "failure", msg: "Enrollment Number not found" });
+  }
+  const student = await Student.findOne({
+    enrollment_no: req.body.enrollment_no,
+  });
+  if (!student) {
+    return res.status(500).send({ status: "failure", msg: "No Student Found" });
+  }
+  const {
+    student_name,
+    student_email,
+    mobile_number,
+    gender,
+    enrollment_no,
+    student_address,
+    state,
+    placement_year,
+    college,
+    department,
+    package,
+    company,
+    contract_duration,
+    company_state,
+  } = req.body;
+  if (
+    !(
+      student_name &&
+      student_email &&
+      mobile_number &&
+      gender &&
+      enrollment_no &&
+      student_address &&
+      state &&
+      placement_year &&
+      college &&
+      department &&
+      package &&
+      company &&
+      contract_duration &&
+      company_state
+    )
+  ) {
+    return res
+      .status(500)
+      .send({ status: "failure", msg: "Please enter all the details" });
+  }
+  const placedStudent = await Placement.findOne({
+    enrollment_no: req.body.enrollment_no,
+  });
+  if (placedStudent) {
+    return res
+      .status(500)
+      .send({ status: "failure", msg: "Student is already placed" });
+  }
+  const newPlacement = new Placement({
+    student_name,
+    student_email,
+    mobile_number,
+    gender,
+    enrollment_no,
+    student_address,
+    state,
+    placement_year,
+    college,
+    department,
+    package,
+    company,
+    contract_duration,
+    company_state,
+  });
+
+  newPlacement
+    .save()
+    .then((result) => {
+      return res.status(200).json({ status: "Success", placedStudent: result });
+    })
+    .catch((error) => {
+      res.status(500).send({ status: "failure", msg: "Error Occured" });
+    });
+};
+
+const PostShowPlacedStudents = async (req, res, next) => {
+  const { college, department, placement_year } = req.query;
+  const queryObject = {};
+  if (college !== "") {
+    queryObject.college = { $regex: `${college}`, $options: "i" };
+  }
+  if (department !== "") {
+    queryObject.department = { $regex: `${department}`, $options: "i" };
+  }
+  if (placement_year !== "") {
+    queryObject.placement_year = { $regex: `${placement_year}`, $options: "i" };
+  }
+  Placement.find(queryObject)
+    .exec()
+    .then((placements) => {
+      if (!placements) {
+        return res.status(500).send({
+          status: "failure",
+          msg: "No placement details avaible for this filter",
+        });
+      }
+      return res.status(200).json({
+        data: placements,
+        hasError: false,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      res
+        .status(500)
+        .send({ status: "failure", msg: "Error in finding placement detail" });
+    });
+};
+
+const PatchPlacedStudents = async (req, res, next) => {
+  const data = req.body;
+  const enrollment_no = req.params.id;
+  console.log(data);
+  try {
+    const updatedPlacement = await Placement.findOneAndUpdate(
+      { enrollment_no: enrollment_no },
+      data,
+      { new: true, runValidators: true }
+    );
+    console.log(updatedPlacement);
+    if (!updatedPlacement) {
+      return res
+        .status(404)
+        .json({ status: "failed", msg: "Placement Data not found" });
+    }
+    return res.status(200).json({ status: "success", data: updatedPlacement });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ status: "failed", msg: "Update failed" });
+  }
+};
+
+const getAllPlacements = async (req, res, next) => {
+  try {
+    const placements = await Placement.find();
+    res.status(200).send({ status: "success", data: placements });
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
 
 module.exports = {
   FacultyRegister,
@@ -415,5 +567,9 @@ module.exports = {
   AddSubjects,
   SubjectsAssign,
   GiveMarks,
-  Searching
+  Searching,
+  PlacementRegister,
+  PostShowPlacedStudents,
+  PatchPlacedStudents,
+  getAllPlacements,
 };
