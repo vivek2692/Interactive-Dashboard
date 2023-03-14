@@ -1,26 +1,38 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
 const placementSchema = new Schema({
-  name: {
+  student_name: {
     type: String,
     required: true,
   },
-  address: {
+  student_email: {
     type: String,
     required: true,
   },
-  type: {
+  mobile_number: {
     type: String,
     required: true,
   },
-  position: {
+  gender: {
     type: String,
     required: true,
   },
-  salary: {
+  enrollment_no: {
     type: Number,
+    required: true,
+  },
+  student_address: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  placement_year: {
+    type: String,
     required: true,
   },
   college: {
@@ -31,13 +43,20 @@ const placementSchema = new Schema({
     type: String,
     required: true,
   },
-  year: {
+  package: {
     type: Number,
     required: true,
   },
-  studentId: {
-    type: Schema.Types.ObjectId,
-    ref: "Student",
+  company: {
+    type: String,
+    required: true,
+  },
+  contract_duration: {
+    type: Number,
+    required: true,
+  },
+  company_state: {
+    type: String,
     required: true,
   },
 });
