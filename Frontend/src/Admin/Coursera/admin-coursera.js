@@ -19,6 +19,7 @@ function AdminCoursera() {
   const [more, setMoreDetails] = useState(false);
   const [Id, setID] = useState("");
   const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +40,12 @@ function AdminCoursera() {
     fetchData();
   }, [college,department]);
 
+  const handleSearch = async (e) => {
+    const res = await axios.get(`http://localhost:8000/api/admin/search-coursera?enrollment_no=${e.target.value}`);
+    setSearch(e.target.value);
+    setUsers(res.data.data);
+  };
+
   let srno = 1;
   return (
     <div className="admin-page">
@@ -47,7 +54,7 @@ function AdminCoursera() {
       <AdminTopBar />
       <div>
         <div className="coursera-users">
-          <h2 style={{ color: "rgb(143, 143, 145)" }}>User Details</h2>
+          <h2 style={{ color: "rgb(143, 143, 145)" }}>Coursera Details</h2>
           <div className="coursera-filter">
             <form action="">
               <div>
@@ -115,6 +122,7 @@ function AdminCoursera() {
                 <input
                   type="text"
                   placeholder="Search by Name or Enrollment no."
+                  onChange={handleSearch}
                 />
                 {/* <button className="search">
               { <TfiSearch style={{ color: "white" }} /> }
@@ -130,7 +138,7 @@ function AdminCoursera() {
                 <th>Enrollment No.</th>
                 <th>Department</th>
                 <th>College</th>
-                <th>Semester</th>
+                {/* <th>Semester</th> */}
                 <th>Action</th>
               </tr>
               {users.map((user) => {
@@ -150,9 +158,9 @@ function AdminCoursera() {
                       <td>
                         <center>{user.college}</center>
                       </td>
-                      <td>
+                      {/* <td>
                         <center>{user.semester}</center>
-                      </td>
+                      </td> */}
                       <td id="table-actions">
                         <button
                           className="view"
@@ -186,7 +194,7 @@ function AdminCoursera() {
                                 <h3>Semester {course.semester}</h3>
                               </tr>
                               <tr style={{ backgroundColor: "#e9eef2" }}>
-                                <td colSpan={7}>
+                                <td colSpan={6}>
                                   <ul>
                                   {course.certificates.map((c) => {
                                     return (

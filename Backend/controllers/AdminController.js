@@ -460,6 +460,23 @@ const GetAllCoursera = async(req,res) =>  {
   }
 }
 
+// Searching in Coursera
+const SearchingCoursera = async(req, res) => {
+  const {enrollment_no} = req.query;
+
+  let queryObject = {};
+
+  if(enrollment_no !== ""){
+    queryObject.enrollment_no = { $regex: enrollment_no, $options: "i" };
+  }
+
+  const data = await Coursera.find(queryObject);
+
+  if(data){
+    res.status(200).send({"status": "success", data: data});
+  }
+}
+
 module.exports = {
   AdminRegister,
   AdminLogin,
@@ -472,5 +489,6 @@ module.exports = {
   AdminStats,
   postSelectFaculty,
   getAllFaculties,
-  GetAllCoursera
+  GetAllCoursera,
+  SearchingCoursera
 };

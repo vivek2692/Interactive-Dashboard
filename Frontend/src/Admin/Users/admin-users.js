@@ -220,6 +220,7 @@ function AdminUsers() {
                 <th>College</th>
                 {student && <th>Semester</th>}
                 {!student && <th>Designation</th>}
+                {!student && <th>Role</th>}
                 <th>Profile</th>
               </tr>
               {data.map((user) => {
@@ -236,6 +237,7 @@ function AdminUsers() {
                     <td>{user.college}</td>
                     {student && <td>{user.current_semester}</td>}
                     {!student && <td>{user.position}</td>}
+                    {!student && <td>{user.role}</td>}
                     <td id="table-actions">
                       <Link to={`/admin/users/student/${user.enrollment_no}`}>
                         <button className="view">View</button>
