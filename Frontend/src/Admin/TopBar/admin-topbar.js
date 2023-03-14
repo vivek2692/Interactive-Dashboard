@@ -37,13 +37,14 @@ function AdminTopBar() {
 
   return (
     <div className="admin-topbar">
-      <center>CVM University, Hi {user? user : ''}</center>
+      <center>CVM University</center>
       <div>
         <span>
           <IoIosNotificationsOutline style={iconStyles} />
         </span>
-        <span>
+        <span style={{display: "flex", alignItems: "center", justifyContent: "center", color: "white", marginRight: "10px", fontWeight: "500"}}>
           <CgProfile style={iconStyles} />
+          {user? user : ''}
         </span>
         <span>
           <button className="top-bar-btn" onClick = {handleClick}>Log Out</button>

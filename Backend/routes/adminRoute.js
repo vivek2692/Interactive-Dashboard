@@ -11,7 +11,8 @@ const {
   AdminStats,
   postSelectFaculty,
   getAllFaculties,
-  GetAllCoursera
+  GetAllCoursera,
+  SearchingCoursera
 } = require("../controllers/AdminController");
 const adminController = require("../controllers/AdminController");
 const router = express.Router();
@@ -36,5 +37,6 @@ router.get("/stats", AdminStats)
 
 //Admin Coursera
 router.get("/coursera", GetAllCoursera);
+router.get("/search-coursera", SearchingCoursera);
 
 module.exports = router;
