@@ -20,7 +20,7 @@ const placementSchema = new Schema({
     required: true,
   },
   enrollment_no: {
-    type: Number,
+    type: String,
     required: true,
   },
   student_address: {

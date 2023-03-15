@@ -13,6 +13,8 @@ const {
   PostShowPlacedStudents,
   PatchPlacedStudents,
   getAllPlacements,
+  getPlacedStudentInfo,
+  SearchPlacedStudents,
 } = require("../controllers/FacultyController");
 
 const router = express.Router();
@@ -30,5 +32,7 @@ router.post("/placement/register", PlacementRegister);
 router.post("/placement/fetch-students", PostShowPlacedStudents);
 router.patch("/placement/update-students/:id", PatchPlacedStudents);
 router.get("/placement/all-placements", getAllPlacements);
+router.get("/placement/placement-info/:id", getPlacedStudentInfo);
+router.get("/placement/search", SearchPlacedStudents);
 
 module.exports = router;
