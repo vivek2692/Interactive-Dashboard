@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const ResultSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+
   enrollment_no: {
     type: String,
     required: true,
@@ -16,9 +21,14 @@ const ResultSchema = new mongoose.Schema({
     required: true,
   },
 
-  semester: {
+  current_semester: {
     type: Number,
     required: true
+  },
+
+  batch: {
+    type: String,
+    required: true,
   },
 
   subjects: [String],

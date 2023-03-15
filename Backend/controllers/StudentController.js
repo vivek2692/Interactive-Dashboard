@@ -325,7 +325,7 @@ const StudentCourseraUpload = async (req, res) => {
         enrollment_no,
         college,
         department,
-        current_semester,
+        // current_semester,
         courses: [
           {
             semester: current_semester,
@@ -340,7 +340,8 @@ const StudentCourseraUpload = async (req, res) => {
       });
 
       try {
-        const coursera = await newStudent.populate("current_semster").save();
+        // const coursera = await newStudent.populate([{path: 'Student', select: 'current_semester', strictPopulate: false}]);
+        const coursera = await newStudent.save();
         res.status(200).json(coursera);
       } catch (error) {
         res.status(500).send({ status: "failed", msg: "Not Uploaded!" });

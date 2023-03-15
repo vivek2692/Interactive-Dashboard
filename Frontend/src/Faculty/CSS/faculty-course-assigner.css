@@ -1,0 +1,129 @@
+.course-details {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+.courses,
+.std-course-table {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    padding: 20px 25px 30px;
+    margin-bottom: 15px;
+    width: auto;
+    min-width: 100%;
+}
+
+.courses-filter {
+    font-size: 18px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.courses-filter form div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: space-between;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin: 15px
+}
+
+
+.courses-filter form div span {
+    margin: 10px;
+}
+
+.courses-filter div input {
+    font-size: 16px;
+    border: 3px solid #3b7197;
+    padding: 6px;
+    width: 25vw;
+    height: 35px;
+    margin: 0;
+}
+
+.courses-filter div input:focus {
+    border: 3px solid #2e2f5b;
+}
+
+button.search {
+    position: relative;
+    bottom: 1px;
+    height: 35px;
+    margin: 0;
+    border: none;
+    width: 40px;
+    background-color: #3b7197;
+}
+
+::placeholder {
+    font-size: 16px;
+}
+
+.courses-filter select {
+    font-size: 16px;
+    background-color: #edf2ff;
+    border-radius: 3px;
+    border: 1px solid #afc5fd;
+    outline: none;
+    padding: 3px;
+    color: rgb(85, 84, 84);
+}
+
+.course-table,
+.std-course-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.std-course-table table,
+.course-table table {
+    width: 75%;
+    min-width: 700px;
+    border-collapse: collapse;
+    border: 0px solid rgb(163, 162, 162);
+    /*rgb(143, 134, 179)*/
+}
+
+.course-table td,
+th,
+.std-course-table td,
+th {
+    padding: 4px;
+    font-size: 16px;
+}
+
+.course-table th,
+.std-course-table th {
+    background-color: #398bac;
+    color: rgb(255, 255, 255);
+}
+
+
+#table-actions {
+    text-align: center;
+}
+
+button.view {
+    border: none;
+    border-radius: 4px;
+    background-color: #3b7197;
+    color: white;
+    padding: 4px 8px;
+    min-width: 60%;
+    width: fit-content;
+}
+
+button.view center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}

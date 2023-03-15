@@ -1,0 +1,124 @@
+.admin-home {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+.uni-students,
+.clg-students,
+.placement-dtl {
+    /* min-width: fit-content; */
+    color: rgb(143, 143, 145);
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    padding: 1vh 2vw;
+    margin-bottom: 15px;
+}
+
+.uni-students div,
+.clg-graphs {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* align-items: start; */
+}
+
+.clg-graphs {
+    justify-content: center;
+}
+
+.uni-students div div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.uni-students div div div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+}
+
+#clg-dropdown {
+    color: black;
+    font-size: 16px;
+    height: 100%;
+}
+
+#clg-dropdown span {
+    vertical-align: top;
+}
+
+#clg-dropdown select {
+    font-size: 16px;
+    background-color: #edf2ff;
+    border-radius: 3px;
+    border: 1px solid #afc5fd;
+    outline: none;
+    padding: 3px;
+    color: rgb(85, 84, 84);
+}
+
+.org-info {
+    height: 15vh;
+    width: 15vw;
+    color: white;
+    background-color: #12b4b6;
+    border-radius: 10px;
+    margin: 2vh;
+    padding: 1vw;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.org-info p {
+    height: fit-content;
+}
+
+.clg-graphs {
+    flex-wrap: wrap;
+}
+
+.clg-graphs .graph {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+}
+
+.graph table {
+    color: black;
+    font-size: 16px;
+}
+
+h3 {
+    color: black;
+}
+
+.placement-dtl div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.clg-placements {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 5vh;
+}
+
+.clg-placements h3 {
+    margin-top: 3vh;
+}
+
+.rv-xy-plot__grid-lines__line {
+    stroke: gray;
+    stroke-width: 1;
+}

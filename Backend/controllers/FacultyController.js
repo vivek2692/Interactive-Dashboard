@@ -271,9 +271,9 @@ const AddSubjects = async (req, res) => {
 
 // Assigning subjects to student (for Marksheet model)
 const SubjectsAssign = async (req, res) => {
-  const { enrollment_no, subjects, college, department, semester } = req.body;
+  const { name, enrollment_no, subjects, college, department, current_semester, batch } = req.body;
 
-  if (enrollment_no && college && department && semester) {
+  if (name && enrollment_no && college && department && current_semester && batch) {
     const isAvailable = await Student.findOne({ enrollment_no });
 
     if (!isAvailable) {
@@ -285,7 +285,8 @@ const SubjectsAssign = async (req, res) => {
         enrollment_no,
         college,
         department,
-        semester
+        current_semester,
+        batch
       });
 
       if (student) {
@@ -324,11 +325,13 @@ const SubjectsAssign = async (req, res) => {
         // });
 
         const newStudent = new Result({
+          name,
           enrollment_no,
           college,
           // year: new Date().getFullYear(),
           department,
-          semester,
+          batch,
+          current_semester,
           subjects: subjects
         });
 
