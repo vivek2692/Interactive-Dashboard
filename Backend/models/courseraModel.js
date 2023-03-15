@@ -20,7 +20,11 @@ const CourseraSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  current_semester: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    required: true,
+  },
   courses: [
     {
       semester: {

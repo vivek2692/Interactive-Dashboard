@@ -22,7 +22,7 @@ const StudentRegister = async (req, res) => {
     address,
     state,
     board,
-    category
+    category,
   } = req.body;
 
   if (
@@ -82,7 +82,7 @@ const StudentRegister = async (req, res) => {
       }
 
       // GUJCET Marksheet
-      if(admission_source === "ACPC"){
+      if (admission_source === "ACPC") {
         try {
           var doc = req.files["gujcet_marksheet"][0];
           uploaded.push({ name: doc.fieldname, image: doc.path });
@@ -167,12 +167,10 @@ const StudentLogin = async (req, res) => {
           const { password, otp, ...others } = user._doc;
           res.send({ status: "success", data: { ...others }, token: token });
         } else {
-          res
-            .status(500)
-            .send({
-              status: "failed",
-              msg: "Enrollment No or Password is not valid",
-            });
+          res.status(500).send({
+            status: "failed",
+            msg: "Enrollment No or Password is not valid",
+          });
         }
       } else {
         res
@@ -282,24 +280,35 @@ const StudentUpdatePassword = async (req, res) => {
 };
 
 const StudentCourseraUpload = async (req, res) => {
-  const { name, fname,enrollment_no, college, department, current_semester } = req.body;
+  const { name, fname, enrollment_no, college, department, current_semester } =
+    req.body;
 
-  if (name && fname && enrollment_no && current_semester && college && department) {
+  if (
+    name &&
+    fname &&
+    enrollment_no &&
+    current_semester &&
+    college &&
+    department
+  ) {
     const student = await Coursera.findOne({ enrollment_no });
 
     if (student) {
       let isExist = false;
       student.courses.map((std) => {
         // console.log(std);
-        if(std.semester === Number(current_semester)){
+        if (std.semester === Number(current_semester)) {
           // console.log(std.semester);
-          std.certificates.push({name: fname, image: req.file.path});
+          std.certificates.push({ name: fname, image: req.file.path });
           isExist = true;
         }
-      })
+      });
 
-      if(!isExist){
-        student.courses.push({semester: current_semester, certificates: [{name:fname, image:req.file.path}]});
+      if (!isExist) {
+        student.courses.push({
+          semester: current_semester,
+          certificates: [{ name: fname, image: req.file.path }],
+        });
       }
 
       // student.courses.map((std) => {
@@ -313,9 +322,10 @@ const StudentCourseraUpload = async (req, res) => {
     } else {
       const newStudent = new Coursera({
         name,
-        enrollment_no,   
+        enrollment_no,
         college,
         department,
+        current_semester,
         courses: [
           {
             semester: current_semester,
@@ -323,14 +333,14 @@ const StudentCourseraUpload = async (req, res) => {
               {
                 name: fname,
                 image: req.file.path,
-              }
-            ]
+              },
+            ],
           },
         ],
       });
 
       try {
-        const coursera = await newStudent.save();
+        const coursera = await newStudent.populate("current_semster").save();
         res.status(200).json(coursera);
       } catch (error) {
         res.status(500).send({ status: "failed", msg: "Not Uploaded!" });
@@ -342,39 +352,38 @@ const StudentCourseraUpload = async (req, res) => {
 };
 
 // Searching
-const Searching = async(req, res) => {
-  const {enrollment_no} = req.query;
+const Searching = async (req, res) => {
+  const { enrollment_no } = req.query;
 
   let queryObject = {};
 
-  if(enrollment_no !== ""){
+  if (enrollment_no !== "") {
     queryObject.enrollment_no = { $regex: enrollment_no, $options: "i" };
   }
 
   const data = await Student.find(queryObject);
 
-  if(data){
-    res.status(200).send({"status": "success", data: data});
+  if (data) {
+    res.status(200).send({ status: "success", data: data });
   }
-}
+};
 
-const GetStudent = async(req, res) => {
-  const {enrollment_no} = req.body;
+const GetStudent = async (req, res) => {
+  const { enrollment_no } = req.body;
 
   try {
-    const student = await Student.findOne({enrollment_no});
+    const student = await Student.findOne({ enrollment_no });
 
-    if(student){
+    if (student) {
       const { password, otp, ...others } = student._doc;
-      res.status(200).send({"status": "success", data: others});
-    }else{
-      res.status(404).send({"status": "failed", "msg": "Student doesn't exist"});
+      res.status(200).send({ status: "success", data: others });
+    } else {
+      res.status(404).send({ status: "failed", msg: "Student doesn't exist" });
     }
   } catch (error) {
-    res.status(500).send({"status": "failed", "msg": "Something went wrong"})
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
   }
-}
-
+};
 
 module.exports = {
   StudentRegister,
@@ -384,5 +393,5 @@ module.exports = {
   StudentUpdatePassword,
   StudentCourseraUpload,
   Searching,
-  GetStudent
+  GetStudent,
 };
