@@ -15,6 +15,9 @@ const {
   getAllPlacements,
   getPlacedStudentInfo,
   SearchPlacedStudents,
+  midMarksEntry,
+  internalPracMarksEntry,
+  vivaMarksEntry,
 } = require("../controllers/FacultyController");
 
 const router = express.Router();
@@ -34,5 +37,8 @@ router.patch("/placement/update-students/:id", PatchPlacedStudents);
 router.get("/placement/all-placements", getAllPlacements);
 router.get("/placement/placement-info/:id", getPlacedStudentInfo);
 router.get("/placement/search", SearchPlacedStudents);
+router.post("/mid-marks", midMarksEntry);
+router.post("/internal-prac", internalPracMarksEntry);
+router.post("/viva-marks", vivaMarksEntry);
 
 module.exports = router;

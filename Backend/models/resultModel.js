@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const ResultSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   enrollment_no: {
     type: String,
     required: true,
@@ -16,9 +20,14 @@ const ResultSchema = new mongoose.Schema({
     required: true,
   },
 
-  semester: {
+  current_semester: {
     type: Number,
-    required: true
+    required: true,
+  },
+
+  batch: {
+    type: String,
+    required: true,
   },
 
   subjects: [String],
@@ -29,6 +38,11 @@ const ResultSchema = new mongoose.Schema({
     {
       sub_name: {
         type: String,
+      },
+
+      internal_prac: {
+        type: Number,
+        default: 0,
       },
 
       midsem_exam: {
@@ -48,8 +62,8 @@ const ResultSchema = new mongoose.Schema({
 
       credit: {
         type: Number,
-        default: 0
-      }
+        default: 0,
+      },
     },
   ],
 });

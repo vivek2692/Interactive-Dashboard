@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 const Student = require("../models/studentModel");
 const Faculty = require("../models/facultyModel");
 const Coursera = require("../models/courseraModel");
+const Result = require("../models/resultModel");
 
 //Register Admin
 const AdminRegister = async (req, res) => {
@@ -429,15 +430,15 @@ const AdminStats = async (req, res) => {
   res.status(200).json({ status: "success", data: obj });
 };
 
-const GetAllCoursera = async(req,res) =>  {
-  const {college, department} = req.query;
+const GetAllCoursera = async (req, res) => {
+  const { college, department } = req.query;
   const queryObject = {};
 
-  if(college !== ""){
+  if (college !== "") {
     queryObject.college = { $regex: college, $options: "i" };
   }
 
-  if(department !== ""){
+  if (department !== "") {
     queryObject.department = { $regex: department, $options: "i" };
   }
 
@@ -446,36 +447,63 @@ const GetAllCoursera = async(req,res) =>  {
   //   queryObject.current_semester = semester;
   // }
 
-  try{
-    if(Object.keys(queryObject).length === 0){
+  try {
+    if (Object.keys(queryObject).length === 0) {
       const data = await Coursera.find();
-      res.status(200).send({"status": "success", data: data});
-    }
-    else{
+      res.status(200).send({ status: "success", data: data });
+    } else {
       const data = await Coursera.find(queryObject);
-      res.status(200).send({"status": "success", data: data});
+      res.status(200).send({ status: "success", data: data });
     }
-  }catch(err){
-    res.status(500).send({"status": "failed", "msg": "Something went wrong"});
+  } catch (err) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
   }
-}
+};
 
 // Searching in Coursera
-const SearchingCoursera = async(req, res) => {
-  const {enrollment_no} = req.query;
+const SearchingCoursera = async (req, res) => {
+  const { enrollment_no } = req.query;
 
   let queryObject = {};
 
-  if(enrollment_no !== ""){
+  if (enrollment_no !== "") {
     queryObject.enrollment_no = { $regex: enrollment_no, $options: "i" };
   }
 
   const data = await Coursera.find(queryObject);
 
-  if(data){
-    res.status(200).send({"status": "success", data: data});
+  if (data) {
+    res.status(200).send({ status: "success", data: data });
   }
-}
+};
+
+const endSemMarks = async (req, res, next) => {
+  const subject = req.body.subject;
+  const obj = req.body.obj;
+  const batch = req.body.batch;
+  obj.map(async (studentObj) => {
+    const enrollment_no = studentObj.enrollment_no;
+    const marks = studentObj.marks;
+    try {
+      const resultStd = await Result.findOne({ enrollment_no, batch });
+      if (!resultStd) {
+        res
+          .status(500)
+          .send({ status: "failed", msg: "Enrollment No. not found" });
+      }
+      resultStd.result.map((intSubObj) => {
+        if (intSubObj.sub_name === subject) {
+          intSubObj.final_exam = marks;
+        }
+      });
+      await resultStd.save();
+    } catch (err) {
+      console.log(err);
+      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    }
+  });
+  res.send({ status: "success", msg: "Marks added successfully" });
+};
 
 module.exports = {
   AdminRegister,
@@ -490,5 +518,6 @@ module.exports = {
   postSelectFaculty,
   getAllFaculties,
   GetAllCoursera,
-  SearchingCoursera
+  SearchingCoursera,
+  endSemMarks,
 };
