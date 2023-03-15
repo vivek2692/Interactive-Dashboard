@@ -302,9 +302,11 @@ const SubjectsAssign = async (req, res) => {
 
         try {
           await student.save();
-          res
-            .status(200)
-            .send({ status: "success", msg: "Subjects assigned successfully", data: student });
+          res.status(200).send({
+            status: "success",
+            msg: "Subjects assigned successfully",
+            data: student,
+          });
         } catch (error) {
           console.log(error);
           res
@@ -337,9 +339,11 @@ const SubjectsAssign = async (req, res) => {
 
         try {
           await newStudent.save();
-          res
-            .status(200)
-            .send({ status: "success", msg: "Subjects assigned successfully", data: newStudent });
+          res.status(200).send({
+            status: "success",
+            msg: "Subjects assigned successfully",
+            data: newStudent,
+          });
         } catch (error) {
           console.log(error);
           res
@@ -556,19 +560,19 @@ const PatchPlacedStudents = async (req, res, next) => {
 
 const getAllPlacements = async (req, res, next) => {
   const queryObject = {};
-  const {college, department, placement_year} = req.query;
+  const { college, department, placement_year } = req.query;
 
-  if(college !== ""){
+  if (college !== "") {
     queryObject.college = { $regex: `${college}`, $options: "i" };
     // queryObject.college = college;
   }
 
-  if(department !== ""){
+  if (department !== "") {
     // queryObject.department = department;
     queryObject.department = { $regex: `${department}`, $options: "i" };
   }
 
-  if(placement_year !== ""){
+  if (placement_year !== "") {
     // queryObject.placement_year = placement_year;
     queryObject.placement_year = { $regex: `${placement_year}`, $options: "i" };
   }
@@ -581,31 +585,31 @@ const getAllPlacements = async (req, res, next) => {
   }
 };
 
-const getPlacedStudentInfo = async(req, res) => {
+const getPlacedStudentInfo = async (req, res) => {
   const enrollment_no = req.params.id;
   console.log(enrollment_no);
-  if(enrollment_no){
-    const student = await Student.findOne({enrollment_no});
+  if (enrollment_no) {
+    const student = await Student.findOne({ enrollment_no });
 
-    if(student){
+    if (student) {
       try {
-        const data = await Placement.findOne({enrollment_no});
-        res.status(200).send({"status": "success", data: data});
+        const data = await Placement.findOne({ enrollment_no });
+        res.status(200).send({ status: "success", data: data });
       } catch (error) {
-        res.status(500).send({"status": "failed", "msg": "Something went wrong"});
+        res.status(500).send({ status: "failed", msg: "Something went wrong" });
       }
+    } else {
+      res.status(404).send({ status: "failed", msg: "Student doesn't exist" });
     }
-    else{
-      res.status(404).send({"status": "failed", "msg": "Student doesn't exist"});
-    }
+  } else {
+    res
+      .status(500)
+      .send({ status: "failed", msg: "Enrollment No. is not provided" });
   }
-  else{
-    res.status(500).send({"status": "failed", "msg": "Enrollment No. is not provided"});
-  }
-}
+};
 
-const SearchPlacedStudents = async(req, res) => {
-  const {enrollment_no} = req.query;
+const SearchPlacedStudents = async (req, res) => {
+  const { enrollment_no } = req.query;
 
   let queryObject = {};
 
@@ -618,7 +622,104 @@ const SearchPlacedStudents = async(req, res) => {
   if (data) {
     res.status(200).send({ status: "success", data: data });
   }
-}
+};
+
+const midMarksEntry = async (req, res, next) => {
+  const subject = req.body.subject;
+  const obj = req.body.obj;
+  const batch = req.body.batch;
+  obj.map(async (studentObj) => {
+    const enrollment_no = studentObj.enrollment_no;
+    const marks = studentObj.marks;
+    try {
+      const resultStd = await Result.findOne({ enrollment_no, batch });
+      if (!resultStd) {
+        res
+          .status(500)
+          .send({ status: "failed", msg: "Enrollment No. not found" });
+      }
+      resultStd.result.push({ sub_name: subject, midsem_exam: marks });
+      await resultStd.save();
+    } catch (err) {
+      console.log(err);
+      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    }
+  });
+  res.send({ status: "success", msg: "Marks added successfully" });
+};
+
+const internalPracMarksEntry = async (req, res, next) => {
+  const subject = req.body.subject;
+  const obj = req.body.obj;
+  const batch = req.body.batch;
+  obj.map(async (studentObj) => {
+    const enrollment_no = studentObj.enrollment_no;
+    const marks = studentObj.marks;
+    try {
+      const resultStd = await Result.findOne({ enrollment_no, batch });
+      if (!resultStd) {
+        res
+          .status(500)
+          .send({ status: "failed", msg: "Enrollment No. not found" });
+      }
+      resultStd.result.map((intSubObj) => {
+        if (intSubObj.sub_name === subject) {
+          intSubObj.internal_prac = marks;
+        }
+      });
+      await resultStd.save();
+    } catch (err) {
+      console.log(err);
+      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    }
+  });
+  res.send({ status: "success", msg: "Marks added successfully" });
+};
+
+const vivaMarksEntry = async (req, res, next) => {
+  const subject = req.body.subject;
+  const obj = req.body.obj;
+  const batch = req.body.batch;
+  obj.map(async (studentObj) => {
+    const enrollment_no = studentObj.enrollment_no;
+    const marks = studentObj.marks;
+    try {
+      const resultStd = await Result.findOne({ enrollment_no, batch });
+      if (!resultStd) {
+        res
+          .status(500)
+          .send({ status: "failed", msg: "Enrollment No. not found" });
+      }
+      resultStd.result.map((intSubObj) => {
+        if (intSubObj.sub_name === subject) {
+          intSubObj.viva_marks = marks;
+        }
+      });
+      await resultStd.save();
+    } catch (err) {
+      console.log(err);
+      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    }
+  });
+  res.send({ status: "success", msg: "Marks added successfully" });
+};
+
+const EnrolledStudents = async (req, res) => {
+  const { batch, current_semester, subject, college, department } = req.body;
+
+  try {
+    const data = await Result.find({
+      batch,
+      current_semester,
+      college,
+      department,
+      subjects: { $in: [subject] },
+    });
+    res.status(200).send({ status: "success", data: data });
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
 
 module.exports = {
   FacultyRegister,
@@ -636,4 +737,8 @@ module.exports = {
   getAllPlacements,
   getPlacedStudentInfo,
   SearchPlacedStudents,
+  midMarksEntry,
+  internalPracMarksEntry,
+  vivaMarksEntry,
+  EnrolledStudents,
 };

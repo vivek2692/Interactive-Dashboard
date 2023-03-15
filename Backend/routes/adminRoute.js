@@ -12,7 +12,8 @@ const {
   postSelectFaculty,
   getAllFaculties,
   GetAllCoursera,
-  SearchingCoursera
+  SearchingCoursera,
+  endSemMarks,
 } = require("../controllers/AdminController");
 const adminController = require("../controllers/AdminController");
 const router = express.Router();
@@ -24,19 +25,22 @@ router.post("/validateOTP", AdminValidateOTP);
 router.patch("/update-password", AdminUpdatePassword);
 
 //Admin-Student Routes
-router.get("/all-students", getAllStudents)
+router.get("/all-students", getAllStudents);
 router.post("/select-student", postSelectStudent);
 router.patch("/update-student/:id", patchUpdateStudent);
 
 //Admin-Faculty Routes
-router.get("/all-faculties", getAllFaculties)
+router.get("/all-faculties", getAllFaculties);
 router.post("/select-faculty", postSelectFaculty);
 
 //Admin Dashboard Routes
-router.get("/stats", AdminStats)
+router.get("/stats", AdminStats);
 
 //Admin Coursera
 router.get("/coursera", GetAllCoursera);
 router.get("/search-coursera", SearchingCoursera);
+
+//End Sem Marks
+router.post("/final-marks", endSemMarks);
 
 module.exports = router;

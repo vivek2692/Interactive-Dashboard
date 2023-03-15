@@ -5,7 +5,6 @@ const ResultSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   enrollment_no: {
     type: String,
     required: true,
@@ -23,7 +22,22 @@ const ResultSchema = new mongoose.Schema({
 
   current_semester: {
     type: Number,
-    required: true
+    required: true,
+  },
+
+  batch: {
+    type: String,
+    required: true,
+  },
+
+  cgpa: {
+    type: mongoose.Types.Decimal128,
+    default: 0,
+  },
+
+  sgpa: {
+    type: mongoose.Types.Decimal128,
+    default: 0,
   },
 
   batch: {
@@ -39,6 +53,11 @@ const ResultSchema = new mongoose.Schema({
     {
       sub_name: {
         type: String,
+      },
+
+      internal_prac: {
+        type: Number,
+        default: 0,
       },
 
       midsem_exam: {
@@ -58,8 +77,8 @@ const ResultSchema = new mongoose.Schema({
 
       credit: {
         type: Number,
-        default: 0
-      }
+        default: 0,
+      },
     },
   ],
 });
