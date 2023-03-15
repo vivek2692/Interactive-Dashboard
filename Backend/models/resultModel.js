@@ -30,6 +30,16 @@ const ResultSchema = new mongoose.Schema({
     required: true,
   },
 
+  cgpa: {
+    type: mongoose.Types.Decimal128,
+    default: 0,
+  },
+
+  sgpa: {
+    type: mongoose.Types.Decimal128,
+    default: 0,
+  },
+
   subjects: [String],
 
   backlog_subs: [String],

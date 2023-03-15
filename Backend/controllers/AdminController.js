@@ -494,6 +494,14 @@ const endSemMarks = async (req, res, next) => {
       resultStd.result.map((intSubObj) => {
         if (intSubObj.sub_name === subject) {
           intSubObj.final_exam = marks;
+          const gradePoint = Math.floor(
+            (intSubObj.midsem_exam +
+              intSubObj.internal_prac +
+              intSubObj.viva_marks +
+              marks) /
+              15
+          );
+          intSubObj.credit = gradePoint;
         }
       });
       await resultStd.save();
@@ -504,6 +512,10 @@ const endSemMarks = async (req, res, next) => {
   });
   res.send({ status: "success", msg: "Marks added successfully" });
 };
+
+// const generateSGPA = async(req,res,next)=>{
+//   const {enrollment_no, college, department, batch, current_semester} =
+// }
 
 module.exports = {
   AdminRegister,

@@ -701,6 +701,23 @@ const vivaMarksEntry = async (req, res, next) => {
   res.send({ status: "success", msg: "Marks added successfully" });
 };
 
+const EnrolledStudents = async (req, res) => {
+  const { batch, current_semester, subject, college, department } = req.body;
+
+  try {
+    const data = await Result.find({
+      batch,
+      current_semester,
+      college,
+      department,
+      subjects: { $in: [subject] },
+    });
+    res.status(200).send({ status: "success", data: data });
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
+
 module.exports = {
   FacultyRegister,
   FacultyLogin,
@@ -720,4 +737,5 @@ module.exports = {
   midMarksEntry,
   internalPracMarksEntry,
   vivaMarksEntry,
+  EnrolledStudents,
 };
