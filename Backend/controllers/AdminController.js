@@ -7,6 +7,7 @@ const Student = require("../models/studentModel");
 const Faculty = require("../models/facultyModel");
 const Coursera = require("../models/courseraModel");
 const Result = require("../models/resultModel");
+const Subject = require("../models/subjectModel");
 
 //Register Admin
 const AdminRegister = async (req, res) => {
@@ -481,6 +482,9 @@ const endSemMarks = async (req, res, next) => {
   const subject = req.body.subject;
   const obj = req.body.obj;
   const batch = req.body.batch;
+  const college = req.body.college;
+  const department = req.body.department;
+  const semester = req.body.semester;
   obj.map(async (studentObj) => {
     const enrollment_no = studentObj.enrollment_no;
     const marks = studentObj.marks;
@@ -491,10 +495,12 @@ const endSemMarks = async (req, res, next) => {
           .status(500)
           .send({ status: "failed", msg: "Enrollment No. not found" });
       }
-      resultStd.result.map((intSubObj) => {
+      let gradePoint = 0;
+      const counter = resultStd.counter;
+      resultStd.result.map(async (intSubObj) => {
         if (intSubObj.sub_name === subject) {
           intSubObj.final_exam = marks;
-          const gradePoint = Math.floor(
+          gradePoint = Math.floor(
             (intSubObj.midsem_exam +
               intSubObj.internal_prac +
               intSubObj.viva_marks +
@@ -502,20 +508,89 @@ const endSemMarks = async (req, res, next) => {
               15
           );
           intSubObj.credit = gradePoint;
+          const subjects = await Subject.findOne({
+            college,
+            department,
+            semester,
+          });
+          subjects.subs.map((subjectObj) => {
+            if (subjectObj.sub_name === subject) {
+              intSubObj.sub_credit = subjectObj.sub_credits;
+            }
+          });
+          subjects.open_elective.map((subjectObj) => {
+            if (subjectObj.sub_name === subject) {
+              intSubObj.sub_credit = subjectObj.sub_credits;
+            }
+          });
+          subjects.core_elective.map((subjectObj) => {
+            if (subjectObj.sub_name === subject) {
+              intSubObj.sub_credit = subjectObj.sub_credits;
+            }
+          });
         }
       });
-      await resultStd.save();
+      return await resultStd.save();
     } catch (err) {
       console.log(err);
       res.send({ status: "failed", msg: "Enrollment No. is not provided" });
     }
   });
-  res.send({ status: "success", msg: "Marks added successfully" });
+  return res.send({ status: "success", msg: "Marks added successfully" });
 };
 
-// const generateSGPA = async(req,res,next)=>{
-//   const {enrollment_no, college, department, batch, current_semester} =
-// }
+const calculateSGPA = async (req, res) => {
+  const { college, department, batch, semester, enrollment_no } = req.body;
+  try {
+    for (j = 0; j < enrollment_no.length; j++) {
+      const enroll = enrollment_no[j];
+      const resultStd = await Result.findOne({
+        college,
+        department,
+        batch,
+        semester,
+        enrollment_no: enroll,
+      });
+      if (!resultStd) {
+        res
+          .status(500)
+          .send({ status: "failed", msg: "Enrollment No. not found" });
+      }
+      let sgpa = 0;
+      let sum_cred = 0;
+      let cgpa = 0;
+      resultStd.result.map((intSubObj) => {
+        sgpa = sgpa + intSubObj.credit * intSubObj.sub_credit;
+        sum_cred = sum_cred + intSubObj.sub_credit;
+      });
+      sgpa = sgpa / sum_cred;
+      resultStd.sgpa = sgpa;
+      await resultStd.save();
+      for (i = semester; i >= 1; i--) {
+        const sem = i;
+        const result = await Result.findOne({
+          college,
+          department,
+          batch,
+          semester: sem,
+          enrollment_no: enroll,
+        });
+        cgpa = cgpa + Number(result.sgpa);
+      }
+      resultStd.cgpa = cgpa / semester;
+      await resultStd.save();
+      return res.send({
+        status: "success",
+        msg: "CGPA & SGPA calculated successfully",
+      });
+    }
+  } catch (err) {
+    return res.send({
+      status: "failed",
+      msg: "Enrollment No. is not provided",
+    });
+  }
+};
 
 module.exports = {
   AdminRegister,
@@ -532,4 +607,5 @@ module.exports = {
   GetAllCoursera,
   SearchingCoursera,
   endSemMarks,
+  calculateSGPA,
 };

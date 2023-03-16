@@ -79,6 +79,11 @@ const ResultSchema = new mongoose.Schema({
         type: Number,
         default: 0,
       },
+
+      sub_credit: {
+        type: Number,
+        default: 0,
+      },
     },
   ],
 });
