@@ -27,9 +27,9 @@ function FacultyStudentResult() {
 
   function updateMarks(index, newMarks) {
     const updateResult = [...studentResults];
-    updateResult[index].marks = newMarks;
+    updateResult[index].marks = Number(newMarks);
     setStudentResults(updateResult);
-    console.log("final",studentResults);
+    console.log("final", studentResults);
   }
 
   let srno = 1;
@@ -53,14 +53,20 @@ function FacultyStudentResult() {
   }, [semester]);
 
   useEffect(() => {
-    const obj = { batch: batch, college: clg, department: dpt, current_semester: semester, subject: subject };
+    const obj = {
+      batch: batch,
+      college: clg,
+      department: dpt,
+      current_semester: semester,
+      subject: subject,
+    };
     const fetchStudents = async () => {
       await axios
         .post(`http://localhost:8000/api/faculty/get-enrolled-students`, obj)
         .then((res) => {
           const data = res.data.data;
           setUsers(data);
-          console.log("users",data);
+          console.log("users", data);
         })
         .catch((err) => {
           console.log(err);
@@ -83,30 +89,34 @@ function FacultyStudentResult() {
     console.log(studentResults);
   }, [users]);
 
-  const handleSubmit = async() => {
-    const send = {subject: subject, obj: studentResults, batch: batch, semester: semester};
+  const handleSubmit = async () => {
+    const send = {
+      subject: subject,
+      obj: studentResults,
+      batch: batch,
+      semester: semester,
+    };
 
     let url = "";
 
-    if(exam === "Mid Sem"){
+    if (exam === "Mid Sem") {
       url = "http://localhost:8000/api/faculty/mid-marks";
-    }
-    else if(exam === "Internal Practical"){
+    } else if (exam === "Internal Practical") {
       url = "http://localhost:8000/api/faculty/internal-prac";
-    }
-    else if(exam === "External Practical"){
+    } else if (exam === "External Practical") {
       url = "http://localhost:8000/api/faculty/viva-marks";
     }
 
-    await axios.post(url, send)
-    .then((res) => {
-      const data = res.data.data;
-      alert("Marks added successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  }
+    await axios
+      .post(url, send)
+      .then((res) => {
+        const data = res.data.data;
+        alert("Marks added successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className="faculty-page">
@@ -120,7 +130,9 @@ function FacultyStudentResult() {
               <span>
                 Batch :{" "}
                 <select onChange={(e) => setBatch(e.target.value)}>
-                  <option value="2020" selected>2020</option>
+                  <option value="2020" selected>
+                    2020
+                  </option>
                   <option value="2021">2021</option>
                   <option value="2022">2022</option>
                   <option value="2023">2023</option>
@@ -129,7 +141,9 @@ function FacultyStudentResult() {
               <span>
                 Semester :{" "}
                 <select onChange={(e) => setSemester(e.target.value)}>
-                  <option value="1" selected>1</option>
+                  <option value="1" selected>
+                    1
+                  </option>
                   <option value="2">2</option>
                   <option value="3">3</option>
                   <option value="4">4</option>
@@ -143,9 +157,7 @@ function FacultyStudentResult() {
                   <select onChange={(e) => setSubject(e.target.value)}>
                     {courses?.map((course) => {
                       return (
-                        <option value={course.title}>
-                          {course.title}
-                        </option>
+                        <option value={course.title}>{course.title}</option>
                       );
                     })}
                   </select>
@@ -153,7 +165,9 @@ function FacultyStudentResult() {
                 <span>
                   Exam :{" "}
                   <select onChange={(e) => setExam(e.target.value)}>
-                    <option value="Mid Sem" selected>Mid Sem</option>
+                    <option value="Mid Sem" selected>
+                      Mid Sem
+                    </option>
                     <option value="Internal Practical">
                       Internal Practical
                     </option>
@@ -203,7 +217,9 @@ function FacultyStudentResult() {
 
           <center>
             <button className="multistep-form-btn">Clear</button>
-            <button className="multistep-form-btn" onClick={handleSubmit}>Save</button>
+            <button className="multistep-form-btn" onClick={handleSubmit}>
+              Save
+            </button>
           </center>
           {/* <MaterialReactTable columns={columns} data={Users} /> */}
         </div>

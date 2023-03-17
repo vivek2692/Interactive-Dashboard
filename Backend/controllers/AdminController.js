@@ -677,6 +677,16 @@ const endSemMarks = async (req, res, next) => {
               15
           );
           intSubObj.credit = gradePoint;
+          if (gradePoint <= 3) {
+            resultStd.backlog_subs.push(intSubObj.sub_name);
+          }
+          if (gradePoint > 3 && resultStd.backlog_subs.length > 0) {
+            resultStd.backlog_subs.map((backSubs) => {
+              if (backSubs === subject) {
+                resultStd.backlog_subs.pop(subject);
+              }
+            });
+          }
           const subjects = await Subject.findOne({
             college,
             department,
@@ -761,6 +771,50 @@ const calculateSGPA = async (req, res) => {
   }
 };
 
+const showBackLogStudents = async (req, res, next) => {
+  const { current_semester, department, batch, college } = req.body;
+  const resultStdArr = await Result.find({
+    current_semester,
+    department,
+    batch,
+    college,
+  });
+
+  if (!resultStdArr) {
+    res.status(500).send({ status: "failed", msg: "No Student found" });
+  }
+  let resultArr = [];
+  let resultMarks = [];
+  resultStdArr.map((resultStd) => {
+    if (resultStd.backlog_subs.length > 0) {
+      resultStd.result.map((resultObj) => {
+        resultStd.backlog_subs.map((sub) => {
+          if (resultObj.sub_name === sub) {
+            resultMarks.push({
+              sub_name: resultObj.sub_name,
+              sub_cred: resultObj.sub_credit,
+              mid_sem: resultObj.midsem_exam,
+              internal_prac: resultObj.internal_prac,
+              viva_marks: resultObj.viva_marks,
+              final_exam: resultObj.final_exam,
+              gradePoints: resultObj.credit,
+            });
+          }
+        });
+      });
+      resultArr.push({
+        college: college,
+        department: department,
+        current_semester: current_semester,
+        sgpa: Number(resultStd.sgpa),
+        cgpa: Number(resultStd.cgpa),
+        result: resultMarks,
+      });
+    }
+  });
+  res.status(200).send({ status: "success", data: resultArr });
+};
+
 module.exports = {
   AdminRegister,
   AdminLogin,
@@ -778,4 +832,5 @@ module.exports = {
   endSemMarks,
   patchUpdateFaculty,
   calculateSGPA,
+  showBackLogStudents,
 };
