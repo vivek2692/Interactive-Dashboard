@@ -6,6 +6,7 @@ const Event = require("../models/eventModel.js");
 const Skill = require("../models/skillModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const { update } = require("../models/facultyModel.js");
 
 //Register Student
 const StudentRegister = async (req, res) => {
@@ -286,7 +287,7 @@ const StudentCourseraUpload = async (req, res) => {
   const { name, fname, enrollment_no, college, department, current_semester } =
     req.body;
 
-    // console.log(req.file);
+  // console.log(req.file);
 
   if (
     name &&
@@ -439,7 +440,6 @@ const SearchStudent = async (req, res) => {
 // };
 
 const addSkills = async (req, res, next) => {
-  // console.log(req.body);
   const {
     name,
     enrollment_no,
@@ -479,30 +479,107 @@ const addSkills = async (req, res, next) => {
       return res
         .status(200)
         .send({ data: result, msg: "Skill Add Successfully" });
-    } //else {
-    //   updatedSkills = skilledStd.skills + skills;
-    //   console.log(updatedSkills);
-    //   const updateSkilledStudent = Skill.findOneAndUpdate(
-    //     { enrollment_no },
-    //     { skills: updatedSkills },
-    //     { runValidators: true, new: true, setDefaultsOnInsert: true }
-    //   );
-    // }
+    } else {
+      let updateSkill = [];
+      for (i = 0; i < skilledStd.skills.length; i++) {
+        updateSkill.push(skilledStd.skills[i]);
+      }
+      for (i = 0; i < skills.length; i++) {
+        updateSkill.push(skills[i]);
+      }
+      const updateSkilledStudent = await Skill.findOneAndUpdate(
+        { enrollment_no },
+        { skills: updateSkill },
+        { runValidators: true, new: true, setDefaultsOnInsert: true }
+      );
+      return res.status(200).send({ msg: "Skill updated Successfully" });
+    }
   } else {
     res.status(500).send({ status: "failed", msg: "Enter all the details" });
   }
 };
 
-const GetStudentCourses = async(req, res) => {
-  const {enrollment_no, college, department, current_semester} = req.body;
+const addHobby = async (req, res, next) => {
+  const {
+    name,
+    enrollment_no,
+    contact_no,
+    email,
+    batch,
+    current_semester,
+    department,
+    college,
+    hobbies,
+  } = req.body;
+  if (
+    name &&
+    enrollment_no &&
+    contact_no &&
+    email &&
+    batch &&
+    current_semester &&
+    department &&
+    college &&
+    hobbies
+  ) {
+    const skilledStd = await Skill.findOne({ enrollment_no });
+    if (!skilledStd) {
+      const newSkilledStd = new Skill({
+        name,
+        enrollment_no,
+        contact_no,
+        email,
+        batch,
+        current_semester,
+        department,
+        college,
+        hobbies,
+      });
+      const result = await newSkilledStd.save();
+      return res
+        .status(200)
+        .send({ data: result, msg: "Hobby Add Successfully" });
+    } else {
+      let updateSkill = [];
+      for (i = 0; i < skilledStd.hobbies.length; i++) {
+        updateSkill.push(skilledStd.hobbies[i]);
+      }
+      for (i = 0; i < hobbies.length; i++) {
+        updateSkill.push(hobbies[i]);
+      }
+      const updateSkilledStudent = await Skill.findOneAndUpdate(
+        { enrollment_no },
+        { hobbies: updateSkill },
+        { runValidators: true, new: true, setDefaultsOnInsert: true }
+      );
+      return res.status(200).send({ msg: "Hobby updated Successfully" });
+    }
+  } else {
+    res.status(500).send({ status: "failed", msg: "Enter all the details" });
+  }
+};
+
+const getFetchSkill = async (req, res) => {
+  const { enrollment_no } = req.body;
+  const skill = await Skill.findOne({ enrollment_no });
+  if (!skill) {
+    return res.status(500).send({ status: "failed", msg: "No events found" });
+  }
+  return res
+    .status(200)
+    .json({ data: skill, msg: "Event fetched Successfully" });
+};
+
+const GetStudentCourses = async (req, res) => {
+  const { enrollment_no, college, department, current_semester } = req.body;
   try {
     const data = await Result.findOne(req.body);
     // console.log(data);
-    res.status(200).send({status: "success", data: data.subjects});
+    res.status(200).send({ status: "success", data: data.subjects });
   } catch (error) {
     console.log(err);
   }
-}
+};
 
 module.exports = {
   StudentRegister,
@@ -515,5 +592,7 @@ module.exports = {
   GetStudent,
   SearchStudent,
   addSkills,
+  addHobby,
+  getFetchSkill,
   GetStudentCourses,
 };

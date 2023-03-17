@@ -6,6 +6,7 @@ const Result = require("../models/resultModel.js");
 const Coursera = require("../models/courseraModel.js");
 const Placement = require("../models/placementModel");
 const Event = require("../models/eventModel");
+const Skill = require("../models/skillModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
@@ -1302,6 +1303,22 @@ const fetchEvent = async (req, res, next) => {
     .json({ data: eventData, msg: "Event fetched Successfully" });
 };
 
+const searchSkill = async (req, res, next) => {
+  const { skills } = req.body;
+  const data = [];
+  for (i = 0; i < skills.length; i++) {
+    const resultStd = await Skill.find({ skills: { $in: [skills[i]] } });
+    if (!resultStd) {
+      return res.status(500).send({ status: "failed", msg: "No skills found" });
+    } else {
+      data.push({ skill: skills[i], students: resultStd });
+    }
+  }
+
+  return res
+    .status(200)
+    .send({ data: data, msg: "Event fetched Successfully" });
+};
 module.exports = {
   FacultyRegister,
   FacultyLogin,
@@ -1337,4 +1354,5 @@ module.exports = {
   addNewEvent,
   deleteEvent,
   fetchEvent,
+  searchSkill,
 };
