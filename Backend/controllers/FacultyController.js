@@ -3,6 +3,7 @@ const Faculty = require("../models/facultyModel.js");
 const Subject = require("../models/subjectModel.js");
 const Student = require("../models/studentModel.js");
 const Result = require("../models/resultModel.js");
+const Coursera = require("../models/courseraModel.js");
 const Placement = require("../models/placementModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
@@ -202,38 +203,39 @@ const FacultyUpdatePassword = async (req, res) => {
 
 // Adding subjects semesterwise
 const AddSubjects = async (req, res) => {
-  const { college, department, subjects_array, semester } = req.body;
+  const { college, department, subs, open_elective, core_elective, semester } =
+    req.body;
   if (college && department && semester) {
-    const item = await Subject.findOne({ college, department });
+    const item = await Subject.findOne({ college, department, semester });
 
     if (item) {
       // console.log(item);
-      let subs = [];
+      // let subs = [];
 
-      item.subjects.map((sem) => {
-        if (sem.semester === semester) {
-          subs = sem.subs;
-        }
+      subs.map((sub) => {
+        item.subs.push(sub);
       });
-
-      subjects_array.map((sub) => {
-        subs.push(sub);
+      open_elective.map((sub) => {
+        item.open_elective.push(sub);
+      });
+      core_elective.map((sub) => {
+        item.core_elective.push(sub);
       });
 
       // console.log(subs);
 
       try {
-        let appear = false;
-        item.subjects.map((sem) => {
-          if (sem.semester === semester) {
-            sem.subs = subs;
-            appear = true;
-          }
-        });
+        // let appear = false;
+        // item.subjects.map((sem) => {
+        //   if (sem.semester === semester) {
+        //     sem.subs = subs;
+        //     appear = true;
+        //   }
+        // });
 
-        if (appear === false) {
-          item.subjects.push({ semester: semester, subs: subs });
-        }
+        // if (appear === false) {
+        //   item.subjects.push({ semester: semester, subs: subs });
+        // }
         // const newer = await item.findOne({college, department, "subjects.semester": semester},{$set: {subjects: subs}},{ runValidators: true, new: true, setDefaultsOnInsert: true });
         // console.log(newer);
         await item.save();
@@ -249,10 +251,10 @@ const AddSubjects = async (req, res) => {
       const newCourse = new Subject({
         college,
         department,
-        subjects: {
-          semester,
-          subs: subjects_array,
-        },
+        semester,
+        subs: subs,
+        open_elective,
+        core_elective,
       });
 
       try {
@@ -271,9 +273,26 @@ const AddSubjects = async (req, res) => {
 
 // Assigning subjects to student (for Marksheet model)
 const SubjectsAssign = async (req, res) => {
-  const { name, enrollment_no, subjects, college, department, current_semester, batch } = req.body;
+  const {
+    name,
+    enrollment_no,
+    subjects,
+    college,
+    department,
+    current_semester,
+    batch,
+  } = req.body;
 
-  if (name && enrollment_no && college && department && current_semester && batch) {
+  // console.log(req.body);
+
+  if (
+    name &&
+    enrollment_no &&
+    college &&
+    department &&
+    current_semester &&
+    batch
+  ) {
     const isAvailable = await Student.findOne({ enrollment_no });
 
     if (!isAvailable) {
@@ -286,7 +305,7 @@ const SubjectsAssign = async (req, res) => {
         college,
         department,
         current_semester,
-        batch
+        batch,
       });
 
       if (student) {
@@ -334,7 +353,7 @@ const SubjectsAssign = async (req, res) => {
           department,
           batch,
           current_semester,
-          subjects: subjects
+          subjects: subjects,
         });
 
         try {
@@ -562,6 +581,8 @@ const getAllPlacements = async (req, res, next) => {
   const queryObject = {};
   const { college, department, placement_year } = req.query;
 
+  // console.log(req.query);
+
   if (college !== "") {
     queryObject.college = { $regex: `${college}`, $options: "i" };
     // queryObject.college = college;
@@ -585,6 +606,19 @@ const getAllPlacements = async (req, res, next) => {
   }
 };
 
+const postAllPlacements = async (req, res, next) => {
+  const { college, department, placement_year } = req.body;
+
+  console.log(req.body);
+
+  try {
+    const placements = await Placement.find(req.body);
+    res.status(200).send({ status: "success", data: placements });
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
+
 const getPlacedStudentInfo = async (req, res) => {
   const enrollment_no = req.params.id;
   console.log(enrollment_no);
@@ -594,6 +628,30 @@ const getPlacedStudentInfo = async (req, res) => {
     if (student) {
       try {
         const data = await Placement.findOne({ enrollment_no });
+        res.status(200).send({ status: "success", data: data });
+      } catch (error) {
+        res.status(500).send({ status: "failed", msg: "Something went wrong" });
+      }
+    } else {
+      res.status(404).send({ status: "failed", msg: "Student doesn't exist" });
+    }
+  } else {
+    res
+      .status(500)
+      .send({ status: "failed", msg: "Enrollment No. is not provided" });
+  }
+};
+
+const getPlacedStudentInfoCollege = async (req, res) => {
+  const enrollment_no = req.params.id;
+  const { college } = req.body;
+  // console.log(enrollment_no, college);
+  if (enrollment_no) {
+    const student = await Student.findOne({ enrollment_no, college });
+
+    if (student) {
+      try {
+        const data = await Placement.findOne({ enrollment_no, college });
         res.status(200).send({ status: "success", data: data });
       } catch (error) {
         res.status(500).send({ status: "failed", msg: "Something went wrong" });
@@ -628,21 +686,29 @@ const midMarksEntry = async (req, res, next) => {
   const subject = req.body.subject;
   const obj = req.body.obj;
   const batch = req.body.batch;
+  const current_semester = req.body.semester;
   obj.map(async (studentObj) => {
-    const enrollment_no = studentObj.enrollment_no;
-    const marks = studentObj.marks;
-    try {
-      const resultStd = await Result.findOne({ enrollment_no, batch });
-      if (!resultStd) {
-        res
-          .status(500)
-          .send({ status: "failed", msg: "Enrollment No. not found" });
+    if (studentObj.enrollment !== "12002040501079") {
+      const enrollment_no = studentObj.enrollment;
+      const marks = studentObj.marks;
+      try {
+        const resultStd = await Result.findOne({
+          enrollment_no,
+          batch,
+          current_semester,
+        });
+        if (!resultStd) {
+          return res
+            .status(500)
+            .send({ status: "failed", msg: "Enrollment No. not found" });
+        }
+        resultStd.result.push({ sub_name: subject, midsem_exam: marks });
+        await resultStd.save();
+        // res.send({ status: "success", msg: "Marks added successfully" });
+      } catch (err) {
+        console.log(err);
+        res.send({ status: "failed", msg: "Enrollment No. is not provided" });
       }
-      resultStd.result.push({ sub_name: subject, midsem_exam: marks });
-      await resultStd.save();
-    } catch (err) {
-      console.log(err);
-      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
     }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
@@ -652,25 +718,33 @@ const internalPracMarksEntry = async (req, res, next) => {
   const subject = req.body.subject;
   const obj = req.body.obj;
   const batch = req.body.batch;
+  const current_semester = req.body.semester;
+
   obj.map(async (studentObj) => {
-    const enrollment_no = studentObj.enrollment_no;
-    const marks = studentObj.marks;
-    try {
-      const resultStd = await Result.findOne({ enrollment_no, batch });
-      if (!resultStd) {
-        res
-          .status(500)
-          .send({ status: "failed", msg: "Enrollment No. not found" });
-      }
-      resultStd.result.map((intSubObj) => {
-        if (intSubObj.sub_name === subject) {
-          intSubObj.internal_prac = marks;
+    if (studentObj.enrollment !== "12002040501079") {
+      const enrollment_no = studentObj.enrollment;
+      const marks = studentObj.marks;
+      try {
+        const resultStd = await Result.findOne({
+          enrollment_no,
+          batch,
+          current_semester,
+        });
+        if (!resultStd) {
+          return res
+            .status(500)
+            .send({ status: "failed", msg: "Enrollment No. not found" });
         }
-      });
-      await resultStd.save();
-    } catch (err) {
-      console.log(err);
-      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+        resultStd.result.map((intSubObj) => {
+          if (intSubObj.sub_name === subject) {
+            intSubObj.internal_prac = marks;
+          }
+        });
+        await resultStd.save();
+      } catch (err) {
+        console.log(err);
+        res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+      }
     }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
@@ -680,25 +754,33 @@ const vivaMarksEntry = async (req, res, next) => {
   const subject = req.body.subject;
   const obj = req.body.obj;
   const batch = req.body.batch;
+  const current_semester = req.body.semester;
+
   obj.map(async (studentObj) => {
-    const enrollment_no = studentObj.enrollment_no;
-    const marks = studentObj.marks;
-    try {
-      const resultStd = await Result.findOne({ enrollment_no, batch });
-      if (!resultStd) {
-        res
-          .status(500)
-          .send({ status: "failed", msg: "Enrollment No. not found" });
-      }
-      resultStd.result.map((intSubObj) => {
-        if (intSubObj.sub_name === subject) {
-          intSubObj.viva_marks = marks;
+    if (studentObj.enrollment !== "12002040501079") {
+      const enrollment_no = studentObj.enrollment;
+      const marks = studentObj.marks;
+      try {
+        const resultStd = await Result.findOne({
+          enrollment_no,
+          batch,
+          current_semester,
+        });
+        if (!resultStd) {
+          return res
+            .status(500)
+            .send({ status: "failed", msg: "Enrollment No. not found" });
         }
-      });
-      await resultStd.save();
-    } catch (err) {
-      console.log(err);
-      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+        resultStd.result.map((intSubObj) => {
+          if (intSubObj.sub_name === subject) {
+            intSubObj.viva_marks = marks;
+          }
+        });
+        await resultStd.save();
+      } catch (err) {
+        console.log(err);
+        res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+      }
     }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
@@ -706,20 +788,408 @@ const vivaMarksEntry = async (req, res, next) => {
 
 const EnrolledStudents = async (req, res) => {
   const { batch, current_semester, subject, college, department } = req.body;
-
+  // console.log(req.body);
+  const semester = Number(current_semester);
   try {
     const data = await Result.find({
       batch,
-      current_semester,
+      current_semester: semester,
       college,
       department,
       subjects: { $in: [subject] },
     });
+    // console.log(data);
     res.status(200).send({ status: "success", data: data });
   } catch (error) {
     res.status(500).send({ status: "failed", msg: "Something went wrong" });
   }
 };
+
+const FacultyStats = async (req, res) => {
+  const { college, department } = req.body;
+
+  const students = await Student.find({ college });
+  const faculties = await Faculty.find({ college });
+  const deptFaculties = await Faculty.find({ college, department });
+  const depStudents = await Student.find({ college, department });
+
+  const obj = {};
+  obj.total_students = students.length;
+  obj.total_faculties = faculties.length;
+  obj.dept_faculties = deptFaculties.length;
+
+  if (college === "GCET") {
+    const gcet_cp = [];
+    const gcet_it = [];
+    const gcet_ec = [];
+    const gcet_ee = [];
+    const gcet_me = [];
+    const gcet_ch = [];
+    const gcet_cl = [];
+
+    let gcet_fy = [];
+    let gcet_sy = [];
+    let gcet_ty = [];
+    let gcet_fiy = [];
+
+    students.map((student) => {
+      if (student.department === "CP") {
+        gcet_cp.push(student);
+      } else if (student.department === "IT") {
+        gcet_it.push(student);
+      } else if (student.department === "EC") {
+        gcet_ec.push(student);
+      } else if (student.department === "EE") {
+        gcet_ee.push(student);
+      } else if (student.department === "ME") {
+        gcet_me.push(student);
+      } else if (student.department === "CH") {
+        gcet_ch.push(student);
+      } else if (student.department === "CL") {
+        gcet_cl.push(student);
+      }
+    });
+
+    depStudents.map((student) => {
+      if (student.current_semester === 1 || student.current_semester === 2) {
+        gcet_fy.push(student);
+      } else if (
+        student.current_semester === 3 ||
+        student.current_semester === 4
+      ) {
+        gcet_sy.push(student);
+      } else if (
+        student.current_semester === 5 ||
+        student.current_semester === 6
+      ) {
+        gcet_ty.push(student);
+      } else if (
+        student.current_semester === 7 ||
+        student.current_semester === 8
+      ) {
+        gcet_fiy.push(student);
+      }
+    });
+
+    obj.cp = gcet_cp.length;
+    obj.it = gcet_it.length;
+    obj.ec = gcet_ec.length;
+    obj.ee = gcet_ee.length;
+    obj.me = gcet_me.length;
+    obj.ch = gcet_ch.length;
+    obj.cl = gcet_cl.length;
+
+    obj.first_year = gcet_fy.length;
+    obj.second_year = gcet_sy.length;
+    obj.third_year = gcet_ty.length;
+    obj.fourth_year = gcet_fiy.length;
+
+    res.status(200).send({ status: "success", data: obj });
+  } else if (college === "MBIT") {
+    const mbit_cp = [];
+    const mbit_it = [];
+
+    let mbit_fy = [];
+    let mbit_sy = [];
+    let mbit_ty = [];
+    let mbit_fiy = [];
+
+    students.map((student) => {
+      if (student.department === "CP") {
+        mbit_cp.push(student);
+      } else if (student.department === "IT") {
+        mbit_it.push(student);
+      }
+    });
+
+    depStudents.map((student) => {
+      if (student.current_semester === 1 || student.current_semester === 2) {
+        mbit_fy.push(student);
+      } else if (
+        student.current_semester === 3 ||
+        student.current_semester === 4
+      ) {
+        mbit_sy.push(student);
+      } else if (
+        student.current_semester === 5 ||
+        student.current_semester === 6
+      ) {
+        mbit_ty.push(student);
+      } else if (
+        student.current_semester === 7 ||
+        student.current_semester === 8
+      ) {
+        mbit_fiy.push(student);
+      }
+    });
+
+    obj.cp = mbit_cp.length;
+    obj.it = mbit_it.length;
+
+    obj.first_year = mbit_fy.length;
+    obj.second_year = mbit_sy.length;
+    obj.third_year = mbit_ty.length;
+    obj.fourth_year = mbit_fiy.length;
+
+    res.status(200).send({ status: "success", data: obj });
+  } else if (college === "ADIT") {
+    const adit_cp = [];
+    const adit_it = [];
+    const adit_ec = [];
+    const adit_ee = [];
+    const adit_me = [];
+    const adit_ch = [];
+    const adit_cl = [];
+
+    let adit_fy = [];
+    let adit_sy = [];
+    let adit_ty = [];
+    let adit_fiy = [];
+
+    students.map((student) => {
+      if (student.department === "CP") {
+        adit_cp.push(student);
+      } else if (student.department === "IT") {
+        adit_it.push(student);
+      } else if (student.department === "EC") {
+        adit_ec.push(student);
+      } else if (student.department === "EE") {
+        adit_ee.push(student);
+      } else if (student.department === "ME") {
+        adit_me.push(student);
+      } else if (student.department === "CH") {
+        adit_ch.push(student);
+      } else if (student.department === "CL") {
+        adit_cl.push(student);
+      }
+    });
+
+    depStudents.map((student) => {
+      if (student.current_semester === 1 || student.current_semester === 2) {
+        adit_fy.push(student);
+      } else if (
+        student.current_semester === 3 ||
+        student.current_semester === 4
+      ) {
+        adit_sy.push(student);
+      } else if (
+        student.current_semester === 5 ||
+        student.current_semester === 6
+      ) {
+        adit_ty.push(student);
+      } else if (
+        student.current_semester === 7 ||
+        student.current_semester === 8
+      ) {
+        adit_fiy.push(student);
+      }
+    });
+
+    obj.cp = adit_cp.length;
+    obj.it = adit_it.length;
+    obj.ec = adit_ec.length;
+    obj.ee = adit_ee.length;
+    obj.me = adit_me.length;
+    obj.ch = adit_ch.length;
+    obj.cl = adit_cl.length;
+
+    obj.first_year = adit_fy.length;
+    obj.second_year = adit_sy.length;
+    obj.third_year = adit_ty.length;
+    obj.fourth_year = adit_fiy.length;
+
+    res.status(200).send({ status: "success", data: obj });
+  }
+};
+
+const FacultyAllStudents = async (req, res) => {
+  const { college, department } = req.body;
+
+  try {
+    const students = await Student.find({ college, department }).sort({
+      enrollment_no: 1,
+    });
+    res.status(200).send({ status: "success", data: students });
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
+
+const FacultyAllFaculties = async (req, res) => {
+  const { college, department } = req.body;
+
+  try {
+    const students = await Faculty.find({ college, department }).sort({
+      faculty_id: 1,
+    });
+    res.status(200).send({ status: "success", data: students });
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
+
+const postSelectStudent = async (req, res) => {
+  const { semester } = req.query;
+  const { college, department } = req.body;
+  const queryObject = { college: college, department: department };
+  if (semester !== "") {
+    let current_semester = Number(semester);
+    queryObject.current_semester = current_semester;
+  }
+
+  await Student.find(queryObject)
+    .exec()
+    .then((students) => {
+      // console.log(students);
+      return res.status(200).json({
+        data: students,
+        hasError: false,
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        data: err,
+        hasError: true,
+      });
+    });
+};
+
+const SearchingStudent = async (req, res) => {
+  const { enrollment_no } = req.query;
+  const { college, department } = req.body;
+
+  let queryObject = { college: college, department: department };
+
+  if (enrollment_no !== "") {
+    queryObject.enrollment_no = { $regex: enrollment_no, $options: "i" };
+  }
+
+  const data = await Student.find(queryObject);
+
+  if (data) {
+    res.status(200).send({ status: "success", data: data });
+  }
+};
+
+const SearchingFaculty = async (req, res) => {
+  const { faculty_id } = req.query;
+
+  const { college, department } = req.body;
+
+  let queryObject = { college: college, department: department };
+
+  if (faculty_id !== "") {
+    queryObject.faculty_id = { $regex: faculty_id, $options: "i" };
+  }
+
+  const data = await Faculty.find(queryObject);
+
+  if (data) {
+    res.status(200).send({ status: "success", data: data });
+  }
+};
+
+const SearchStudentPlacement = async (req, res) => {
+  const { enrollment_no } = req.query;
+  const { college } = req.body;
+
+  // console.log(req.body, req.query);
+
+  let queryObject = { college: college };
+
+  if (enrollment_no !== "") {
+    queryObject.enrollment_no = { $regex: `${enrollment_no}`, $options: "i" };
+  }
+
+  const data = await Placement.find(queryObject);
+
+  if (data) {
+    res.status(200).send({ status: "success", data: data });
+  }
+};
+
+const GetCourses = async (req, res) => {
+  const { department, semester } = req.body;
+  // console.log(req.body);
+  let data = [];
+
+  const sem = Number(semester);
+
+  try {
+    const subjects = await Subject.findOne({ department, semester: sem });
+    // console.log(subjects);
+    if (subjects) {
+      subjects.subs.map((sub) => {
+        data.push({
+          title: sub.sub_name,
+          credits: sub.sub_credits,
+          type: "Professional Core",
+        });
+      });
+      subjects.open_elective.map((sub) => {
+        data.push({
+          title: sub.sub_name,
+          credits: sub.sub_credits,
+          type: "Open Elective",
+        });
+      });
+      subjects.core_elective.map((sub) => {
+        data.push({
+          title: sub.sub_name,
+          credits: sub.sub_credits,
+          type: "Core Elective",
+        });
+      });
+      // console.log(data);
+      res.status(200).send({ status: "success", data: data });
+    } else {
+      res.status(404).send({ status: "failed", msg: "Not Available" });
+    }
+  } catch (err) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
+
+const GetAllCoursera = async (req, res) => {
+  const { college, department, semester } = req.body;
+  // console.log(req.body);
+
+  try {
+    if (semester !== "") {
+      const current_semester = Number(semester);
+      const data = await Coursera.find({
+        college,
+        department,
+        current_semester,
+      });
+      res.status(200).send({ status: "success", data: data });
+    } else {
+      const data = await Coursera.find({ college, department });
+      // console.log("semester not provided");
+      // console.log(data);
+      res.status(200).send({ status: "success", data: data });
+    }
+  } catch (err) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+};
+
+const GetFaculty = async(req, res) => {
+  const { faculty_id } = req.body;
+
+  try {
+    const student = await Faculty.findOne({ faculty_id });
+
+    if (student) {
+      const { password, otp, ...others } = student._doc;
+      res.status(200).send({ status: "success", data: others });
+    } else {
+      res.status(404).send({ status: "failed", msg: "Faculty doesn't exist" });
+    }
+  } catch (error) {
+    res.status(500).send({ status: "failed", msg: "Something went wrong" });
+  }
+}
 
 module.exports = {
   FacultyRegister,
@@ -735,10 +1205,22 @@ module.exports = {
   PostShowPlacedStudents,
   PatchPlacedStudents,
   getAllPlacements,
+  postAllPlacements,
   getPlacedStudentInfo,
+  getPlacedStudentInfoCollege,
   SearchPlacedStudents,
   midMarksEntry,
   internalPracMarksEntry,
   vivaMarksEntry,
   EnrolledStudents,
+  FacultyStats,
+  FacultyAllStudents,
+  FacultyAllFaculties,
+  postSelectStudent,
+  SearchingFaculty,
+  SearchingStudent,
+  SearchStudentPlacement,
+  GetCourses,
+  GetAllCoursera,
+  GetFaculty,
 };

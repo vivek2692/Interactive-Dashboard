@@ -5,8 +5,10 @@ import { TfiDashboard } from "react-icons/tfi";
 import { FiUsers } from "react-icons/fi";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { CgOrganisation } from "react-icons/cg";
-import { MdOutlineCoPresent } from "react-icons/md";
+import { TbCertificate } from "react-icons/tb";
 import { BsFileSpreadsheet } from "react-icons/bs";
+import { ImBooks } from "react-icons/im";
+import { SiCoursera } from "react-icons/si";
 
 function AdminNavBar() {
   //const navigate = useNavigate();
@@ -40,27 +42,28 @@ function AdminNavBar() {
           </Link>
         </li>
         <li>
-          <Link to="/admin/users">
+          <Link to="/admin/students">
             <span>
               <FiUsers style={iconStyles} />
             </span>
-            {openMenu && <span className="text">Users</span>}
+            {openMenu && <span className="text">Students Details</span>}
           </Link>
         </li>
         <li>
-          <Link to="/admin/add-student">
+          <Link to="/admin/faculties">
             <span>
-              <AiOutlineUserAdd style={iconStyles} />
+              <FiUsers style={iconStyles} />
             </span>
-            {openMenu && <span className="text">Add Student</span>}
+            {openMenu && <span className="text">Faculty Details</span>}
           </Link>
         </li>
+
         <li>
-          <Link to="/admin/add-faculty">
+          <Link to="/admin/courses">
             <span>
-              <AiOutlineUserAdd style={iconStyles} />
+              <ImBooks style={iconStyles} />
             </span>
-            {openMenu && <span className="text">Add Faculty</span>}
+            {openMenu && <span className="text">Courses</span>}
           </Link>
         </li>
         <li>
@@ -74,17 +77,17 @@ function AdminNavBar() {
         <li>
           <Link to="/admin/coursera">
             <span>
-              <MdOutlineCoPresent style={iconStyles} />
+              <SiCoursera style={iconStyles} />
             </span>
-            {openMenu && <span className="text">Coursera</span>}
+            {openMenu && <span className="text">Coursera Details</span>}
           </Link>
         </li>
         <li>
           <Link>
             <span>
-              <BsFileSpreadsheet style={iconStyles} />
+              <TbCertificate style={iconStyles} />
             </span>
-            {openMenu && <span className="text">Student Result</span>}
+            {openMenu && <span className="text">Result Filling</span>}
           </Link>
         </li>
       </ul>

@@ -179,7 +179,7 @@ const getAllStudents = async (req, res) => {
 };
 
 const postSelectStudent = async (req, res, next) => {
-  const { college, department, semester, enrollment_no } = req.query;
+  const { college, department, batch, enrollment_no } = req.query;
   const queryObject = {};
   if (college !== "") {
     queryObject.college = { $regex: college, $options: "i" };
@@ -194,9 +194,13 @@ const postSelectStudent = async (req, res, next) => {
   //   queryObject.department = "";
   // }
   // let current_semester = Number(semester);
-  if (semester !== "") {
-    let current_semester = Number(semester);
-    queryObject.current_semester = current_semester;
+  // if (semester !== "") {
+  //   let current_semester = Number(semester);
+  //   queryObject.current_semester = current_semester;
+  // }
+
+  if(batch !== ""){
+    queryObject.admission_year = batch;
   }
   // else {
   //   queryObject.current_semester = null;
@@ -295,6 +299,31 @@ const postSelectFaculty = async (req, res, next) => {
         hasError: true,
       });
     });
+};
+
+const patchUpdateFaculty = async (req, res, next) => {
+  const data = req.body;
+  const faculty_id = req.params.id;
+  console.log(data);
+
+  try {
+    const updatedStudent = await Faculty.findOneAndUpdate(
+      { faculty_id },
+      data,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedStudent) {
+      return res
+        .status(404)
+        .json({ status: "failed", msg: "Faculty not found" });
+    }
+
+    return res.status(200).json({ status: "success", data: updatedStudent });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ status: "failed", msg: "Update failed" });
+  }
 };
 
 const AdminStats = async (req, res) => {
@@ -532,4 +561,5 @@ module.exports = {
   GetAllCoursera,
   SearchingCoursera,
   endSemMarks,
+  patchUpdateFaculty,
 };

@@ -10,12 +10,27 @@ import NewPwdAdmin from "./Login/new_pwd_admin";
 import AdminHome from "./Admin/Home/admin-home";
 import AdminUsers from "./Admin/Users/admin-users";
 import ViewStudent from "./Admin/Users/student-info";
+import ViewFaculty from "./Admin/Users/faculties-info";
+import AdminFaculties from "./Admin/Users/admin-faculties";
+import UpdateStudent from "./Admin/Users/update-student";
+import UpdateFaculty from "./Admin/Users/update-faculty";
 import AdminAddStudent from "./Admin/Add Student/admin-add-student";
 import AdminAddFaculty from "./Admin/Add Faculty/admin-add-faculty";
 import AdminPlacement from "./Admin/Placement-details/admin-placement-details";
 import ViewPlacement from "./Admin/Placement-details/placement-info";
 import AdminCoursera from "./Admin/Coursera/admin-coursera";
 import ErrorPage from "./Admin/Users/Error";
+
+import FacultyAddStudent from "./Faculty/Add Student/faculty-add-student";
+import FacultyCoursera from "./Faculty/Coursera details/faculty-coursera";
+import FacultyCourseAssigner from "./Faculty/Course Assigner/faculty-course-assigner";
+import FacultyCourseForm from "./Faculty/Course Assigner/faculty-course-form";
+import FacultyStudentResult from "./Faculty/Student Result/faculty-student-result";
+import FacultyHome from "./Faculty/Home/faculty-home";
+import FacultyPlacement from "./Faculty/Placement Details/faculty-placement-details";
+import FacultyViewPlacement from "./Faculty/Placement Details/placement-info";
+import FacultyUsers from "./Faculty/Users/faculty-users";
+import FacultyViewStudent from "./Faculty/Users/student-info";
 
 function App() {
   return (
@@ -39,9 +54,13 @@ function App() {
 
           {/* Admin Routes */}
           <Route path="/admin/home" element={<AdminHome />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/users/student/:id" element={<ViewStudent />} />
-          <Route path="/admin/add-student" element={<AdminAddStudent />} />
+          <Route path="/admin/students" element={<AdminUsers />} />
+          <Route path="/admin/faculties" element={<AdminFaculties />} />
+          <Route path="/admin/students/info/:id" element={<ViewStudent />} />
+          <Route path="/admin/faculties/info/:id" element={<ViewFaculty />} />
+          <Route path="/admin/students/update-student/:id" element={<UpdateStudent />} />
+          <Route path="/admin/faculties/update-faculty/:id" element={<UpdateFaculty />} />
+          <Route path="/admin/students/add-student" element={<AdminAddStudent />} />
           <Route path="/admin/add-faculty" element={<AdminAddFaculty />} />
           <Route
               path="/admin/placement-details"
@@ -56,6 +75,31 @@ function App() {
               element={<AdminCoursera />}
             />
           <Route path="/admin/users/student/*" element={<ErrorPage />} />
+          <Route path="/faculty/home" element={<FacultyHome />} />
+          <Route path="/faculty/users" element={<FacultyUsers />} />
+          <Route path="/faculty/users/student/:id" element={<FacultyViewStudent />} />
+          <Route path="/faculty/add-student" element={<FacultyAddStudent />} />
+          <Route path="/faculty/courses" element={<FacultyCourseAssigner />} />
+          <Route
+            path="/faculty/placement-details"
+            element={<FacultyPlacement />}
+          />
+          <Route
+            path="/faculty/placement-details/student/:id"
+            element={<FacultyViewPlacement />}
+          />
+          <Route
+            path="/faculty/student-result"
+            element={<FacultyStudentResult />}
+          />
+          <Route
+            path="/faculty/courses/student/:id"
+            element={<FacultyCourseForm />}
+          />
+          <Route
+            path="/faculty/coursera-details"
+            element={<FacultyCoursera />}
+          />
         </Routes>
       </Router>
     </div>

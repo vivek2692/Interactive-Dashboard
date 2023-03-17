@@ -7,34 +7,17 @@ import "../CSS/admin.css";
 import AdminNavBar from "../NavBar/admin-navbar";
 import AdminTopBar from "../TopBar/admin-topbar";
 import axios from "axios";
-//import MaterialReactTable from "material-react-table";
 
-function AdminStudents() {
-  // const [student, setStudent] = useState(true);
+function AdminFaculties() {
   const [college, setCollege] = useState("");
   const [department, setDepartment] = useState("");
-  const [semester, setSemester] = useState("");
   const [search, setSearch] = useState("");
-  const [batch, setBatch] = useState("");
 
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
     await axios
-      .get("http://localhost:8000/api/admin/all-students")
-      .then((res) => {
-        const temp = res;
-        setData(temp.data.data);
-        // console.log(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const fetchStudentData = async () => {
-    await axios
-      .get("http://localhost:8000/api/admin/all-students")
+      .get("http://localhost:8000/api/admin/all-faculties")
       .then((res) => {
         const temp = res;
         setData(temp.data.data);
@@ -46,20 +29,18 @@ function AdminStudents() {
   };
 
   useEffect(() => {
-    fetchStudentData();
-  }, []);
-
-  useEffect(() => {
-    if (college !== "" || department !== "" || batch !== "") {
+    if (college !== "" || department !== "") {
       handleFilter();
     } else {
       fetchData();
     }
-  }, [college, department, batch]);
+  }, [college, department]);
 
   const handleFilter = async () => {
     await axios
-      .post(`http://localhost:8000/api/admin/select-student?college=${college}&department=${department}&batch=${batch}`)
+      .post(
+        `http://localhost:8000/api/admin/select-faculty?college=${college}&department=${department}`
+      )
       .then((res) => {
         setData(res.data.data);
         // console.log('change department',res.data.data,department);
@@ -72,13 +53,12 @@ function AdminStudents() {
   const handleSearch = async (e) => {
     setSearch(e.target.value);
     const res = await axios.get(
-      `http://localhost:8000/api/student/search?enrollment_no=${e.target.value}`
+      `http://localhost:8000/api/faculty/search?faculty_id=${e.target.value}`
     );
     setData(res.data.data);
   };
 
   let srno = 1;
-
   return (
     <div className="admin-page">
       {/* <Router> */}
@@ -87,13 +67,13 @@ function AdminStudents() {
       <div>
         <div className="admin-users">
           <div className="header-add-btn">
-            <h2 style={{ color: "rgb(143, 143, 145)" }}>Students Details</h2>
-            <Link to="/admin/students/add-student">
+            <h2 style={{ color: "rgb(143, 143, 145)" }}>Faculty Details</h2>
+            <Link to="/admin/faculties/add-faculty">
               <button
                 className="multistep-form-btn"
                 style={{ backgroundColor: "#3b7197" }}
               >
-                Add Student
+                Add Faculty
               </button>
             </Link>
           </div>
@@ -129,28 +109,13 @@ function AdminStudents() {
                     </select>
                   </span>
                 )}
-                {department && (
-                  <span>
-                    Batch :{" "}
-                    <select onChange={(e) => setBatch(e.target.value)}>
-                      <option value="" selected>
-                        --Select Batch--
-                      </option>
-                      <option value="2023">2023</option>
-                      <option value="2022">2022</option>
-                      <option value="2021">2021</option>
-                      <option value="2020">2020</option>
-                      <option value="2019">2019</option>
-                    </select>
-                  </span>
-                )}
               </div>
             </form>
             <div>
               <center>
                 <input
                   type="text"
-                  placeholder="Search by Enrollment no."
+                  placeholder="Search by Faculty ID"
                   value={search}
                   onChange={handleSearch}
                 />
@@ -165,10 +130,10 @@ function AdminStudents() {
               <tr>
                 <th>Sr. No.</th>
                 <th>Name</th>
-                <th>Enrollment No.</th>
+                <th>Faculty ID</th>
                 <th>Department</th>
                 <th>College</th>
-                <th>Admission Year</th>
+                {/* <th>Joining Year</th> */}
                 <th>Actions</th>
               </tr>
               {data.map((user) => {
@@ -176,18 +141,18 @@ function AdminStudents() {
                   <tr key={srno++}>
                     <td>{srno}</td>
                     <td>{user.name}</td>
-                    <td>{user.enrollment_no}</td>
+                    <td>{user.faculty_id}</td>
                     <td>{user.department}</td>
                     <td>{user.college}</td>
-                    <td>{user.admission_year}</td>
+                    {/* <td>{user.year}</td> */}
                     <td id="table-actions">
-                      <Link to={`/admin/students/info/${user.enrollment_no}`}>
+                      <Link to={`/admin/faculties/info/${user.faculty_id}`}>
                         <button className="view" style={{ minWidth: "30%" }}>
                           <center>View</center>
                         </button>
                       </Link>
                       <Link
-                        to={`/admin/students/update-student/${user.enrollment_no}`}
+                        to={`/admin/faculties/update-faculty/${user.faculty_id}`}
                       >
                         <button className="update">
                           <center>Update</center>
@@ -211,4 +176,4 @@ function AdminStudents() {
   );
 }
 
-export default AdminStudents;
+export default AdminFaculties;

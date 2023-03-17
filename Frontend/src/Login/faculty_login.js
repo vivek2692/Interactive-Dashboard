@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import LoginNav from "./login_navbar";
 import "./CSS/login.css";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { login } from "../store/userSlice";
+
 
 function FacultyLogin() {
   const [uname, setUname] = useState("");
@@ -19,6 +22,8 @@ function FacultyLogin() {
   const [errorOtp, setErrorOtp] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
 
   const handleSubmit = async () => {
     const obj = {
@@ -32,6 +37,8 @@ function FacultyLogin() {
         const data = res;
         console.log(data.data);
         setIsError(false);
+        navigate("/faculty/home");
+        dispatch(login(data.data));
       })
       .catch((err) => {
         console.log("error", err.response.data.msg);

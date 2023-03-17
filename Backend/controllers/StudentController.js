@@ -325,7 +325,7 @@ const StudentCourseraUpload = async (req, res) => {
         enrollment_no,
         college,
         department,
-        // current_semester,
+        current_semester,
         courses: [
           {
             semester: current_semester,
@@ -386,6 +386,28 @@ const GetStudent = async (req, res) => {
   }
 };
 
+const SearchStudent = async(req, res) => {
+  const { enrollment_no, college, department } = req.query;
+
+  let queryObject = {};
+
+  if (enrollment_no !== "") {
+    queryObject.enrollment_no = { $regex: enrollment_no, $options: "i" };
+  }
+  if (college !== "") {
+    queryObject.college = { $regex: college, $options: "i" };
+  }
+  if (department !== "") {
+    queryObject.department = { $regex: department, $options: "i" };
+  }
+
+  const data = await Student.find(queryObject);
+
+  if (data) {
+    res.status(200).send({ status: "success", data: data });
+  }
+}
+
 module.exports = {
   StudentRegister,
   StudentLogin,
@@ -395,4 +417,5 @@ module.exports = {
   StudentCourseraUpload,
   Searching,
   GetStudent,
+  SearchStudent,
 };

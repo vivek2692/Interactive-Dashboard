@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import { Users } from "../../Data/user-info";
+import React from "react";
 import "../CSS/faculty-add-student.css";
-import Form from "../../Admin/Form/multistepstudent";
+import "../CSS/faculty.css";
+import Form from "../Form/multistepstudent";
+import FacultyNavBar from "../NavBar/faculty-navbar";
+import FacultyTopBar from "../TopBar/faculty-topbar";
 
 function FacultyAddStudent() {
-  const [name, setName] = useState("");
-  const [enroll, setEnroll] = useState("");
-  const [college, setCollege] = useState("");
-  const [department, setDepartment] = useState("");
-  const [semester, setSemester] = useState("");
-
   return (
-    <div className="admin-add-student">
-      <div className="student-form">
-        <h2>Student Registration</h2>
-        <Form />
+    <div className="faculty-page">
+      <FacultyNavBar />
+      <FacultyTopBar />
+      <div className="admin-add-student">
+        <div className="student-form">
+          <h2>Student Registration</h2>
+          <Form />
+        </div>
       </div>
     </div>
   );

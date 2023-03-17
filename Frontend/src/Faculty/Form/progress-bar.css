@@ -1,0 +1,29 @@
+.progress-bar {
+    width: 40%;
+    position: relative;
+    z-index: -1;
+}
+
+.step-incomplete {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: rgb(180, 180, 180);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.step-completed {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #72b2e4;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

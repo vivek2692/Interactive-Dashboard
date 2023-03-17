@@ -14,6 +14,7 @@ const {
   GetAllCoursera,
   SearchingCoursera,
   endSemMarks,
+  patchUpdateFaculty,
 } = require("../controllers/AdminController");
 const adminController = require("../controllers/AdminController");
 const router = express.Router();
@@ -32,6 +33,7 @@ router.patch("/update-student/:id", patchUpdateStudent);
 //Admin-Faculty Routes
 router.get("/all-faculties", getAllFaculties);
 router.post("/select-faculty", postSelectFaculty);
+router.patch("/update-faculty/:id", patchUpdateFaculty);
 
 //Admin Dashboard Routes
 router.get("/stats", AdminStats);

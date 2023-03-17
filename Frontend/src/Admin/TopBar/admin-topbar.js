@@ -38,16 +38,16 @@ function AdminTopBar() {
   return (
     <div className="admin-topbar">
       <center>CVM University</center>
-      <div>
+      <div style={{display: "flex", alignItems: "center"}}>
         <span>
           <IoIosNotificationsOutline style={iconStyles} />
         </span>
-        <span style={{display: "flex", alignItems: "center", justifyContent: "center", color: "white", marginRight: "10px", fontWeight: "500"}}>
+        <span style={{display: "flex", alignItems: "center", fontWeight: "500", color: "white", marginRight: "15px"}}>
           <CgProfile style={iconStyles} />
           {user? user : ''}
         </span>
         <span>
-          <button className="top-bar-btn" onClick = {handleClick}>Log Out</button>
+          <button className="top-bar-btn" style={{padding: "5px 9px", border: "3px solid white", background: "none", borderRadius: "10px", color: "white", fontWeight: "600"}} onClick = {handleClick}>Log Out</button>
         </span>
       </div>
     </div>
