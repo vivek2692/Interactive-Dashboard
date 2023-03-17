@@ -1,0 +1,65 @@
+.faculty-talent-hunt-page {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+.talent-hunt {
+    width: fit-content;
+    min-width: 100%;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    margin-bottom: 15px;
+    padding: 15px 20px 20px;
+}
+
+.input-filter {
+    margin: 20px;
+}
+
+.input-filter span {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 15px;
+}
+
+.input-filter button,
+searchBtn {
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 8px 16px;
+    background-color: #2bb081;
+}
+
+.input-filter input {
+    font-size: 16px;
+    width: 400px;
+}
+
+.eligible-student-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 25px;
+}
+
+.eligible-student-table table {
+    width: 75%;
+    min-width: 700px;
+    border-collapse: collapse;
+    border: 2px solid rgb(163, 162, 162);
+}
+
+.eligible-student-table td,
+th {
+    padding: 4px;
+    font-size: 16px;
+}
+
+.eligible-student-table th {
+    background-color: #398bac;
+    color: white;
+}

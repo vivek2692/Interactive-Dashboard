@@ -1,0 +1,36 @@
+.student-upcoming-event-page {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+.past-registered-events {
+    width: fit-content;
+    min-width: 100%;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    margin-bottom: 15px;
+    padding: 15px 20px 20px;
+}
+
+.event {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 17px;
+}
+
+.event table {
+    width: 70%;
+    min-width: 500px;
+}
+
+.event table tr td:nth-child(2) {
+    width: 60%;
+    min-width: 150px;
+    height: 40px;
+    font-weight: 400;
+}

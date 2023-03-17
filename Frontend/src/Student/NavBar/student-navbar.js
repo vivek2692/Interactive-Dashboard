@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link, Router, useNavigate, NavLink } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HiHome } from "react-icons/hi";
-import { FiUsers } from "react-icons/fi";
+import { SiMinds } from "react-icons/si";
 import { GiNotebook } from "react-icons/gi";
 import { CgOrganisation } from "react-icons/cg";
 import { BsTrophy } from "react-icons/bs";
 import { SiCoursera } from "react-icons/si";
 import { TbCertificate } from "react-icons/tb";
+import { BsCalendarEvent } from "react-icons/bs";
 
 function StudentNavBar() {
   //const navigate = useNavigate();
@@ -54,6 +55,22 @@ function StudentNavBar() {
               <SiCoursera style={iconStyles} />
             </span>
             {openMenu && <span className="text">Coursera Certificate</span>}
+          </Link>
+        </li>
+        <li>
+          <Link to="/student/upcoming-event">
+            <span>
+              <BsCalendarEvent style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Upcoming Events</span>}
+          </Link>
+        </li>
+        <li>
+          <Link to="/student/competitive-exam-achievement">
+            <span>
+              <SiMinds style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Manage Skills & Hobbies</span>}
           </Link>
         </li>
         <li>

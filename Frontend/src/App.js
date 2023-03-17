@@ -32,7 +32,7 @@ import FacultyViewPlacement from "./Faculty/Placement Details/placement-info";
 import FacultyUsers from "./Faculty/Users/faculty-users";
 import FacultyViewStudent from "./Faculty/Users/student-info";
 import FacultyEventManagement from "./Faculty/Event Management/faculty-event-management";
-// import FacultyTalentHunt from "./Faculty/Talent Hunt/faculty-talent-hunt";
+import FacultyTalentHunt from "./Faculty/Talent Hunt/faculty-talent-hunt";
 
 // import StudentNavBar from "./Student/NavBar/student-navbar";
 // import StudentTopBar from "./Student/TopBar/student-topbar";
@@ -42,6 +42,7 @@ import CourseraForm from "./Student/Coursera Certificates/student-coursera-form"
 import StudentCompetitivePerformance from "./Student/Competitive Exams/student-compe-performance";
 import StudentExtracurricular from "./Student/Extracurricular Achievements/student-extracurricular";
 import StudentViewResult from "./Student/View Result/student-view-result";
+import StudentUpcomingEvent from "./Student/Upcoming Events/student-upcoming-event";
 
 function App() {
   return (
@@ -130,6 +131,10 @@ function App() {
             path="/faculty/event-registration"
             element={<FacultyEventManagement />}
           />
+          <Route
+            path="/faculty/talent-hunt"
+            element={<FacultyTalentHunt />}
+          />
           {/* <Route path="/faculty/talent-hunt" element={<FacultyTalentHunt />} /> */}
 
           <Route path="/student/my-profile" element={<MyProfile />} />
@@ -147,7 +152,11 @@ function App() {
             path="/student/view-result"
             element={<StudentViewResult />}
           />
-        </Routes>
+          <Route 
+            path="/student/upcoming-event"
+            element={<StudentUpcomingEvent/>}
+          /> 
+          </Routes>
       </Router>
     </div>
   );
