@@ -12,6 +12,8 @@ const {
   GetStudent,
   SearchStudent,
   addSkills,
+  addHobby,
+  getFetchSkill,
   GetStudentCourses,
 } = require("../controllers/StudentController.js");
 
@@ -62,5 +64,11 @@ router.patch("/update-password", StudentUpdatePassword);
 router.get("/search", Searching);
 router.get("/searching", SearchStudent);
 router.post("/getStudent", GetStudent);
+router.post("/getStudentCourses", GetStudentCourses);
+
+//skills and hobbies
+router.post("/add-skills", addSkills);
+router.post("/add-hobbies", addHobby);
+router.post("/fetch-skill", getFetchSkill);
 
 module.exports = router;

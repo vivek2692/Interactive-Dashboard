@@ -34,6 +34,7 @@ const {
   addNewEvent,
   deleteEvent,
   fetchEvent,
+  searchSkill,
 } = require("../controllers/FacultyController");
 
 const router = express.Router();
@@ -84,5 +85,8 @@ router.post("/getFaculty", GetFaculty);
 router.post("/add-event", addNewEvent);
 router.post("/delete-event", deleteEvent);
 router.get("/fetch-event", fetchEvent);
+
+//Skill-search
+router.post("/search-skill", searchSkill);
 
 module.exports = router;
