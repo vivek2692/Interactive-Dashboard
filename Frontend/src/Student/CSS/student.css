@@ -1,4 +1,4 @@
-.faculty-nav {
+.student-nav {
     position: fixed;
     top: 0;
     height: 100%;
@@ -12,11 +12,11 @@
     padding: 5px;
 }
 
-.faculty-nav ul {
+.student-nav ul {
     padding: 10px;
 }
 
-.faculty-nav ul li a {
+.student-nav ul li a {
     padding: 1vh;
     border-bottom: 1px solid white;
     display: flex;
@@ -26,13 +26,13 @@
     text-decoration: none;
 }
 
-.faculty-nav ul li .text {
+.student-nav ul li .text {
     /* margin-left: 15px; */
     font-size: 2vh;
     color: white;
 }
 
-.faculty-topbar {
+.student-topbar {
     position: fixed;
     top: 0;
     background-color: #4755ce;
@@ -40,7 +40,7 @@
     height: 7vh;
 }
 
-.faculty-topbar center {
+.student-topbar center {
     position: absolute;
     top: 0;
     margin: 5px;
@@ -50,7 +50,7 @@
     font-weight: 600;
 }
 
-.faculty-topbar div {
+.student-topbar div {
     position: absolute;
     right: 0;
     margin: 5px 2vh;

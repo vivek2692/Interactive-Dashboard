@@ -1,11 +1,23 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const achievementSchema = new Schema({
-  compi_name: {
+  name: {
+    type: String,
+    required: true
+  },
+  enrollment_no: {
+    type: String,
+    required: true
+  },
+  event_name: {
     type: String,
     required: true,
   },
   certificate: {
+    type: String,
+    required: true,
+  },
+  organizer: {
     type: String,
     required: true,
   },
@@ -16,8 +28,8 @@ const achievementSchema = new Schema({
     type: String,
     required: true,
   },
-  rank: {
-    type: Number,
+  position: {
+    type: String,
   },
   semester: {
     type: Number,

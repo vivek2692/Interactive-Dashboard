@@ -32,6 +32,15 @@ import FacultyViewPlacement from "./Faculty/Placement Details/placement-info";
 import FacultyUsers from "./Faculty/Users/faculty-users";
 import FacultyViewStudent from "./Faculty/Users/student-info";
 
+// import StudentNavBar from "./Student/NavBar/student-navbar";
+// import StudentTopBar from "./Student/TopBar/student-topbar";
+import StudentHome from "./Student/Home/student-home";
+import MyProfile from "./Student/TopBar/student-info";
+import CourseraForm from "./Student/Coursera Certificates/student-coursera-form";
+import StudentCompetitivePerformance from "./Student/Competitive Exams/student-compe-performance";
+import StudentExtracurricular from "./Student/Extracurricular Achievements/student-extracurricular";
+import StudentViewResult from "./Student/View Result/student-view-result";
+
 function App() {
   return (
     <div className="App">
@@ -70,6 +79,12 @@ function App() {
             path="/admin/students/add-student"
             element={<AdminAddStudent />}
           />
+          <Route path="/admin/add-faculty" element={<AdminAddFaculty />} />
+          <Route path="/admin/placement-details" element={<AdminPlacement />} />
+          <Route
+            path="/admin/students/add-student"
+            element={<AdminAddStudent />}
+          />
           <Route
             path="/admin/faculties/add-faculty"
             element={<AdminAddFaculty />}
@@ -82,7 +97,7 @@ function App() {
           <Route path="/admin/coursera" element={<AdminCoursera />} />
           <Route path="/admin/users/student/*" element={<ErrorPage />} />
           <Route path="/faculty/home" element={<FacultyHome />} />
-          <Route path="/faculty/users" element={<FacultyUsers />} />
+          <Route path="/faculty/students" element={<FacultyUsers />} />
           <Route
             path="/faculty/users/student/:id"
             element={<FacultyViewStudent />}
@@ -108,6 +123,22 @@ function App() {
           <Route
             path="/faculty/coursera-details"
             element={<FacultyCoursera />}
+          />
+
+          <Route path="/student/my-profile" element={<MyProfile />} />
+          <Route path="/student/home" element={<StudentHome />} />
+          <Route path="/student/coursera-form" element={<CourseraForm />} />
+          <Route
+            path="/student/competitive-exam-achievement"
+            element={<StudentCompetitivePerformance />}
+          />
+          <Route
+            path="/student/extracurricular-achievement"
+            element={<StudentExtracurricular />}
+          />
+          <Route
+            path="/student/view-result"
+            element={<StudentViewResult />}
           />
         </Routes>
       </Router>

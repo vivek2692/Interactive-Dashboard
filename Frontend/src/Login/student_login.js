@@ -3,6 +3,8 @@ import "./CSS/login.css";
 import { useNavigate } from "react-router-dom";
 import LoginNav from "./login_navbar";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { login } from "../store/userSlice";
 
 function StudentLogin() {
   const [enrollNo, setEnrollNo] = useState("");
@@ -19,6 +21,7 @@ function StudentLogin() {
   const [errorOtp, setErrorOtp] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
     const obj = {
@@ -30,7 +33,8 @@ function StudentLogin() {
       .post("http://localhost:8000/api/student/login", obj)
       .then((res) => {
         const data = res;
-
+        navigate("/student/home");
+        dispatch(login(data.data));
         console.log(data.data);
       })
       .catch((err) => {

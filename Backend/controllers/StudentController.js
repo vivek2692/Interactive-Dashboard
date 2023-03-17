@@ -286,6 +286,8 @@ const StudentCourseraUpload = async (req, res) => {
   const { name, fname, enrollment_no, college, department, current_semester } =
     req.body;
 
+    // console.log(req.file);
+
   if (
     name &&
     fname &&
@@ -491,6 +493,17 @@ const addSkills = async (req, res, next) => {
   }
 };
 
+const GetStudentCourses = async(req, res) => {
+  const {enrollment_no, college, department, current_semester} = req.body;
+  try {
+    const data = await Result.findOne(req.body);
+    // console.log(data);
+    res.status(200).send({status: "success", data: data.subjects});
+  } catch (error) {
+    console.log(err);
+  }
+}
+
 module.exports = {
   StudentRegister,
   StudentLogin,
@@ -502,4 +515,5 @@ module.exports = {
   GetStudent,
   SearchStudent,
   addSkills,
+  GetStudentCourses,
 };

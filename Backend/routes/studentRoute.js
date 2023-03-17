@@ -12,6 +12,7 @@ const {
   GetStudent,
   SearchStudent,
   addSkills,
+  GetStudentCourses,
 } = require("../controllers/StudentController.js");
 
 // For documents
@@ -61,8 +62,5 @@ router.patch("/update-password", StudentUpdatePassword);
 router.get("/search", Searching);
 router.get("/searching", SearchStudent);
 router.post("/getStudent", GetStudent);
-
-//skills hobbies
-router.post("/add-skills", addSkills);
 
 module.exports = router;

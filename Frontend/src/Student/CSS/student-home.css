@@ -1,0 +1,93 @@
+.student-home {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+h2 {
+    color: rgb(143, 143, 145);
+}
+
+.student-home-details {
+    width: fit-content;
+    min-width: 100%;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    margin-bottom: 15px;
+}
+
+.student-header {
+    color: white;
+    border-radius: 15px 15px 0px 0px;
+    border: none;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(72, 69, 151);
+    padding: 15px;
+}
+
+.student-academics-info {
+    padding: 20px;
+}
+
+.sem-filter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.student-academics-info span {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 15px;
+}
+
+select {
+    font-size: 16px;
+    background-color: #edf2ff;
+    border-radius: 3px;
+    border: 1px solid #afc5fd;
+    outline: none;
+    padding: 3px;
+    color: rgb(85, 84, 84);
+}
+
+.academics-tables {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.academics-tables h2 {
+    margin-bottom: 10px;
+}
+
+.academics-tables table {
+    width: 100%;
+    min-width: 600px;
+    margin-top: 10px;
+    border-collapse: collapse;
+    border: 2px solid rgb(163, 162, 162);
+    /*rgb(143, 134, 179)*/
+}
+
+.academics-tables td,
+th {
+    padding: 4px;
+    font-size: 16px;
+}
+
+.academics-tables th {
+    background-color: #398bac;
+    color: white;
+}
+
+.student-course-table,
+.student-result-table {
+    margin: 20px;
+}
