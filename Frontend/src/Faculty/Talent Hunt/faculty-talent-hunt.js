@@ -99,15 +99,19 @@ function FacultyTalentHunt() {
                     {users.map((user) => {
                       return (
                         <>
-                        <tr>{user.skill}</tr>
-                        {user.students.map((std) => {<tr>
-                          <td>{srno++}</td>
-                          <td>{std.name}</td>
-                          <td>{std.enrollment_no}</td>
-                          <td>{std.contact_no}</td>
-                          {/* <td>Documentation, Web Development</td>
+                          <tr>{user.skill}</tr>
+                          {user.students.map((std) => {
+                            return (
+                              <tr>
+                                <td>{srno++}</td>
+                                <td>{std.name}</td>
+                                <td>{std.enrollment_no}</td>
+                                <td>{std.contact_no}</td>
+                                {/* <td>Documentation, Web Development</td>
                           <td>None</td> */}
-                        </tr>})}
+                              </tr>
+                            );
+                          })}
                         </>
                       );
                     })}

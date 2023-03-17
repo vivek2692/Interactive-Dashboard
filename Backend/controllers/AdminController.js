@@ -200,7 +200,7 @@ const postSelectStudent = async (req, res, next) => {
   //   queryObject.current_semester = current_semester;
   // }
 
-  if(batch !== ""){
+  if (batch !== "") {
     queryObject.admission_year = batch;
   }
   // else {
@@ -330,14 +330,73 @@ const patchUpdateFaculty = async (req, res, next) => {
 const AdminStats = async (req, res) => {
   let obj = {};
 
+  const all_students = await Student.find();
   const gcet_students = await Student.find({ college: "GCET" });
   const mbit_students = await Student.find({ college: "MBIT" });
   const adit_students = await Student.find({ college: "ADIT" });
+
+  let all_fy = [];
+  let all_sy = [];
+  let all_ty = [];
+  let all_fiy = [];
+
+  let all_cp = [];
+  let all_it = [];
+  let all_ec = [];
+  let all_ee = [];
+  let all_me = [];
+  let all_mc = [];
+  let all_ch = [];
+
+  all_students.map((student) => {
+    if (student.current_semester === 1 || student.current_semester === 2) {
+      all_fy.push(student);
+    } else if (
+      student.current_semester === 3 ||
+      student.current_semester === 4
+    ) {
+      all_sy.push(student);
+    } else if (
+      student.current_semester === 5 ||
+      student.current_semester === 6
+    ) {
+      all_ty.push(student);
+    } else if (
+      student.current_semester === 7 ||
+      student.current_semester === 8
+    ) {
+      all_fiy.push(student);
+    }
+
+    if (student.department === "CP") {
+      all_cp.push(student);
+    } else if (student.department === "IT") {
+      all_it.push(student);
+    } else if (student.department === "EC") {
+      all_ec.push(student);
+    } else if (student.department === "EE") {
+      all_ee.push(student);
+    } else if (student.department === "ME") {
+      all_me.push(student);
+    } else if (student.department === "MC") {
+      all_mc.push(student);
+    } else if (student.department === "CH") {
+      all_ch.push(student);
+    }
+  });
 
   let gcet_fy = [];
   let gcet_sy = [];
   let gcet_ty = [];
   let gcet_fiy = [];
+
+  let gcet_cp = [];
+  let gcet_it = [];
+  let gcet_ec = [];
+  let gcet_ee = [];
+  let gcet_me = [];
+  let gcet_mc = [];
+  let gcet_ch = [];
 
   gcet_students.map((student) => {
     if (student.current_semester === 1 || student.current_semester === 2) {
@@ -358,12 +417,31 @@ const AdminStats = async (req, res) => {
     ) {
       gcet_fiy.push(student);
     }
+
+    if (student.department === "CP") {
+      gcet_cp.push(student);
+    } else if (student.department === "IT") {
+      gcet_it.push(student);
+    } else if (student.department === "EC") {
+      gcet_ec.push(student);
+    } else if (student.department === "EE") {
+      gcet_ee.push(student);
+    } else if (student.department === "ME") {
+      gcet_me.push(student);
+    } else if (student.department === "MC") {
+      gcet_mc.push(student);
+    } else if (student.department === "CH") {
+      gcet_ch.push(student);
+    }
   });
 
   let mbit_fy = [];
   let mbit_sy = [];
   let mbit_ty = [];
   let mbit_fiy = [];
+
+  let mbit_cp = [];
+  let mbit_it = [];
 
   mbit_students.map((student) => {
     if (student.current_semester === 1 || student.current_semester === 2) {
@@ -384,12 +462,26 @@ const AdminStats = async (req, res) => {
     ) {
       mbit_fiy.push(student);
     }
+
+    if (student.department === "CP") {
+      mbit_cp.push(student);
+    } else if (student.department === "IT") {
+      mbit_it.push(student);
+    }
   });
 
   let adit_fy = [];
   let adit_sy = [];
   let adit_ty = [];
   let adit_fiy = [];
+
+  let adit_cp = [];
+  let adit_it = [];
+  let adit_ec = [];
+  let adit_ee = [];
+  let adit_me = [];
+  let adit_mc = [];
+  let adit_ch = [];
 
   adit_students.map((student) => {
     if (student.current_semester === 1 || student.current_semester === 2) {
@@ -409,6 +501,22 @@ const AdminStats = async (req, res) => {
       student.current_semester === 8
     ) {
       adit_fiy.push(student);
+    }
+
+    if (student.department === "CP") {
+      adit_cp.push(student);
+    } else if (student.department === "IT") {
+      adit_it.push(student);
+    } else if (student.department === "EC") {
+      adit_ec.push(student);
+    } else if (student.department === "EE") {
+      adit_ee.push(student);
+    } else if (student.department === "ME") {
+      adit_me.push(student);
+    } else if (student.department === "MC") {
+      adit_mc.push(student);
+    } else if (student.department === "CH") {
+      adit_ch.push(student);
     }
   });
 
@@ -437,6 +545,38 @@ const AdminStats = async (req, res) => {
   obj.total_faculties = total_faculties.length;
   obj.total_departments = 7;
   obj.placement = 100;
+
+  obj.all_first_year = all_fy.length;
+  obj.all_second_year = all_sy.length;
+  obj.all_third_year = all_ty.length;
+  obj.all_fourth_year = all_fiy.length;
+
+  obj.all_cp = all_cp.length;
+  obj.all_it = all_it.length;
+  obj.all_ec = all_ec.length;
+  obj.all_ee = all_ee.length;
+  obj.all_me = all_me.length;
+  obj.all_mc = all_mc.length;
+  obj.all_ch = all_ch.length;
+
+  obj.gcet_cp = gcet_cp.length;
+  obj.gcet_it = gcet_it.length;
+  obj.gcet_ec = gcet_ec.length;
+  obj.gcet_ee = gcet_ee.length;
+  obj.gcet_me = gcet_me.length;
+  obj.gcet_mc = gcet_mc.length;
+  obj.gcet_ch = gcet_ch.length;
+
+  obj.adit_cp = adit_cp.length;
+  obj.adit_it = adit_it.length;
+  obj.adit_ec = adit_ec.length;
+  obj.adit_ee = adit_ee.length;
+  obj.adit_me = adit_me.length;
+  obj.adit_mc = adit_mc.length;
+  obj.adit_ch = adit_ch.length;
+
+  obj.mbit_cp = mbit_cp.length;
+  obj.mbit_it = mbit_it.length;
 
   obj.gcet_first_year = gcet_fy.length;
   obj.gcet_second_year = gcet_sy.length;

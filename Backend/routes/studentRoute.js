@@ -15,6 +15,7 @@ const {
   addHobby,
   getFetchSkill,
   GetStudentCourses,
+  viewResult,
 } = require("../controllers/StudentController.js");
 
 // For documents
@@ -70,5 +71,7 @@ router.post("/getStudentCourses", GetStudentCourses);
 router.post("/add-skills", addSkills);
 router.post("/add-hobbies", addHobby);
 router.post("/fetch-skill", getFetchSkill);
+
+router.post("/view-result", viewResult);
 
 module.exports = router;

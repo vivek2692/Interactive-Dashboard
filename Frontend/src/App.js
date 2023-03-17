@@ -131,10 +131,7 @@ function App() {
             path="/faculty/event-registration"
             element={<FacultyEventManagement />}
           />
-          <Route
-            path="/faculty/talent-hunt"
-            element={<FacultyTalentHunt />}
-          />
+          <Route path="/faculty/talent-hunt" element={<FacultyTalentHunt />} />
           {/* <Route path="/faculty/talent-hunt" element={<FacultyTalentHunt />} /> */}
 
           <Route path="/student/my-profile" element={<MyProfile />} />
@@ -148,15 +145,12 @@ function App() {
             path="/student/extracurricular-achievement"
             element={<StudentExtracurricular />}
           />
+          <Route path="/student/view-result" element={<StudentViewResult />} />
           <Route
-            path="/student/view-result"
-            element={<StudentViewResult />}
-          />
-          <Route 
             path="/student/upcoming-event"
-            element={<StudentUpcomingEvent/>}
-          /> 
-          </Routes>
+            element={<StudentUpcomingEvent />}
+          />
+        </Routes>
       </Router>
     </div>
   );

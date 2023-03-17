@@ -3,6 +3,7 @@ const Student = require("../models/studentModel.js");
 const Coursera = require("../models/courseraModel.js");
 const Result = require("../models/resultModel.js");
 const Event = require("../models/eventModel.js");
+const Subject = require("../models/subjectModel.js");
 const Skill = require("../models/skillModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
@@ -575,10 +576,135 @@ const GetStudentCourses = async (req, res) => {
   try {
     const data = await Result.findOne(req.body);
     // console.log(data);
-    res.status(200).send({ status: "success", data: data.subjects });
+    let subjectArr = [];
+    let returnArr = [];
+    data.result.map((resultObj) => {
+      subjectArr.push(resultObj.sub_name);
+    });
+    const subData = await Subject.findOne({
+      semester: current_semester,
+      college,
+      department,
+    });
+    for (i = 0; i < subjectArr.length; i++) {
+      subData.subs.map((subjectObj) => {
+        if (subjectObj.sub_name === subjectArr[i]) {
+          returnArr.push({
+            type: "Professional Core",
+            sub_cred: subjectObj.sub_credits,
+            sub_name: subjectObj.sub_name,
+          });
+        }
+      });
+      subData.open_elective.map((subjectObj) => {
+        if (subjectObj.sub_name === subjectArr[i]) {
+          returnArr.push({
+            type: "Open Elective",
+            sub_cred: subjectObj.sub_credits,
+            sub_name: subjectObj.sub_name,
+          });
+        }
+      });
+      subData.core_elective.map((subjectObj) => {
+        if (subjectObj.sub_name === subjectArr[i]) {
+          returnArr.push({
+            type: "Core Elective",
+            sub_cred: subjectObj.sub_credits,
+            sub_name: subjectObj.sub_name,
+          });
+        }
+      });
+    }
+    console.log(returnArr);
+    res.status(200).send({ status: "success", data: returnArr });
   } catch (error) {
-    console.log(err);
+    return res.status(500).send({ status: "failed", msg: "No events found" });
   }
+};
+
+const viewResult = async (req, res, next) => {
+  const { enrollment_no, department, current_semester, college } = req.body;
+  let resultArr = [];
+  const data = await Result.findOne(req.body);
+  let subjectArr = [];
+  let returnArr = [];
+  data.result.map((resultObj) => {
+    subjectArr.push(resultObj.sub_name);
+  });
+  const subData = await Subject.findOne({
+    semester: current_semester,
+    college,
+    department,
+  });
+  for (i = 0; i < subjectArr.length; i++) {
+    subData.subs.map((subjectObj) => {
+      if (subjectObj.sub_name === subjectArr[i]) {
+        returnArr.push({
+          type: "Professional Core",
+          sub_cred: subjectObj.sub_credits,
+          sub_name: subjectObj.sub_name,
+        });
+      }
+    });
+    subData.open_elective.map((subjectObj) => {
+      if (subjectObj.sub_name === subjectArr[i]) {
+        returnArr.push({
+          type: "Open Elective",
+          sub_cred: subjectObj.sub_credits,
+          sub_name: subjectObj.sub_name,
+        });
+      }
+    });
+    subData.core_elective.map((subjectObj) => {
+      if (subjectObj.sub_name === subjectArr[i]) {
+        returnArr.push({
+          type: "Core Elective",
+          sub_cred: subjectObj.sub_credits,
+          sub_name: subjectObj.sub_name,
+        });
+      }
+    });
+  }
+  // console.log(returnArr);
+
+  const resultStdArr = await Result.find({
+    enrollment_no,
+  });
+  if (!resultStdArr) {
+    return res.status(500).send({ status: "failed", msg: "No events found" });
+  }
+  resultStdArr.map((resultStd) => {
+    if (resultStd.sgpa !== 0) {
+      let subjectType;
+      let resultMarks = [];
+      resultStd.result.map((resultObj) => {
+        returnArr.map((subjObj) => {
+          // console.log(subjObj.sub_name);
+          // console.log(resultObj.sub_name);
+          if (resultObj.sub_name === subjObj.sub_name) {
+            subjectType = subjObj.type;
+          }
+        });
+        resultMarks.push({
+          sub_name: resultObj.sub_name,
+          sub_cred: resultObj.sub_credit,
+          type: subjectType,
+          mid_sem: resultObj.midsem_exam,
+          internal_prac: resultObj.internal_prac,
+          viva_marks: resultObj.viva_marks,
+          final_exam: resultObj.final_exam,
+          gradePoints: resultObj.credit,
+        });
+      });
+      resultArr.push({
+        semester: i,
+        sgpa: Number(resultStd.sgpa),
+        cgpa: Number(resultStd.cgpa),
+        result: resultMarks,
+      });
+    }
+  });
+  res.status(200).send({ status: "success", data: resultArr });
 };
 
 module.exports = {
@@ -595,4 +721,5 @@ module.exports = {
   addHobby,
   getFetchSkill,
   GetStudentCourses,
+  viewResult,
 };

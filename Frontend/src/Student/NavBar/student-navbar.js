@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, Router, useNavigate, NavLink } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HiHome } from "react-icons/hi";
-import { SiMinds } from "react-icons/si";
+import { HiOutlineLightBulb } from "react-icons/hi";
 import { GiNotebook } from "react-icons/gi";
 import { CgOrganisation } from "react-icons/cg";
 import { BsTrophy } from "react-icons/bs";
@@ -66,9 +66,9 @@ function StudentNavBar() {
           </Link>
         </li>
         <li>
-          <Link to="/student/competitive-exam-achievement">
+          <Link to="/student/skills-hobbies">
             <span>
-              <SiMinds style={iconStyles} />
+              <HiOutlineLightBulb style={iconStyles} />
             </span>
             {openMenu && <span className="text">Manage Skills & Hobbies</span>}
           </Link>
