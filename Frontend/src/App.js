@@ -31,6 +31,8 @@ import FacultyPlacement from "./Faculty/Placement Details/faculty-placement-deta
 import FacultyViewPlacement from "./Faculty/Placement Details/placement-info";
 import FacultyUsers from "./Faculty/Users/faculty-users";
 import FacultyViewStudent from "./Faculty/Users/student-info";
+import FacultyEventManagement from "./Faculty/Event Management/faculty-event-management";
+import FacultyTalentHunt from "./Faculty/Talent Hunt/faculty-talent-hunt";
 
 // import StudentNavBar from "./Student/NavBar/student-navbar";
 // import StudentTopBar from "./Student/TopBar/student-topbar";
@@ -124,6 +126,11 @@ function App() {
             path="/faculty/coursera-details"
             element={<FacultyCoursera />}
           />
+          <Route
+            path="/faculty/event-registration"
+            element={<FacultyEventManagement />}
+          />
+          <Route path="/faculty/talent-hunt" element={<FacultyTalentHunt />} />
 
           <Route path="/student/my-profile" element={<MyProfile />} />
           <Route path="/student/home" element={<StudentHome />} />
