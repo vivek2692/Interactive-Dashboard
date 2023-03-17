@@ -10,7 +10,8 @@ const {
   StudentCourseraUpload,
   Searching,
   GetStudent,
-  SearchStudent
+  SearchStudent,
+  GetStudentCourses
 } = require("../controllers/StudentController.js");
 
 // For documents
@@ -60,5 +61,6 @@ router.patch("/update-password", StudentUpdatePassword);
 router.get("/search", Searching);
 router.get("/searching", SearchStudent);
 router.post("/getStudent", GetStudent);
+router.post("/getStudentCourses", GetStudentCourses);
 
 module.exports = router;

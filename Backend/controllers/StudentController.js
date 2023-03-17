@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Student = require("../models/studentModel.js");
 const Coursera = require("../models/courseraModel.js");
+const Result = require("../models/resultModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
@@ -283,6 +284,8 @@ const StudentCourseraUpload = async (req, res) => {
   const { name, fname, enrollment_no, college, department, current_semester } =
     req.body;
 
+    // console.log(req.file);
+
   if (
     name &&
     fname &&
@@ -408,6 +411,17 @@ const SearchStudent = async(req, res) => {
   }
 }
 
+const GetStudentCourses = async(req, res) => {
+  const {enrollment_no, college, department, current_semester} = req.body;
+  try {
+    const data = await Result.findOne(req.body);
+    // console.log(data);
+    res.status(200).send({status: "success", data: data.subjects});
+  } catch (error) {
+    console.log(err);
+  }
+}
+
 module.exports = {
   StudentRegister,
   StudentLogin,
@@ -418,4 +432,5 @@ module.exports = {
   Searching,
   GetStudent,
   SearchStudent,
+  GetStudentCourses,
 };

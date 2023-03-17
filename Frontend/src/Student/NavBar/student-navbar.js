@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, Router, useNavigate, NavLink } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { TfiDashboard } from "react-icons/tfi";
+import { HiHome } from "react-icons/hi";
 import { FiUsers } from "react-icons/fi";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { GiNotebook } from "react-icons/gi";
 import { CgOrganisation } from "react-icons/cg";
-import { ImBooks } from "react-icons/im";
+import { BsTrophy } from "react-icons/bs";
 import { SiCoursera } from "react-icons/si";
 import { TbCertificate } from "react-icons/tb";
 
-function FacultyNavBar() {
+function StudentNavBar() {
   //const navigate = useNavigate();
 
   const [openMenu, setOpenMenu] = useState(false);
@@ -21,7 +21,7 @@ function FacultyNavBar() {
   };
 
   return (
-    <div className="faculty-nav">
+    <div className="student-nav">
       <div className="menu">
         <center>
           <GiHamburgerMenu
@@ -33,51 +33,47 @@ function FacultyNavBar() {
       </div>
       <ul>
         <li>
-          <Link to="/faculty/home">
+          <Link to="/student/home">
             <span>
-              <TfiDashboard style={iconStyles} />
+              <HiHome style={iconStyles} />
             </span>
             {openMenu && <span className="text">Home</span>}
           </Link>
         </li>
         <li>
-          <Link to="/faculty/students">
-            <span>
-              <FiUsers style={iconStyles} />
-            </span>
-            {openMenu && <span className="text">Students</span>}
-          </Link>
-        </li>
-        <li>
-          <Link to="/faculty/courses">
-            <span>
-              <ImBooks style={iconStyles} />
-            </span>
-            {openMenu && <span className="text">Courses</span>}
-          </Link>
-        </li>
-        <li>
-          <Link to="/faculty/placement-details">
-            <span>
-              <CgOrganisation style={iconStyles} />
-            </span>
-            {openMenu && <span className="text">Placement Details</span>}
-          </Link>
-        </li>
-        <li>
-          <Link to="/faculty/coursera-details">
-            <span>
-              <SiCoursera style={iconStyles} />
-            </span>
-            {openMenu && <span className="text">Coursera Details</span>}
-          </Link>
-        </li>
-        <li>
-          <Link to="/faculty/student-result">
+          <Link to="/student/view-result">
             <span>
               <TbCertificate style={iconStyles} />
             </span>
-            {openMenu && <span className="text">Student Result</span>}
+            {openMenu && <span className="text">View Result</span>}
+          </Link>
+        </li>
+        <li>
+          <Link to="/student/coursera-form">
+            <span>
+              <SiCoursera style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Coursera Certificate</span>}
+          </Link>
+        </li>
+        <li>
+          <Link to="/student/competitive-exam-achievement">
+            <span>
+              <GiNotebook style={iconStyles} />
+            </span>
+            {openMenu && (
+              <span className="text">Competitive Exam Achievements</span>
+            )}
+          </Link>
+        </li>
+        <li>
+          <Link to="/student/extracurricular-achievement">
+            <span>
+              <BsTrophy style={iconStyles} />
+            </span>
+            {openMenu && (
+              <span className="text">Extracurricular Achievements</span>
+            )}
           </Link>
         </li>
       </ul>
@@ -85,6 +81,6 @@ function FacultyNavBar() {
   );
 }
 
-export default FacultyNavBar;
+export default StudentNavBar;
 
 //coursera,courses

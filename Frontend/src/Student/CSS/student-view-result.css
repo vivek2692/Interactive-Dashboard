@@ -1,0 +1,33 @@
+.view-result-page {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+.view-result {
+    width: fit-content;
+    min-width: 100%;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    margin-bottom: 15px;
+    padding: 15px 20px 20px;
+}
+
+.view-result span {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 15px;
+}
+
+/* 
+.result-basic-table table th {
+    background-color: white;
+    color: black;
+} */
+.result-basic-table {
+    margin: 20px;
+}
+
+.result-basic-table table tr th {
+    text-align: start;
+}
