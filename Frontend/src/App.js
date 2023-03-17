@@ -82,6 +82,15 @@ function App() {
           <Route path="/admin/add-faculty" element={<AdminAddFaculty />} />
           <Route path="/admin/placement-details" element={<AdminPlacement />} />
           <Route
+            path="/admin/students/add-student"
+            element={<AdminAddStudent />}
+          />
+          <Route
+            path="/admin/faculties/add-faculty"
+            element={<AdminAddFaculty />}
+          />
+          <Route path="/admin/placement-details" element={<AdminPlacement />} />
+          <Route
             path="/admin/placement-details/student/:id"
             element={<ViewPlacement />}
           />

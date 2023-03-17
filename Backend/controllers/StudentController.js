@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const Student = require("../models/studentModel.js");
 const Coursera = require("../models/courseraModel.js");
 const Result = require("../models/resultModel.js");
+const Event = require("../models/eventModel.js");
+const Skill = require("../models/skillModel.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
@@ -389,7 +391,7 @@ const GetStudent = async (req, res) => {
   }
 };
 
-const SearchStudent = async(req, res) => {
+const SearchStudent = async (req, res) => {
   const { enrollment_no, college, department } = req.query;
 
   let queryObject = {};
@@ -409,7 +411,71 @@ const SearchStudent = async(req, res) => {
   if (data) {
     res.status(200).send({ status: "success", data: data });
   }
-}
+};
+
+// const postResultShow = async (req, res, next) => {
+//   const { college, department, batch, semester, enrollment_no } = req.body;
+//   for (i = 0; i < enrollment_no.length; i++) {
+//     const enroll = enrollment_no[i];
+//     const resultStd = await Result.findOne({
+//       college,
+//       department,
+//       batch,
+//       semester,
+//       enrollment_no: enroll,
+//     });
+//     resultStd.result.map((intSubObj)=>{
+
+//     })
+//     const returnData = {
+//       name: resultStd.name,
+//       enrollment_no: resultStd.enrollment_no,
+//       semester:resultStd.current_semester,
+//       department:resultStd.department,
+//       college:resultStd.college,
+//       result:{}
+//     };
+//   }
+// };
+
+const addSkills = async (req, res, next) => {
+  const {
+    name,
+    enrollment_no,
+    contact_no,
+    email,
+    batch,
+    semester,
+    department,
+    college,
+    skills,
+  } = req.body;
+  if (
+    name &&
+    enrollment_no &&
+    contact_no &&
+    email &&
+    batch &&
+    semester &&
+    department &&
+    college &&
+    skills
+  ) {
+    const enrollment_no = Number(enrollment_no);
+    const skilledStd = Skill.findOne({ enrollment_no });
+    if (skilledStd) {
+      updatedSkills = skilledStd.skills + skills;
+      console.log(updatedSkills);
+      const updateSkilledStudent = Skill.findOneAndUpdate(
+        { enrollment_no },
+        { skills: updatedSkills },
+        { runValidators: true, new: true, setDefaultsOnInsert: true }
+      );
+    } else {
+    }
+  } else {
+  }
+};
 
 const GetStudentCourses = async(req, res) => {
   const {enrollment_no, college, department, current_semester} = req.body;
@@ -432,5 +498,6 @@ module.exports = {
   Searching,
   GetStudent,
   SearchStudent,
+  addSkills,
   GetStudentCourses,
 };

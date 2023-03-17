@@ -31,6 +31,8 @@ const {
   getPlacedStudentInfoCollege,
   GetAllCoursera,
   GetFaculty,
+  addNewEvent,
+  deleteEvent,
 } = require("../controllers/FacultyController");
 
 const router = express.Router();
@@ -50,7 +52,10 @@ router.patch("/placement/update-students/:id", PatchPlacedStudents);
 router.get("/placement/all-placements", getAllPlacements);
 router.post("/placement/all-placements-data", postAllPlacements);
 router.get("/placement/placement-info/:id", getPlacedStudentInfo);
-router.post("/placement/placement-info-college/:id", getPlacedStudentInfoCollege);
+router.post(
+  "/placement/placement-info-college/:id",
+  getPlacedStudentInfoCollege
+);
 router.get("/placement/search", SearchPlacedStudents);
 router.post("/placement/search-placement", SearchStudentPlacement);
 router.post("/mid-marks", midMarksEntry);
@@ -73,5 +78,9 @@ router.post("/coursera", GetAllCoursera);
 // router.get("/search-coursera", SearchingCoursera);
 
 router.post("/getFaculty", GetFaculty);
+
+//Event Management
+router.post("/add-event", addNewEvent);
+router.post("/delete-event", deleteEvent);
 
 module.exports = router;

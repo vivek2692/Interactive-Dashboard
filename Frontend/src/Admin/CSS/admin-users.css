@@ -1,182 +1,201 @@
 .admin-users {
-    height: auto;
-    min-width: fit-content;
-    margin: 9vh 3vw 8vh 6vw;
-    padding: 12px 20px 20px;
-    border-radius: 15px;
-    border: none;
-    box-shadow: 0 0 3px rgb(188, 188, 188);
+  height: auto;
+  min-width: fit-content;
+  margin: 9vh 3vw 8vh 6vw;
+  padding: 12px 20px 20px;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 0 3px rgb(188, 188, 188);
 }
 
 .user-filter {
-    font-size: 18px;
-    margin-bottom: 50px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-content: center;
+  font-size: 18px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-content: center;
 }
 
 .user-filter form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .user-filter form div {
-    margin: 15px
+  margin: 15px;
 }
 
 .user-filter form div span {
-    margin: 0px 10px 0px;
+  margin: 0px 10px 0px;
 }
 
 .user-filter div input {
-    font-size: 16px;
-    border: 3px solid #3b7197;
-    padding: 6px;
-    width: 25vw;
-    height: 35px;
-    margin: 0;
+  font-size: 16px;
+  border: 3px solid #3b7197;
+  padding: 6px;
+  width: 25vw;
+  height: 35px;
+  margin: 0;
 }
 
 .user-filter div input:focus {
-    border: 3px solid #2e2f5b;
+  border: 3px solid #2e2f5b;
 }
 
 button.search {
-    position: relative;
-    bottom: 1px;
-    height: 35px;
-    margin: 0;
-    border: none;
-    width: 40px;
-    background-color: #3b7197;
+  position: relative;
+  bottom: 1px;
+  height: 35px;
+  margin: 0;
+  border: none;
+  width: 40px;
+  background-color: #3b7197;
 }
 
 ::placeholder {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .user-filter select {
-    font-size: 16px;
-    background-color: #edf2ff;
-    border-radius: 3px;
-    border: 1px solid #afc5fd;
-    outline: none;
-    padding: 3px;
-    color: rgb(85, 84, 84);
+  font-size: 16px;
+  background-color: #edf2ff;
+  border-radius: 3px;
+  border: 1px solid #afc5fd;
+  outline: none;
+  padding: 3px;
+  color: rgb(85, 84, 84);
 }
 
 .user-table {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 25px;
 }
 
 .user-table table {
-    width: 75%;
-    min-width: 700px;
-    border-collapse: collapse;
-    border: 2px solid rgb(163, 162, 162);
-    /*rgb(143, 134, 179)*/
+  width: 75%;
+  min-width: 700px;
+  border-collapse: collapse;
+  border: 2px solid rgb(163, 162, 162);
+  /*rgb(143, 134, 179)*/
 }
 
 .user-table td,
 th {
-    padding: 4px;
-    font-size: 16px;
+  padding: 4px;
+  font-size: 16px;
 }
 
 .user-table th {
-    background-color: #398bac;
-    color: white;
+  background-color: #398bac;
+  color: white;
 }
 
 #table-actions {
-    text-align: center;
+  text-align: center;
 }
 
 button.view {
-    border: none;
-    border-radius: 4px;
-    background-color: #3b7197;
-    color: white;
-    padding: 4px 8px;
-    width: 60%;
+  border: none;
+  border-radius: 4px;
+  background-color: #3b7197;
+  color: white;
+  padding: 4px 8px;
+  width: 60%;
+}
+button.delete {
+  border: none;
+  border-radius: 4px;
+  background-color: #b02d2d;
+  color: white;
+  padding: 4px 6px;
+  width: 30%;
+  min-width: 50px;
+  margin: 2px;
 }
 
+button.update {
+  border: none;
+  border-radius: 4px;
+  background-color: #46a094;
+  color: white;
+  padding: 4px 6px;
+  width: 30%;
+  min-width: 50px;
+  margin: 2px;
+}
 
 /*Student info page*/
 .student-info-page {
-    height: auto;
-    padding: 9vh 3vw 8vh 6vw;
+  height: auto;
+  padding: 9vh 3vw 8vh 6vw;
 }
 
 .student-info-page .stud-dtl {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .stud-dtl div {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .stud-dtl div .info-container {
-    width: 100%;
-    border-radius: 15px;
-    border: none;
-    box-shadow: 0 0 3px rgb(188, 188, 188);
-    padding: 1vh 2vw 2vh;
-    margin: 15px;
-    height: 450px;
-    min-height: fit-content;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
+  width: 100%;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 0 3px rgb(188, 188, 188);
+  padding: 1vh 2vw 2vh;
+  margin: 15px;
+  height: 450px;
+  min-height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
 }
 
 .info-container h2 {
-    color: rgb(143, 143, 145);
-    ;
+  color: rgb(143, 143, 145);
 }
 
 .info-container ul {
-    list-style: none;
-    margin-top: 15px;
+  list-style: none;
+  margin-top: 15px;
 }
 
 .info-container ul li {
-    margin: 5px;
+  margin: 5px;
 }
 
 .info-container .info-table {
-    margin-top: 15px;
-    border-spacing: 20px;
-    font-size: 17px;
-    min-width: 600px;
-    width: 100%;
+  margin-top: 15px;
+  border-spacing: 20px;
+  font-size: 17px;
+  min-width: 600px;
+  width: 100%;
 }
 
 .info-container .info-table td:first-child {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .info-container .info-table td:nth-child(2) {
-    width: 65%;
+  width: 65%;
 }
 
 /* .student-info-page .stud-dtl {

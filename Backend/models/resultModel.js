@@ -35,24 +35,14 @@ const ResultSchema = new mongoose.Schema({
     default: 0,
   },
 
-  counter: {
-    type: Number,
-    default: 0
-  },
-
   sub_credit_sum: {
     type: Number,
-    default: 0
+    default: 0,
   },
 
   sgpa: {
     type: mongoose.Types.Decimal128,
     default: 0,
-  },
-
-  batch: {
-    type: String,
-    required: true,
   },
 
   subjects: [String],

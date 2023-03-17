@@ -58,14 +58,14 @@ function AdminNavBar() {
           </Link>
         </li>
 
-        <li>
+        {/* <li>
           <Link to="/admin/courses">
             <span>
               <ImBooks style={iconStyles} />
             </span>
             {openMenu && <span className="text">Courses</span>}
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link to="/admin/placement-details">
             <span>
