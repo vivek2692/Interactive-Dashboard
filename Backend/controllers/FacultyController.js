@@ -689,28 +689,29 @@ const midMarksEntry = async (req, res, next) => {
   const obj = req.body.obj;
   const batch = req.body.batch;
   const current_semester = req.body.semester;
+  console.log(req.body);
   obj.map(async (studentObj) => {
     // if (studentObj.enrollment !== "12002040501079") {
-      const enrollment_no = studentObj.enrollment;
-      const marks = Number(studentObj.marks);
-      try {
-        const resultStd = await Result.findOne({
-          enrollment_no,
-          batch,
-          current_semester,
-        });
-        if (!resultStd) {
-          return res
-            .status(500)
-            .send({ status: "failed", msg: "Enrollment No. not found" });
-        }
-        resultStd.result.push({ sub_name: subject, midsem_exam: marks });
-        await resultStd.save();
-        // res.send({ status: "success", msg: "Marks added successfully" });
-      } catch (err) {
-        console.log(err);
-        res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    const enrollment_no = studentObj.enrollment;
+    const marks = studentObj.marks;
+    try {
+      const resultStd = await Result.findOne({
+        enrollment_no,
+        batch,
+        current_semester,
+      });
+      if (!resultStd) {
+        return res
+          .status(500)
+          .send({ status: "failed", msg: "Enrollment No. not found" });
       }
+      resultStd.result.push({ sub_name: subject, midsem_exam: marks });
+      await resultStd.save();
+      // res.send({ status: "success", msg: "Marks added successfully" });
+    } catch (err) {
+      console.log(err);
+      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    }
     // }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
@@ -724,29 +725,29 @@ const internalPracMarksEntry = async (req, res, next) => {
 
   obj.map(async (studentObj) => {
     // if (studentObj.enrollment !== "12002040501079") {
-      const enrollment_no = studentObj.enrollment;
-      const marks = studentObj.marks;
-      try {
-        const resultStd = await Result.findOne({
-          enrollment_no,
-          batch,
-          current_semester,
-        });
-        if (!resultStd) {
-          return res
-            .status(500)
-            .send({ status: "failed", msg: "Enrollment No. not found" });
-        }
-        resultStd.result.map((intSubObj) => {
-          if (intSubObj.sub_name === subject) {
-            intSubObj.internal_prac = marks;
-          }
-        });
-        await resultStd.save();
-      } catch (err) {
-        console.log(err);
-        res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    const enrollment_no = studentObj.enrollment;
+    const marks = studentObj.marks;
+    try {
+      const resultStd = await Result.findOne({
+        enrollment_no,
+        batch,
+        current_semester,
+      });
+      if (!resultStd) {
+        return res
+          .status(500)
+          .send({ status: "failed", msg: "Enrollment No. not found" });
       }
+      resultStd.result.map((intSubObj) => {
+        if (intSubObj.sub_name === subject) {
+          intSubObj.internal_prac = marks;
+        }
+      });
+      await resultStd.save();
+    } catch (err) {
+      console.log(err);
+      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    }
     // }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
@@ -760,29 +761,29 @@ const vivaMarksEntry = async (req, res, next) => {
 
   obj.map(async (studentObj) => {
     // if (studentObj.enrollment !== "12002040501079") {
-      const enrollment_no = studentObj.enrollment;
-      const marks = studentObj.marks;
-      try {
-        const resultStd = await Result.findOne({
-          enrollment_no,
-          batch,
-          current_semester,
-        });
-        if (!resultStd) {
-          return res
-            .status(500)
-            .send({ status: "failed", msg: "Enrollment No. not found" });
-        }
-        resultStd.result.map((intSubObj) => {
-          if (intSubObj.sub_name === subject) {
-            intSubObj.viva_marks = marks;
-          }
-        });
-        await resultStd.save();
-      } catch (err) {
-        console.log(err);
-        res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    const enrollment_no = studentObj.enrollment;
+    const marks = studentObj.marks;
+    try {
+      const resultStd = await Result.findOne({
+        enrollment_no,
+        batch,
+        current_semester,
+      });
+      if (!resultStd) {
+        return res
+          .status(500)
+          .send({ status: "failed", msg: "Enrollment No. not found" });
       }
+      resultStd.result.map((intSubObj) => {
+        if (intSubObj.sub_name === subject) {
+          intSubObj.viva_marks = marks;
+        }
+      });
+      await resultStd.save();
+    } catch (err) {
+      console.log(err);
+      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+    }
     // }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
@@ -1319,6 +1320,7 @@ const searchSkill = async (req, res, next) => {
     .status(200)
     .send({ data: data, msg: "Event fetched Successfully" });
 };
+
 module.exports = {
   FacultyRegister,
   FacultyLogin,

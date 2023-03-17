@@ -623,7 +623,8 @@ const GetStudentCourses = async (req, res) => {
 };
 
 const viewResult = async (req, res, next) => {
-  const { enrollment_no, department, current_semester, college } = req.body;
+  const { enrollment_no, college, department, current_semester } = req.body;
+  console.log(req.body);
   let resultArr = [];
   const data = await Result.findOne(req.body);
   let subjectArr = [];

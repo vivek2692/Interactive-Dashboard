@@ -16,6 +16,7 @@ const {
   endSemMarks,
   patchUpdateFaculty,
   calculateSGPA,
+  showBackLogStudents,
 } = require("../controllers/AdminController");
 const adminController = require("../controllers/AdminController");
 const router = express.Router();
@@ -47,4 +48,6 @@ router.get("/search-coursera", SearchingCoursera);
 router.post("/final-marks", endSemMarks);
 router.post("/generate-sgpa", calculateSGPA);
 
+//backlog-show
+router.post("/show-backlog", showBackLogStudents);
 module.exports = router;
