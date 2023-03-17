@@ -99,7 +99,6 @@ function FacultyTalentHunt() {
                     {users.map((user) => {
                       return (
                         <>
-<<<<<<< Updated upstream
                           <tr>{user.skill}</tr>
                           {user.students.map((std) => {
                             return (
@@ -109,15 +108,6 @@ function FacultyTalentHunt() {
                                 <td>{std.enrollment_no}</td>
                                 <td>{std.contact_no}</td>
                                 {/* <td>Documentation, Web Development</td>
-=======
-                        <tr><center>{user.skill}</center></tr>
-                        {user.students.map((std) => {return <tr>
-                          <td>{srno++}</td>
-                          <td>{std.name}</td>
-                          <td>{std.enrollment_no}</td>
-                          <td>{std.contact_no}</td>
-                          {/* <td>Documentation, Web Development</td>
->>>>>>> Stashed changes
                           <td>None</td> */}
                               </tr>
                             );
