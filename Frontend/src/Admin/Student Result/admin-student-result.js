@@ -32,7 +32,7 @@ function AdminStudentResult() {
   let srno = 1;
 
   useEffect(() => {
-    const sem = Number(semester)
+    const sem = Number(semester);
     const obj = { college: college, department: department, semester: sem };
     const fetchSub = async () => {
       await axios
@@ -51,14 +51,20 @@ function AdminStudentResult() {
   }, [semester]);
 
   useEffect(() => {
-    const obj = { batch: batch, college: college, department: department, current_semester: semester, subject: subject };
+    const obj = {
+      batch: batch,
+      college: college,
+      department: department,
+      current_semester: semester,
+      subject: subject,
+    };
     const fetchStudents = async () => {
       await axios
         .post(`http://localhost:8000/api/faculty/get-enrolled-students`, obj)
         .then((res) => {
           const data = res.data.data;
           setUsers(data);
-          console.log("users",data);
+          console.log("users", data);
         })
         .catch((err) => {
           console.log(err);
@@ -81,19 +87,28 @@ function AdminStudentResult() {
     console.log(studentResults);
   }, [users]);
 
-  const handleSubmit = async() => {
-    const send = {college: college, department: department, subject: subject, obj: studentResults, batch: batch, semester: semester};
+  const handleSubmit = async () => {
+    const sem = Number(semester);
+    const send = {
+      college: college,
+      department: department,
+      subject: subject,
+      obj: studentResults,
+      batch: batch,
+      semester: sem,
+    };
 
-    await axios.post("http://localhost:8000/api/admin/final-marks", send)
-    .then((res) => {
-      const data = res.data;
-      console.log(data);
-      alert("Marks added successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  }
+    await axios
+      .post("http://localhost:8000/api/admin/final-marks", send)
+      .then((res) => {
+        const data = res.data;
+        console.log(data);
+        alert("Marks added successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className="admin-page">
@@ -161,14 +176,12 @@ function AdminStudentResult() {
                   <span>
                     Subject :{" "}
                     <select onChange={(e) => setSubject(e.target.value)}>
-                    {courses?.map((course) => {
-                      return (
-                        <option value={course.title}>
-                          {course.title}
-                        </option>
-                      );
-                    })}
-                  </select>
+                      {courses?.map((course) => {
+                        return (
+                          <option value={course.title}>{course.title}</option>
+                        );
+                      })}
+                    </select>
                   </span>
                   <span>
                     Exam :{" "}
@@ -210,7 +223,9 @@ function AdminStudentResult() {
 
             <center>
               <button className="multistep-form-btn">Clear</button>
-              <button className="multistep-form-btn" onClick={handleSubmit}>Save</button>
+              <button className="multistep-form-btn" onClick={handleSubmit}>
+                Save
+              </button>
             </center>
             {/* <MaterialReactTable columns={columns} data={Users} /> */}
           </div>

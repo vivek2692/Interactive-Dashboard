@@ -6,7 +6,7 @@ import "../CSS/admin-placement-details.css";
 import "../CSS/admin.css";
 import AdminNavBar from "../NavBar/admin-navbar";
 import AdminTopBar from "../TopBar/admin-topbar";
-import axios from 'axios';
+import axios from "axios";
 //import MaterialReactTable from "material-react-table";
 
 function AdminPlacement() {
@@ -16,32 +16,63 @@ function AdminPlacement() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
 
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
+
+  const handleCheckboxChange = (event) => {
+    const { value } = event.target;
+    setSelectedCheckboxes((prevSelectedCheckboxes) => {
+      if (prevSelectedCheckboxes.includes(value)) {
+        return prevSelectedCheckboxes.filter((val) => val !== value);
+      } else {
+        return [...prevSelectedCheckboxes, value];
+      }
+    });
+  };
+  const [selectedCheckboxes2, setSelectedCheckboxes2] = useState([]);
+
+  const handleCheckboxChange2 = (event) => {
+    const { value } = event.target;
+    setSelectedCheckboxes2((prevSelectedCheckboxes) => {
+      if (prevSelectedCheckboxes.includes(value)) {
+        return prevSelectedCheckboxes.filter((val) => val !== value);
+      } else {
+        return [...prevSelectedCheckboxes, value];
+      }
+    });
+  };
+
   useEffect(() => {
-    const fetchData = async() => {
-      await axios.get(`http://localhost:8000/api/faculty/placement/all-placements?college=${college}&department=${department}&placement_year=${year}`)
+    const fetchData = async () => {
+      await axios
+        .get(
+          `http://localhost:8000/api/faculty/placement/all-placements?college=${college}&department=${department}&placement_year=${year}`
+        )
+        .then((res) => {
+          const data = res.data.data;
+          setUsers(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    fetchData();
+  }, [college, department, year]);
+
+  const handleSearch = async (e) => {
+    setSearch(e.target.value);
+    await axios
+      .get(
+        `http://localhost:8000/api/faculty/placement/search?enrollment_no=${e.target.value}`
+      )
       .then((res) => {
         const data = res.data.data;
         setUsers(data);
       })
       .catch((err) => {
         console.log(err);
-      })
-    }
-
-    fetchData();
-  },[college, department, year]);
-
-  const handleSearch = async(e) => {
-    setSearch(e.target.value);
-    await axios.get(`http://localhost:8000/api/faculty/placement/search?enrollment_no=${e.target.value}`)
-    .then((res) => {
-      const data = res.data.data;
-      setUsers(data);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  }
+      });
+  };
 
   let srno = 1;
   return (
@@ -56,8 +87,53 @@ function AdminPlacement() {
             <form>
               <div>
                 <span>
-                  College :{" "}
-                  <select onChange={(e) => setCollege(e.target.value)}>
+                  College :
+                  <span>
+                    GCET :{" "}
+                    <input
+                      type="checkbox"
+                      value="GCET"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes2.includes("GCET")}
+                      onChange={handleCheckboxChange2}
+                    />
+                  </span>
+                  <span>
+                    MBIT :{" "}
+                    <input
+                      type="checkbox"
+                      value="MBIT"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes2.includes("MBIT")}
+                      onChange={handleCheckboxChange2}
+                    />
+                  </span>
+                  <span>
+                    ADIT :{" "}
+                    <input
+                      type="checkbox"
+                      value="ADIT"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes2.includes("ADIT")}
+                      onChange={handleCheckboxChange2}
+                    />
+                  </span>
+                  {/* <select
+                    multiple={2}
+                    onChange={(e) => setCollege(e.target.value)}
+                  >
                     <option value="" disabled selected>
                       --Select College--
                     </option>
@@ -65,11 +141,13 @@ function AdminPlacement() {
                     <option value="GCET">GCET</option>
                     <option value="ADIT">ADIT</option>
                     <option value="MBIT">MBIT</option>
-                  </select>
+                  </select> */}
                 </span>
+              </div>
+              <div>
                 <span>
-                  Department :{" "}
-                  <select onChange={(e) => setDepartment(e.target.value)}>
+                  Department :
+                  {/* <select onChange={(e) => setDepartment(e.target.value)}>
                     <option value="" disabled selected>
                       --Select Department--
                     </option>
@@ -79,11 +157,111 @@ function AdminPlacement() {
                     <option value="ME">ME</option>
                     <option value="MC">MC</option>
                     <option value="CH">CH</option>
-                  </select>
+                  </select> */}
+                  <span>
+                    CP :{" "}
+                    <input
+                      type="checkbox"
+                      value="CP"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes.includes("CP")}
+                      onChange={handleCheckboxChange}
+                    />
+                  </span>
+                  <span>
+                    IT :{" "}
+                    <input
+                      type="checkbox"
+                      value="IT"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes.includes("IT")}
+                      onChange={handleCheckboxChange}
+                    />
+                  </span>
+                  <span>
+                    EC :{" "}
+                    <input
+                      type="checkbox"
+                      value="EC"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes.includes("EC")}
+                      onChange={handleCheckboxChange}
+                    />
+                  </span>
+                  <span>
+                    EE :{" "}
+                    <input
+                      type="checkbox"
+                      value="EE"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes.includes("EE")}
+                      onChange={handleCheckboxChange}
+                    />
+                  </span>
+                  <span>
+                    ME :{" "}
+                    <input
+                      type="checkbox"
+                      value="ME"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes.includes("ME")}
+                      onChange={handleCheckboxChange}
+                    />
+                  </span>
+                  <span>
+                    MC :{" "}
+                    <input
+                      type="checkbox"
+                      value="MC"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes.includes("MC")}
+                      onChange={handleCheckboxChange}
+                    />
+                  </span>
+                  <span>
+                    CH :{" "}
+                    <input
+                      type="checkbox"
+                      value="CH"
+                      style={{
+                        width: "24px",
+                        position: "relative",
+                        top: "10px",
+                      }}
+                      checked={selectedCheckboxes.includes("CH")}
+                      onChange={handleCheckboxChange}
+                    />
+                  </span>
                 </span>
+              </div>
+              <div>
                 <span>
-                  Year :{" "}
-                  <select onChange={(e) => setYear(e.target.value)}>
+                  Year :
+                  {/* <select onChange={(e) => setYear(e.target.value)}>
                     <option value="" disabled selected>
                       --Select Year--
                     </option>
@@ -94,7 +272,13 @@ function AdminPlacement() {
                     <option value="2020">2020</option>
                     <option value="2019">2019</option>
                     <option value="2018">2018</option>
-                  </select>
+                  </select> */}
+                  <span>
+                    From : <input style={{ width: "100px" }} type="text" />
+                  </span>
+                  <span>
+                    To : <input style={{ width: "100px" }} type="text" />
+                  </span>
                 </span>
               </div>
             </form>

@@ -659,7 +659,13 @@ const endSemMarks = async (req, res, next) => {
     const enrollment_no = studentObj.enrollment;
     const marks = studentObj.marks;
     try {
-      const resultStd = await Result.findOne({ enrollment_no, batch, college, department, current_semester: semester });
+      const resultStd = await Result.findOne({
+        enrollment_no,
+        batch,
+        college,
+        department,
+        current_semester: semester,
+      });
       if (!resultStd) {
         return res
           .status(500)
@@ -711,12 +717,16 @@ const endSemMarks = async (req, res, next) => {
         }
       });
       await resultStd.save();
-      res.send({ status: "success", msg: "Marks added successfully" });
     } catch (err) {
       console.log(err);
-      res.send({ status: "failed", msg: "Enrollment No. is not provided" });
+      return res
+        .status(500)
+        .send({ status: "failed", msg: "Enrollment No. is not provided" });
     }
   });
+  return res
+    .status(200)
+    .send({ status: "success", msg: "Marks added successfully" });
 };
 
 const calculateSGPA = async (req, res) => {
