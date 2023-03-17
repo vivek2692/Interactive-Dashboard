@@ -3,11 +3,32 @@ import "../CSS/faculty-talent-hunt.css";
 import "../CSS/faculty.css";
 import FacultyNavBar from "../NavBar/faculty-navbar";
 import FacultyTopBar from "../TopBar/faculty-topbar";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 function FacultyTalentHunt() {
   const [criteria, setCriteria] = useState("Skills");
   const [skillhobbyInp, setSkillHobbyInp] = useState("");
   const [search, setSearch] = useState(false);
+  const [users, setUsers] = useState([]);
+
+  const skills = skillhobbyInp.split(",");
+
+  const handleClick = async () => {
+    const obj = { skills: skills };
+
+    await axios
+      .post("http://localhost:8000/api/faculty/search-skill", obj)
+      .then((res) => {
+        const data = res.data;
+        console.log(data.data);
+        setUsers(data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   let srno = 1;
   return (
     <div className="faculty-page">
@@ -53,7 +74,13 @@ function FacultyTalentHunt() {
                       />
                     </span>
                   )}
-                  <button className="searchBtn" onClick={() => setSearch(true)}>
+                  <button
+                    className="searchBtn"
+                    onClick={() => {
+                      setSearch(true);
+                      handleClick();
+                    }}
+                  >
                     Search
                   </button>
                 </div>
@@ -66,25 +93,24 @@ function FacultyTalentHunt() {
                       <th>Name</th>
                       <th>Enrollment no.</th>
                       <th>Contact no.</th>
-                      <th>Skills</th>
-                      <th>Hobbies</th>
+                      {/* <th>Skills</th>
+                      <th>Hobbies</th> */}
                     </tr>
-                    <tr>
-                      <td>{srno++}</td>
-                      <td>Shrut Dalwadi</td>
-                      <td>12002040501070</td>
-                      <td>9913097745</td>
-                      <td>Documentation, Web Development</td>
-                      <td>None</td>
-                    </tr>
-                    <tr>
-                      <td>{srno++}</td>
-                      <td>Vivek Chauhan</td>
-                      <td>12002040501079</td>
-                      <td>9913012345</td>
-                      <td>Web Development</td>
-                      <td>None</td>
-                    </tr>
+                    {users.map((user) => {
+                      return (
+                        <>
+                        <tr>{user.skill}</tr>
+                        {user.students.map((std) => {<tr>
+                          <td>{srno++}</td>
+                          <td>{std.name}</td>
+                          <td>{std.enrollment_no}</td>
+                          <td>{std.contact_no}</td>
+                          {/* <td>Documentation, Web Development</td>
+                          <td>None</td> */}
+                        </tr>})}
+                        </>
+                      );
+                    })}
                   </table>
                 </div>
               )}
