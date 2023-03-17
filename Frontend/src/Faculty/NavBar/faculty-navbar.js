@@ -3,11 +3,12 @@ import { Link, Router, useNavigate, NavLink } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { TfiDashboard } from "react-icons/tfi";
 import { FiUsers } from "react-icons/fi";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { BsCalendarEvent } from "react-icons/bs";
 import { CgOrganisation } from "react-icons/cg";
 import { ImBooks } from "react-icons/im";
 import { SiCoursera } from "react-icons/si";
 import { TbCertificate } from "react-icons/tb";
+import { GiJusticeStar } from "react-icons/gi";
 
 function FacultyNavBar() {
   //const navigate = useNavigate();
@@ -78,6 +79,22 @@ function FacultyNavBar() {
               <TbCertificate style={iconStyles} />
             </span>
             {openMenu && <span className="text">Student Result</span>}
+          </Link>
+        </li>
+        <li>
+          <Link to="/faculty/event-registration">
+            <span>
+              <BsCalendarEvent style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Event Register</span>}
+          </Link>
+        </li>
+        <li>
+          <Link to="/faculty/talent-hunt">
+            <span>
+              <GiJusticeStar style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Talent Hunt</span>}
           </Link>
         </li>
       </ul>

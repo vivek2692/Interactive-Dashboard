@@ -1,0 +1,66 @@
+.faculty-event-management-page {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+.event-management,
+.past-registered-events {
+    width: fit-content;
+    min-width: 100%;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    margin-bottom: 15px;
+    padding: 15px 20px 20px;
+}
+
+.event-form,
+.event {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 17px;
+}
+
+.event-form table,
+.event table {
+    width: 70%;
+    min-width: 500px;
+}
+
+.event-form table tr td:nth-child(2),
+.event table tr td:nth-child(2) {
+    width: 60%;
+    min-width: 150px;
+    height: 40px;
+    font-weight: 400;
+}
+
+.event-form table input {
+    font-size: 17px;
+    width: 95%;
+}
+
+.event-form table textarea {
+    border: none;
+    outline: none;
+    font-size: 17px;
+    width: 95%;
+    resize: none;
+    border-bottom: 1px solid gray;
+    padding: 3px;
+    margin: 10px;
+}
+
+button.delete-event {
+    border: none;
+    border-radius: 4px;
+    background-color: rgb(177, 78, 78);
+    padding: 8px 14px;
+    color: white;
+    font-size: 16px;
+    margin-top: 15px;
+}
