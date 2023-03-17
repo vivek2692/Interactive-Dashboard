@@ -648,6 +648,7 @@ const SearchingCoursera = async (req, res) => {
 };
 
 const endSemMarks = async (req, res, next) => {
+  console.log(req.body);
   const subject = req.body.subject;
   const obj = req.body.obj;
   const batch = req.body.batch;
@@ -655,17 +656,17 @@ const endSemMarks = async (req, res, next) => {
   const department = req.body.department;
   const semester = req.body.semester;
   obj.map(async (studentObj) => {
-    const enrollment_no = studentObj.enrollment_no;
+    const enrollment_no = studentObj.enrollment;
     const marks = studentObj.marks;
     try {
-      const resultStd = await Result.findOne({ enrollment_no, batch });
+      const resultStd = await Result.findOne({ enrollment_no, batch, college, department, current_semester: semester });
       if (!resultStd) {
-        res
+        return res
           .status(500)
           .send({ status: "failed", msg: "Enrollment No. not found" });
       }
       let gradePoint = 0;
-      const counter = resultStd.counter;
+      // const counter = resultStd.counter;
       resultStd.result.map(async (intSubObj) => {
         if (intSubObj.sub_name === subject) {
           intSubObj.final_exam = marks;
@@ -699,13 +700,13 @@ const endSemMarks = async (req, res, next) => {
           });
         }
       });
-      return await resultStd.save();
+      await resultStd.save();
+      res.send({ status: "success", msg: "Marks added successfully" });
     } catch (err) {
       console.log(err);
       res.send({ status: "failed", msg: "Enrollment No. is not provided" });
     }
   });
-  return res.send({ status: "success", msg: "Marks added successfully" });
 };
 
 const calculateSGPA = async (req, res) => {

@@ -58,14 +58,14 @@ function AdminNavBar() {
           </Link>
         </li>
 
-        {/* <li>
+        <li>
           <Link to="/admin/courses">
             <span>
               <ImBooks style={iconStyles} />
             </span>
             {openMenu && <span className="text">Courses</span>}
           </Link>
-        </li> */}
+        </li>
         <li>
           <Link to="/admin/placement-details">
             <span>
@@ -75,7 +75,7 @@ function AdminNavBar() {
           </Link>
         </li>
         <li>
-          <Link to="/admin/coursera">
+          <Link to="/admin/coursera-details">
             <span>
               <SiCoursera style={iconStyles} />
             </span>
@@ -83,7 +83,7 @@ function AdminNavBar() {
           </Link>
         </li>
         <li>
-          <Link>
+          <Link to="/admin/student-result">
             <span>
               <TbCertificate style={iconStyles} />
             </span>

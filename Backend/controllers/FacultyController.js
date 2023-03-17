@@ -690,9 +690,9 @@ const midMarksEntry = async (req, res, next) => {
   const batch = req.body.batch;
   const current_semester = req.body.semester;
   obj.map(async (studentObj) => {
-    if (studentObj.enrollment !== "12002040501079") {
+    // if (studentObj.enrollment !== "12002040501079") {
       const enrollment_no = studentObj.enrollment;
-      const marks = studentObj.marks;
+      const marks = Number(studentObj.marks);
       try {
         const resultStd = await Result.findOne({
           enrollment_no,
@@ -711,7 +711,7 @@ const midMarksEntry = async (req, res, next) => {
         console.log(err);
         res.send({ status: "failed", msg: "Enrollment No. is not provided" });
       }
-    }
+    // }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
 };
@@ -723,7 +723,7 @@ const internalPracMarksEntry = async (req, res, next) => {
   const current_semester = req.body.semester;
 
   obj.map(async (studentObj) => {
-    if (studentObj.enrollment !== "12002040501079") {
+    // if (studentObj.enrollment !== "12002040501079") {
       const enrollment_no = studentObj.enrollment;
       const marks = studentObj.marks;
       try {
@@ -747,7 +747,7 @@ const internalPracMarksEntry = async (req, res, next) => {
         console.log(err);
         res.send({ status: "failed", msg: "Enrollment No. is not provided" });
       }
-    }
+    // }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
 };
@@ -759,7 +759,7 @@ const vivaMarksEntry = async (req, res, next) => {
   const current_semester = req.body.semester;
 
   obj.map(async (studentObj) => {
-    if (studentObj.enrollment !== "12002040501079") {
+    // if (studentObj.enrollment !== "12002040501079") {
       const enrollment_no = studentObj.enrollment;
       const marks = studentObj.marks;
       try {
@@ -783,7 +783,7 @@ const vivaMarksEntry = async (req, res, next) => {
         console.log(err);
         res.send({ status: "failed", msg: "Enrollment No. is not provided" });
       }
-    }
+    // }
   });
   res.send({ status: "success", msg: "Marks added successfully" });
 };
