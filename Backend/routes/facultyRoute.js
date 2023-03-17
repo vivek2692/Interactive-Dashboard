@@ -33,6 +33,7 @@ const {
   GetFaculty,
   addNewEvent,
   deleteEvent,
+  fetchEvent,
 } = require("../controllers/FacultyController");
 
 const router = express.Router();
@@ -82,5 +83,6 @@ router.post("/getFaculty", GetFaculty);
 //Event Management
 router.post("/add-event", addNewEvent);
 router.post("/delete-event", deleteEvent);
+router.post("/fetch-event", fetchEvent);
 
 module.exports = router;

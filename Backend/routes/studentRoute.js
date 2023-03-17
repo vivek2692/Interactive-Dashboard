@@ -10,7 +10,8 @@ const {
   StudentCourseraUpload,
   Searching,
   GetStudent,
-  SearchStudent
+  SearchStudent,
+  addSkills,
 } = require("../controllers/StudentController.js");
 
 // For documents
@@ -38,21 +39,21 @@ const cpUpload = upload.fields([
 // For Coursera
 
 var storage1 = multer.diskStorage({
-    destination: "./coursera/",
-    filename: function (req, file, cb) {
-      //req.body is empty...
-      //How could I get the new_file_name property sent from client here?
-      cb(null, Date.now() + "_" + "coursera_" + file.originalname);
-    },
-  });
+  destination: "./coursera/",
+  filename: function (req, file, cb) {
+    //req.body is empty...
+    //How could I get the new_file_name property sent from client here?
+    cb(null, Date.now() + "_" + "coursera_" + file.originalname);
+  },
+});
 const upload1 = multer({ storage: storage1 });
-  
-const cpUpload1 = upload1.single('image');
+
+const cpUpload1 = upload1.single("image");
 
 const router = express.Router();
 
 router.post("/register", cpUpload, StudentRegister);
-router.post("/coursera", cpUpload1,StudentCourseraUpload);
+router.post("/coursera", cpUpload1, StudentCourseraUpload);
 router.post("/login", StudentLogin);
 router.post("/forgot-password", StudentForgotPassword);
 router.post("/validateOTP", StudentValidateOTP);
@@ -60,5 +61,8 @@ router.patch("/update-password", StudentUpdatePassword);
 router.get("/search", Searching);
 router.get("/searching", SearchStudent);
 router.post("/getStudent", GetStudent);
+
+//skills hobbies
+router.post("/add-skills", addSkills);
 
 module.exports = router;

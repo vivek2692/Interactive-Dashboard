@@ -1291,6 +1291,17 @@ const deleteEvent = async (req, res, next) => {
   }
 };
 
+const fetchEvent = async (req, res, next) => {
+  const { name, cordinator } = req.body;
+  const eventData = await Event.findOne({ name, cordinator });
+  if (!eventData) {
+    return res.status(500).send({ status: "failed", msg: "No events found" });
+  }
+  return res
+    .status(200)
+    .json({ data: eventData, msg: "Event fetched Successfully" });
+};
+
 module.exports = {
   FacultyRegister,
   FacultyLogin,
@@ -1325,4 +1336,5 @@ module.exports = {
   GetFaculty,
   addNewEvent,
   deleteEvent,
+  fetchEvent,
 };

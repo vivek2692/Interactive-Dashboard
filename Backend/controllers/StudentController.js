@@ -437,13 +437,14 @@ const SearchStudent = async (req, res) => {
 // };
 
 const addSkills = async (req, res, next) => {
+  // console.log(req.body);
   const {
     name,
     enrollment_no,
     contact_no,
     email,
     batch,
-    semester,
+    current_semester,
     department,
     college,
     skills,
@@ -454,24 +455,39 @@ const addSkills = async (req, res, next) => {
     contact_no &&
     email &&
     batch &&
-    semester &&
+    current_semester &&
     department &&
     college &&
     skills
   ) {
-    const enrollment_no = Number(enrollment_no);
-    const skilledStd = Skill.findOne({ enrollment_no });
-    if (skilledStd) {
-      updatedSkills = skilledStd.skills + skills;
-      console.log(updatedSkills);
-      const updateSkilledStudent = Skill.findOneAndUpdate(
-        { enrollment_no },
-        { skills: updatedSkills },
-        { runValidators: true, new: true, setDefaultsOnInsert: true }
-      );
-    } else {
-    }
+    const skilledStd = await Skill.findOne({ enrollment_no });
+    if (!skilledStd) {
+      const newSkilledStd = new Skill({
+        name,
+        enrollment_no,
+        contact_no,
+        email,
+        batch,
+        current_semester,
+        department,
+        college,
+        skills,
+      });
+      const result = await newSkilledStd.save();
+      return res
+        .status(200)
+        .send({ data: result, msg: "Skill Add Successfully" });
+    } //else {
+    //   updatedSkills = skilledStd.skills + skills;
+    //   console.log(updatedSkills);
+    //   const updateSkilledStudent = Skill.findOneAndUpdate(
+    //     { enrollment_no },
+    //     { skills: updatedSkills },
+    //     { runValidators: true, new: true, setDefaultsOnInsert: true }
+    //   );
+    // }
   } else {
+    res.status(500).send({ status: "failed", msg: "Enter all the details" });
   }
 };
 
