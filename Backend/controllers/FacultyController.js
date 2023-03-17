@@ -1292,8 +1292,8 @@ const deleteEvent = async (req, res, next) => {
 };
 
 const fetchEvent = async (req, res, next) => {
-  const { name, cordinator } = req.body;
-  const eventData = await Event.findOne({ name, cordinator });
+  // const { name, cordinator } = req.body;
+  const eventData = await Event.find();
   if (!eventData) {
     return res.status(500).send({ status: "failed", msg: "No events found" });
   }

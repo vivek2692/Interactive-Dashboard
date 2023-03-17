@@ -83,6 +83,6 @@ router.post("/getFaculty", GetFaculty);
 //Event Management
 router.post("/add-event", addNewEvent);
 router.post("/delete-event", deleteEvent);
-router.post("/fetch-event", fetchEvent);
+router.get("/fetch-event", fetchEvent);
 
 module.exports = router;
