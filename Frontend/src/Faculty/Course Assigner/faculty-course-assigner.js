@@ -20,37 +20,41 @@ function FacultyCourseAssigner() {
 
   const [batch, setBatch] = useState("");
   const [search, setSearch] = useState("");
-  const [semester, setSemester] = useState(1);
+  const [semester, setSemester] = useState("");
   const [more, setMoreDetails] = useState(false);
   const [Id, setID] = useState("");
   const [courses, setCourses] = useState([]);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const obj = {department: dpt, semester: semester};
+    const obj = { department: dpt, semester: semester };
     const fetchSub = async () => {
-      await axios.post(`http://localhost:8000/api/faculty/getCourses`,obj)
-      .then((res) => {
-        const data = res.data.data;
-        setCourses(data);
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        setCourses([])
-      })
+      await axios
+        .post(`http://localhost:8000/api/faculty/getCourses`, obj)
+        .then((res) => {
+          const data = res.data.data;
+          setCourses(data);
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+          setCourses([]);
+        });
     };
 
-    const fetchStudents = async() => {
-      await axios.post(`http://localhost:8000/api/admin/select-student?college=${clg}&department=${dpt}&semester=${semester}`)
-      .then((res) => {
-        const data = res.data.data;
-        setUsers(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-    }
+    const fetchStudents = async () => {
+      await axios
+        .post(
+          `http://localhost:8000/api/admin/select-student?college=${clg}&department=${dpt}&semester=${semester}`
+        )
+        .then((res) => {
+          const data = res.data.data;
+          setUsers(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
 
     fetchSub();
     fetchStudents();
@@ -58,7 +62,9 @@ function FacultyCourseAssigner() {
 
   const handleSearch = async (e) => {
     setSearch(e.target.value);
-    const res = await axios.get(`http://localhost:8000/api/student/searching?enrollment_no=${e.target.value}&college=${clg}&department=${dpt}`);
+    const res = await axios.get(
+      `http://localhost:8000/api/student/searching?enrollment_no=${e.target.value}&college=${clg}&department=${dpt}`
+    );
     setUsers(res.data.data);
   };
 
@@ -118,78 +124,84 @@ function FacultyCourseAssigner() {
               </center>
             </div>
           </div>
-          <div className="course-table">
-            <h3 style={{ marginBottom: "10px", color: "rgb(143, 143, 145)" }}>
-              Course Details
-            </h3>
-            <table border={1}>
-              <tr>
-                <th>Sr. No.</th>
-                {/* <th>Code</th> */}
-                <th>Title</th>
-                <th>Credits</th>
-                <th>Type</th>
-                {/* <th>Action</th> */}
-              </tr>
-              {courses.map((course) => {
-                return (
-                  <>
-                    <tr key={srno2++}>
-                      <td>{srno2}</td>
-                      {/* <td>{course.code}</td> */}
-                      <td>{course.title}</td>
-                      <td>{course.credits}</td>
-                      <td>{course.type}</td>
-                      {/* <td id="table-actions">
+          {batch && semester && (
+            <div className="course-table">
+              <h3 style={{ marginBottom: "10px", color: "rgb(143, 143, 145)" }}>
+                Course Details
+              </h3>
+              <table border={1}>
+                <tr>
+                  <th>Sr. No.</th>
+                  {/* <th>Code</th> */}
+                  <th>Title</th>
+                  <th>Credits</th>
+                  <th>Type</th>
+                  {/* <th>Action</th> */}
+                </tr>
+                {courses.map((course) => {
+                  return (
+                    <>
+                      <tr key={srno2++}>
+                        <td>{srno2}</td>
+                        {/* <td>{course.code}</td> */}
+                        <td>{course.title}</td>
+                        <td>{course.credits}</td>
+                        <td>{course.type}</td>
+                        {/* <td id="table-actions">
                         <button className="view">
                           <center>Edit</center>
                         </button>
                       </td> */}
+                      </tr>
+                    </>
+                  );
+                })}
+              </table>
+            </div>
+          )}
+        </div>
+        {batch && semester && (
+          <div className="std-course-table">
+            <h3 style={{ marginBottom: "10px", color: "rgb(143, 143, 145)" }}>
+              Assign Courses
+            </h3>
+            <table border={1}>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Name</th>
+                <th>Enrollment No.</th>
+                <th>Department</th>
+                <th>College</th>
+                <th>Semester</th>
+                <th>Action</th>
+              </tr>
+              {users.map((user) => {
+                return (
+                  <>
+                    <tr key={srno1++}>
+                      <td>{srno1}</td>
+                      <td>{user.name}</td>
+                      <td>{user.enrollment_no}</td>
+                      <td>{user.department}</td>
+                      <td>{user.college}</td>
+                      <td>{user.current_semester}</td>
+                      <td id="table-actions">
+                        <Link
+                          to={`/faculty/courses/student/${user.enrollment_no}`}
+                        >
+                          <button className="view">
+                            <center>Assign Courses</center>
+                          </button>
+                        </Link>
+                      </td>
                     </tr>
                   </>
                 );
               })}
             </table>
+            {/* <MaterialReactTable columns={columns} data={Users} /> */}
           </div>
-        </div>
-        <div className="std-course-table">
-          <h3 style={{ marginBottom: "10px", color: "rgb(143, 143, 145)" }}>
-            Assign Courses
-          </h3>
-          <table border={1}>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Name</th>
-              <th>Enrollment No.</th>
-              <th>Department</th>
-              <th>College</th>
-              <th>Semester</th>
-              <th>Action</th>
-            </tr>
-            {users.map((user) => {
-              return (
-                <>
-                  <tr key={srno1++}>
-                    <td>{srno1}</td>
-                    <td>{user.name}</td>
-                    <td>{user.enrollment_no}</td>
-                    <td>{user.department}</td>
-                    <td>{user.college}</td>
-                    <td>{user.current_semester}</td>
-                    <td id="table-actions">
-                      <Link to={`/faculty/courses/student/${user.enrollment_no}`}>
-                        <button className="view">
-                          <center>Assign Courses</center>
-                        </button>
-                      </Link>
-                    </td>
-                  </tr>
-                </>
-              );
-            })}
-          </table>
-          {/* <MaterialReactTable columns={columns} data={Users} /> */}
-        </div>
+        )}
       </div>
     </div>
   );

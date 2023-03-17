@@ -5,6 +5,7 @@ const Student = require("../models/studentModel.js");
 const Result = require("../models/resultModel.js");
 const Coursera = require("../models/courseraModel.js");
 const Placement = require("../models/placementModel");
+const Event = require("../models/eventModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
@@ -1174,7 +1175,7 @@ const GetAllCoursera = async (req, res) => {
   }
 };
 
-const GetFaculty = async(req, res) => {
+const GetFaculty = async (req, res) => {
   const { faculty_id } = req.body;
 
   try {
@@ -1189,7 +1190,106 @@ const GetFaculty = async(req, res) => {
   } catch (error) {
     res.status(500).send({ status: "failed", msg: "Something went wrong" });
   }
-}
+};
+
+const addNewEvent = async (req, res, next) => {
+  const {
+    name,
+    skills,
+    department,
+    college,
+    cordinator,
+    contact_no,
+    description,
+    email,
+    link,
+  } = req.body;
+  if (
+    (name &&
+      skills &&
+      department &&
+      college &&
+      cordinator &&
+      contact_no &&
+      description &&
+      email &&
+      link) ||
+    (name &&
+      skills &&
+      department &&
+      college &&
+      cordinator &&
+      contact_no &&
+      description &&
+      email)
+  ) {
+    let newEvent;
+    if (
+      name &&
+      skills &&
+      department &&
+      college &&
+      cordinator &&
+      contact_no &&
+      description &&
+      email &&
+      link
+    ) {
+      newEvent = new Event({
+        name,
+        skills,
+        department,
+        college,
+        cordinator,
+        contact_no,
+        description,
+        email,
+        link,
+      });
+    } else {
+      newEvent = new Event({
+        name,
+        skills,
+        department,
+        college,
+        cordinator,
+        contact_no,
+        description,
+        email,
+      });
+    }
+    try {
+      const event = await newEvent.save();
+      return res
+        .status(200)
+        .json({ data: event, msg: "Event Add Successfully" });
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ status: "failed", msg: "Unable to register the event" });
+    }
+  } else {
+    res.status(500).send({ status: "failed", msg: "All fields are required" });
+  }
+};
+
+const deleteEvent = async (req, res, next) => {
+  const { name, cordinator } = req.body;
+  const event = await Event.findOne({ name, cordinator });
+  if (!event) {
+    return res
+      .status(500)
+      .send({ status: "failed", msg: "No such event exists" });
+  }
+  const result = await Event.deleteOne({ name, cordinator });
+  if (!result) {
+    return res.status(500).send({ status: "failed", msg: "No events deleted" });
+  } else {
+    return res
+      .status(200)
+      .json({ data: result, msg: "Event Deleted Successfully" });
+  }
+};
 
 module.exports = {
   FacultyRegister,
@@ -1223,4 +1323,6 @@ module.exports = {
   GetCourses,
   GetAllCoursera,
   GetFaculty,
+  addNewEvent,
+  deleteEvent,
 };
