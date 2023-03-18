@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import MultiStepProgressBar from "./progress-bar";
 import axios from "axios";
+<<<<<<< Updated upstream
 import { useNavigate } from "react-router-dom";
+=======
+import {useNavigate} from "react-router-dom";
+import moment from "moment";
+>>>>>>> Stashed changes
 // import { useForm } from 'react-step-builder';
 
 function SubForm2(props) {
@@ -40,9 +45,15 @@ function SubForm2(props) {
     console.log(props.state);
     const data = new FormData();
 
+<<<<<<< Updated upstream
     for (const key in props.state) {
       if (key !== "files" && key !== "birthday") {
         data.append(key, props.state[key]);
+=======
+    for(const key in props.state){
+      if(key !== "files" && key !== "birthday"){
+        data.append(key,props.state[key]);
+>>>>>>> Stashed changes
       }
     }
 
@@ -50,7 +61,11 @@ function SubForm2(props) {
       data.append(key, images[key]);
     }
 
+<<<<<<< Updated upstream
     data.append("birthday", new Date(props.state.birthday));
+=======
+    data.append("birthday", new Date(props.state.birthday))
+>>>>>>> Stashed changes
 
     console.log("data", data);
     await axios

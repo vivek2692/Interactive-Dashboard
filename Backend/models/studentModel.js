@@ -47,6 +47,11 @@ const StudentSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    
+    birthday: {
+      type: Date,
+      required: true
+    },
 
     admission_source: {
       type: String,

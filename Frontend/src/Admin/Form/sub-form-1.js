@@ -47,6 +47,19 @@ function SubForm1(props) {
             </td>
           </tr>
           <tr>
+            <td>Birthday : </td>
+            <td>
+              <input
+                type="date"
+                name="birthday"
+                value={props.getState("birthday","")}
+                onChange={props.handleChange}
+                placeholder="Enter Mobile Number"
+                required
+              />
+            </td>
+          </tr>
+          <tr>
             <td>Enrollment no. :</td>
             <td>
               <input
