@@ -1,11 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../CSS/admin-faculty-comparison.css";
-import { Faculties } from "../Data/faculty-info";
+// import { Faculties } from "../Data/faculty-info";
 import AdminNavBar from "../NavBar/admin-navbar";
 import AdminTopBar from "../TopBar/admin-topbar";
 import "../CSS/admin.css";
+import axios from "axios";
 
 function AdminFacultyComparison() {
+  const [faculties, setFaculties] = useState([]);
+  const [department, setDepartment] = useState("");
+  const [college, setCollege] = useState("");
+
+  useEffect(() => {
+    const obj = {college: college, department: department};
+    const fetchData = async() => {
+      await axios.post("http://localhost:8000/api/admin/show-comparision",obj)
+      .then((res) => {
+        const data = res.data.data;
+        console.log(data);
+        setFaculties(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+    }
+
+    fetchData();
+  },[])
   return (
     <div className="admin-page">
       {/* <Router> */}
@@ -18,8 +39,8 @@ function AdminFacultyComparison() {
             <div>
               <span>
                 College :{" "}
-                <select>
-                  <option value="" selected>
+                <select onChange={(e) => setCollege(e.target.value)}>
+                  <option value="" selected >
                     --Select College--
                   </option>
                   <option value="GCET">GCET</option>
@@ -29,7 +50,7 @@ function AdminFacultyComparison() {
               </span>
               <span>
                 Department :{" "}
-                <select>
+                <select onChange={(e) => setDepartment(e.target.value)}>
                   <option value="" selected>
                     --Select Department--
                   </option>
@@ -43,7 +64,7 @@ function AdminFacultyComparison() {
             </div>
           </div>
           <div className="comparison-profiles">
-            {Faculties.map((faculty) => {
+            {faculties.map((faculty) => {
               return (
                 <div className="profile-card">
                   <img
@@ -68,20 +89,20 @@ function AdminFacultyComparison() {
                       <td>
                         <b>Students Certified : </b>
                       </td>
-                      <td>{faculty.studentcertifiedunder}</td>
+                      <td>{faculty.students.length}</td>
                     </tr>
                     <tr>
                       <td>
                         <b>Events Coordinated : </b>
                       </td>
-                      <td>{faculty.noofevents}</td>
+                      <td>{faculty.counter}</td>
                     </tr>
-                    <tr>
+                    {/* <tr>
                       <td>
                         <b>Years of Experience : </b>
                       </td>
-                      <td>{faculty.yrsofexperience}</td>
-                    </tr>
+                      <td>{10}</td>
+                    </tr> */}
                   </table>
                 </div>
               );
