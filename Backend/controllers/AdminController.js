@@ -9,6 +9,7 @@ const Coursera = require("../models/courseraModel");
 const Result = require("../models/resultModel");
 const Subject = require("../models/subjectModel");
 const Placement = require("../models/placementModel");
+const FacultyComp = require("../models/facultyCompareModel");
 
 //Register Admin
 const AdminRegister = async (req, res) => {
@@ -885,6 +886,15 @@ const getPalcementDetial = async (req, res, next) => {
   }
   res.status(200).send({ status: "success", data: placementArr });
 };
+
+const getCompData = async (req, res, next) => {
+  const { department, college } = req.body;
+  const findFacultyComp = await FacultyComp.find({ department, college });
+  if (!findFacultyComp) {
+    return res.status(500).send({ status: "failed", msg: "No Student found" });
+  }
+  res.status(200).send({ status: "success", data: findFacultyComp });
+};
 module.exports = {
   AdminRegister,
   AdminLogin,
@@ -904,4 +914,5 @@ module.exports = {
   calculateSGPA,
   showBackLogStudents,
   getPalcementDetial,
+  getCompData,
 };

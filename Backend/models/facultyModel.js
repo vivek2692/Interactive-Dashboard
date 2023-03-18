@@ -36,11 +36,12 @@ const FacultySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
-
+    years_of_exp: {
+      type: Number,
+    },
     position: {
       type: String,
-      required: true
+      required: true,
     },
 
     address: {

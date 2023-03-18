@@ -7,6 +7,7 @@ const Coursera = require("../models/courseraModel.js");
 const Placement = require("../models/placementModel");
 const Event = require("../models/eventModel");
 const Skill = require("../models/skillModel");
+const FacultyComp = require("../models/facultyCompareModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const moment = require("moment");
@@ -25,6 +26,7 @@ const FacultyRegister = async (req, res) => {
     department,
     role,
     contact,
+    // years_of_exp,
   } = req.body;
 
   if (
@@ -38,7 +40,8 @@ const FacultyRegister = async (req, res) => {
     college &&
     department &&
     role &&
-    contact
+    contact //&&
+    // years_of_exp
   ) {
     const user = await Faculty.findOne({ email: email });
 
@@ -61,10 +64,19 @@ const FacultyRegister = async (req, res) => {
         department,
         role,
         contact,
+        // years_of_exp,
+      });
+
+      const compFaculty = new FacultyComp({
+        facultyName: name,
+        college,
+        department,
+        gender,
       });
 
       try {
         const user = await newFaculty.save();
+        const fsave = await compFaculty.save();
         const { password, otp, ...others } = user._doc;
         res.status(200).json({ ...others });
       } catch (error) {
@@ -1261,6 +1273,14 @@ const addNewEvent = async (req, res, next) => {
         email,
       });
     }
+    const faculty_comp = await FacultyComp.findOne({
+      name: cordinator,
+      department,
+      college,
+    });
+    const count = faculty_comp.counter;
+    faculty_comp.counter = count + 1;
+    const facultyAdd = await faculty_comp.save();
     try {
       const event = await newEvent.save();
       return res

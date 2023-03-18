@@ -18,6 +18,7 @@ const {
   calculateSGPA,
   showBackLogStudents,
   getPalcementDetial,
+  getCompData,
 } = require("../controllers/AdminController");
 const adminController = require("../controllers/AdminController");
 const router = express.Router();
@@ -54,4 +55,8 @@ router.post("/show-backlog", showBackLogStudents);
 
 //show-placement
 router.post("/show-placement", getPalcementDetial);
+
+//show-comparision
+router.post("/show-comparision", getCompData);
+
 module.exports = router;

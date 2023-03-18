@@ -5,6 +5,7 @@ const Result = require("../models/resultModel.js");
 const Event = require("../models/eventModel.js");
 const Subject = require("../models/subjectModel.js");
 const Skill = require("../models/skillModel.js");
+const FacultyComp = require("../models/facultyCompareModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { update } = require("../models/facultyModel.js");
@@ -285,8 +286,15 @@ const StudentUpdatePassword = async (req, res) => {
 };
 
 const StudentCourseraUpload = async (req, res) => {
-  const { name, fname, enrollment_no, college, department, current_semester } =
-    req.body;
+  const {
+    name,
+    fname,
+    enrollment_no,
+    college,
+    department,
+    current_semester,
+    f_name,
+  } = req.body;
 
   // console.log(req.file);
 
@@ -296,10 +304,15 @@ const StudentCourseraUpload = async (req, res) => {
     enrollment_no &&
     current_semester &&
     college &&
-    department
+    department &&
+    f_name
   ) {
     const student = await Coursera.findOne({ enrollment_no });
-
+    const faculty_comp = await FacultyComp.findOne({
+      f_name,
+      department,
+      college,
+    });
     if (student) {
       let isExist = false;
       student.courses.map((std) => {
@@ -307,6 +320,7 @@ const StudentCourseraUpload = async (req, res) => {
         if (std.semester === Number(current_semester)) {
           // console.log(std.semester);
           std.certificates.push({ name: fname, image: req.file.path });
+
           isExist = true;
         }
       });
@@ -317,16 +331,24 @@ const StudentCourseraUpload = async (req, res) => {
           certificates: [{ name: fname, image: req.file.path }],
         });
       }
-
-      // student.courses.map((std) => {
-      //   if(std.semester === current_semester){
-      //     std.certificates.push({name: fname, image: req.file.path})
-      //   }
-      // })
-      // student.courses.push({ name: name, image: req.file.path });
-      student.save();
+      let stExist = false;
+      faculty_comp.students.map((student) => {
+        if (student) {
+          stExist = true;
+        }
+      });
+      if (stExist == false) {
+        faculty_comp.students.push(name);
+      }
+      await faculty_comp.save();
+      await student.save();
       res.status(200).json(student);
     } else {
+      const faculty_comp = await FacultyComp.findOne({
+        f_name,
+        department,
+        college,
+      });
       const newStudent = new Coursera({
         name,
         enrollment_no,
@@ -348,6 +370,16 @@ const StudentCourseraUpload = async (req, res) => {
 
       try {
         // const coursera = await newStudent.populate([{path: 'Student', select: 'current_semester', strictPopulate: false}]);
+        let stExist = false;
+        faculty_comp.students.map((student) => {
+          if (student) {
+            stExist = true;
+          }
+        });
+        if (stExist == false) {
+          faculty_comp.students.push(name);
+        }
+        await faculty_comp.save();
         const coursera = await newStudent.save();
         res.status(200).json(coursera);
       } catch (error) {
