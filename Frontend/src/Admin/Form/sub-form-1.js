@@ -39,7 +39,7 @@ function SubForm1(props) {
               <input
                 type="number"
                 name="contact"
-                value={props.getState("contact","")}
+                value={props.getState("contact", "")}
                 onChange={props.handleChange}
                 placeholder="Enter Mobile Number"
                 required
@@ -60,11 +60,11 @@ function SubForm1(props) {
             </td>
           </tr>
           <tr>
-          <td>Gender : </td>
+            <td>Gender : </td>
             <td>
               <select
                 name="gender"
-                value={props.getState("gender","")}
+                value={props.getState("gender", "")}
                 onChange={props.handleChange}
               >
                 <option value="" selected>
@@ -73,6 +73,18 @@ function SubForm1(props) {
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
+            </td>
+          </tr>
+          <tr>
+            <td>D.O.B. : </td>
+            <td>
+              <input
+                type="Date"
+                name="birthday"
+                value={props.getState("birthday")}
+                onChange={props.handleChange}
+                required
+              />
             </td>
           </tr>
         </table>
@@ -86,7 +98,7 @@ function SubForm1(props) {
           Previous
         </button>
         <button className="multistep-form-btn" onClick={props.next}>
-        {/* <button className="multistep-form-btn" onClick={() => console.log(props.state)}> */}
+          {/* <button className="multistep-form-btn" onClick={() => console.log(props.state)}> */}
           Next
         </button>
       </div>

@@ -1,101 +1,183 @@
-import React, { useState, useEffect } from "react";
-import {
-  RadialChart,
-  XYPlot,
-  VerticalBarSeries,
-  XAxis,
-  YAxis,
-  VerticalGridLines,
-  HorizontalGridLines,
-  DiscreteColorLegend,
-} from "react-vis";
-import { VictoryPie, VictoryLabel, VictoryBar } from "victory";
-//import ReactEcharts from "echarts-for-react";
-//import { ResponsivePie } from "nivo/lib/components/charts/pie";
+import React, { useState, PureComponent, useEffect } from "react";
+import { Chart } from "react-google-charts";
 import "../CSS/admin-home.css";
+import "../CSS/admin.css";
 import AdminNavBar from "../NavBar/admin-navbar";
 import AdminTopBar from "../TopBar/admin-topbar";
-import "../CSS/admin.css";
 import axios from "axios";
 
 function AdminHome() {
   const [college, setCollege] = useState("ALL");
-  const [stats, setStats] = useState({});
+  const [college1, setCollege1] = useState("ALL");
+  const [department, setDepartment] = useState("CP");
+
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      axios.get("http://localhost:8000/api/admin/stats").then((res) => {
-        const data = res;
-        setStats(data.data.data);
-        console.log(data.data.data);
-      });
+    const fetchData = async () => {
+      await axios
+        .get("http://localhost:8000/api/admin/stats")
+        .then((res) => {
+          const data = res.data.data;
+          console.log(data);
+          setData(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     };
 
-    fetchStats();
+    fetchData();
   }, []);
 
-  const allData = [
-    { angle: stats.all_first_year, color: "black", label: "1st" },
-    { angle: stats.all_second_year, color: "cyan", label: "2nd" },
-    { angle: stats.all_third_year, color: "pink", label: "3rd" },
-    { angle: stats.all_fourth_year, color: "green", label: "4th" },
+  const data1 = [
+    ["College", "No. of Students"],
+    ["GCET", data.gcet_students],
+    ["ADIT", data.adit_students],
+    ["MBIT", data.mbit_students],
   ];
 
-  const allDeptData = [
-    { angle: stats.all_cp, color: "black", label: "CP" },
-    { angle: stats.all_it, color: "cyan", label: "IT" },
-    { angle: stats.all_ec, color: "pink", label: "EC" },
-    { angle: stats.all_ee, color: "blue", label: "EE" },
-    { angle: stats.all_me, color: "red", label: "ME" },
-    { angle: stats.all_mc, color: "green", label: "MC" },
-    { angle: stats.all_ch, color: "orange", label: "CH" },
+  const options1 = {
+    chartArea: {
+      height: "95%",
+      width: "95%",
+    },
+    slices: {
+      0: { color: "#00008B" },
+      1: { color: "#0020C2" },
+      2: { color: "#2B60DE" },
+      3: { color: "#357EC7" },
+      4: { color: "#6698FF" },
+      5: { color: "#050a30" },
+      6: { color: "#41729f" },
+      7: { color: "#d4f1f4" },
+    },
+    height: 350,
+    width: 350,
+  };
+
+  const data2 = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.total_placements],
   ];
 
-  const gcetDeptData = [
-    { angle: stats.gcet_cp, color: "black", label: "CP" },
-    { angle: stats.gcet_it, color: "cyan", label: "IT" },
-    { angle: stats.gcet_ec, color: "pink", label: "EC" },
-    { angle: stats.gcet_ee, color: "blue", label: "EE" },
-    { angle: stats.gcet_me, color: "red", label: "ME" },
-    { angle: stats.gcet_mc, color: "green", label: "MC" },
-    { angle: stats.gcet_ch, color: "orange", label: "CH" },
+  const all_data = [
+    ["Department", "No. of Students"],
+    ["CP", data.all_cp],
+    ["IT", data.all_it],
+    ["EC", data.all_ec],
+    ["EE", data.all_ee],
+    ["ME", data.all_me],
+    ["MC", data.all_mc],
+    ["CH", data.all_ch],
+  ];
+  const gcet_data = [
+    ["Department", "No. of Students"],
+    ["CP", data.gcet_cp],
+    ["IT", data.gcet_it],
+    ["EC", data.gcet_ec],
+    ["EE", data.gcet_ee],
+    ["ME", data.gcet_me],
+    ["MC", data.gcet_mc],
+    ["CH", data.gcet_ch],
+  ];
+  const mbit_data = [
+    ["Department", "No. of Students"],
+    ["CP", data.mbit_cp],
+    ["IT", data.mbit_it],
+  ];
+  const adit_data = [
+    ["Department", "No. of Students"],
+    ["CP", data.adit_cp],
+    ["IT", data.adit_it],
+    ["EC", data.adit_ec],
+    ["EE", data.adit_ee],
+    ["ME", data.adit_me],
+    ["MC", data.adit_mc],
+    ["CH", data.adit_ch],
   ];
 
-  const aditDeptData = [
-    { angle: stats.adit_cp, color: "black", label: "CP" },
-    { angle: stats.adit_it, color: "cyan", label: "IT" },
-    { angle: stats.adit_ec, color: "pink", label: "EC" },
-    { angle: stats.adit_ee, color: "blue", label: "EE" },
-    { angle: stats.adit_me, color: "red", label: "ME" },
-    { angle: stats.adit_mc, color: "green", label: "MC" },
-    { angle: stats.adit_ch, color: "orange", label: "CH" },
+  const gcet_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.gcet_placement],
+  ];
+  const mbit_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.mbit_placement],
+  ];
+  const adit_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.adit_placement],
   ];
 
-  const mbitDeptData = [
-    { angle: stats.mbit_cp, color: "black", label: "CP" },
-    { angle: stats.mbit_it, color: "cyan", label: "IT" },
+  const cp_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.cp_placement],
+  ];
+  const it_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.it_placement],
+  ];
+  const ec_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.ec_placement],
+  ];
+  const ee_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.ee_placement],
+  ];
+  const me_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.me_placement],
+  ];
+  const mc_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.mc_placement],
+  ];
+  const ch_placement_data = [
+    ["Year", "Placements"],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.ch_placement],
   ];
 
-  const gcetData = [
-    { angle: stats.gcet_first_year, color: "black", label: "1st" },
-    { angle: stats.gcet_second_year, color: "cyan", label: "2nd" },
-    { angle: stats.gcet_third_year, color: "pink", label: "3rd" },
-    { angle: stats.gcet_fourth_year, color: "green", label: "4th" },
-  ];
-
-  const aditData = [
-    { angle: stats.adit_first_year, color: "black", label: "1st" },
-    { angle: stats.adit_second_year, color: "cyan", label: "2nd" },
-    { angle: stats.adit_third_year, color: "pink", label: "3rd" },
-    { angle: stats.adit_fourth_year, color: "green", label: "4th" },
-  ];
-
-  const mbitData = [
-    { angle: stats.mbit_first_year, color: "black", label: "1st" },
-    { angle: stats.mbit_second_year, color: "cyan", label: "2nd" },
-    { angle: stats.mbit_third_year, color: "pink", label: "3rd" },
-    { angle: stats.mbit_fourth_year, color: "green", label: "4th" },
-  ];
+  const options2 = {
+    title: "College Placements",
+    width: 600,
+    height: 400,
+    bar: { groupWidth: "95%" },
+  };
 
   return (
     <div className="admin-page">
@@ -107,19 +189,20 @@ function AdminHome() {
           <div className="uni-students">
             <h2>Organization Overview</h2>
             <div>
-              <div style={{ zIndex: "-1" }}>
-                <VictoryPie
-                  data={[
-                    { x: "GCET", y: stats.gcet_students },
-                    { x: "ADIT", y: stats.adit_students },
-                    { x: "MBIT", y: stats.mbit_students },
-                  ]}
-                  labelComponent={<VictoryLabel dy={30} />}
-                  colorScale={["#60b2f0", "#c2d9e8", "#027d8d"]}
-                  labels={({ datum }) => `${datum.x}:${datum.y}`}
-                  height={350}
-                  width={430}
-                />
+              <div style={{ margin: "30px" }}>
+                <Chart chartType="PieChart" data={data1} options={options1} />
+                {/* <VictoryPie
+              data={[
+                { x: "GCET", y: 10 },
+                { x: "ADIT", y: 130 },
+                { x: "MBIT", y: 90 },
+              ]}
+              labelComponent={<VictoryLabel dy={30} />}
+              colorScale={["#60b2f0", "#c2d9e8", "#027d8d"]}
+              //labels={({ datum }) => `${datum.x}:${datum.y}`}
+              height={350}
+              width={350}
+            /> */}
               </div>
               {/* <div>
             <RadialChart
@@ -133,493 +216,267 @@ function AdminHome() {
               orientation="vertical"
             />
           </div> */}
-              <div id="clg-dropdown">
-                <span>
-                  College :{" "}
-                  <select onChange={(e) => setCollege(e.target.value)}>
-                    <option value="ALL" selected>
-                      ALL
-                    </option>
-                    <option value="GCET">GCET</option>
-                    <option value="ADIT">ADIT</option>
-                    <option value="MBIT">MBIT</option>
-                  </select>
-                </span>
-              </div>
+
               <div>
                 <div>
                   <div className="org-info">
-                    <p>Total Students : {stats.total_students}</p>
+                    <p>Total Students : {data.total_students}</p>
                   </div>
                   <div className="org-info">
-                    <p>Total Fields Offered : {stats.total_departments}</p>
+                    <p>Total Programs Offered : {data.total_departments}</p>
                   </div>
                 </div>
                 <div>
                   <div className="org-info">
-                    <p>Total Faculties : {stats.total_faculties}</p>
+                    <p>Total Faculties : {data.total_faculties}</p>
                   </div>
                   <div className="org-info">
-                    <p>No. of Placements in last year : {stats.placement}</p>
+                    <p>No. of Placements : {data.total_placements}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div className="clg-students">
-            <div>
-              <h2>Department wise Distribution</h2>
-            </div>
+            <h2>College Wise Distribution</h2>
             <div className="clg-graphs">
-              {college === "ALL" && (
-                <>
-                  <div className="graph">
-                    <RadialChart
-                      data={allDeptData}
-                      animation={{ duration: 400 }}
-                      showLabels={true}
-                      height={250}
-                      width={250}
-                      labelsStyle={{
-                        fill: "black",
-                        dominantBaseline: "middle",
-                        textAnchor: "middle",
-                      }}
+              <div className="graph">
+                <div className="clg-dropdown">
+                  <span>
+                    College :{" "}
+                    <select onChange={(e) => setCollege(e.target.value)}>
+                      <option value="ALL" selected>
+                        All
+                      </option>
+                      <option value="GCET">GCET</option>
+                      <option value="ADIT">ADIT</option>
+                      <option value="MBIT">MBIT</option>
+                    </select>
+                  </span>
+                </div>
+                {college === "ALL" && (
+                  <div>
+                    <Chart
+                      chartType="PieChart"
+                      data={all_data}
+                      options={options1}
                     />
-                    <center>
-                      <h3>ALL</h3>
-                    </center>
-                    <table>
-                      <tr>
-                        <td>CP Department : </td>
-                        <td>{stats.all_cp}</td>
-                      </tr>
-                      <tr>
-                        <td>IT Department : </td>
-                        <td>{stats.all_it}</td>
-                      </tr>
-                      <tr>
-                        <td>EC Department : </td>
-                        <td>{stats.all_ec}</td>
-                      </tr>
-                      <tr>
-                        <td>EE Department : </td>
-                        <td>{stats.all_ee}</td>
-                      </tr>
-                      <tr>
-                        <td>ME Department : </td>
-                        <td>{stats.all_me}</td>
-                      </tr>
-                      <tr>
-                        <td>MC Department : </td>
-                        <td>{stats.all_mc}</td>
-                      </tr>
-                      <tr>
-                        <td>CH Department : </td>
-                        <td>{stats.all_ch}</td>
-                      </tr>
-                    </table>
                   </div>
-
-                  <div className="graph">
-                    <RadialChart
-                      data={allData}
-                      animation={{ duration: 400 }}
-                      showLabels={true}
-                      height={250}
-                      width={250}
-                      labelsStyle={{
-                        fill: "black",
-                        dominantBaseline: "middle",
-                        textAnchor: "middle",
-                      }}
+                )}
+                {college === "GCET" && (
+                  <div>
+                    <Chart
+                      chartType="PieChart"
+                      data={gcet_data}
+                      options={options1}
                     />
-                    <center>
-                      <h3>ALL</h3>
-                    </center>
-                    <table>
-                      <tr>
-                        <td>1st year students : </td>
-                        <td>{stats.all_first_year}</td>
-                      </tr>
-                      <tr>
-                        <td>2nd year students : </td>
-                        <td>{stats.all_second_year}</td>
-                      </tr>
-                      <tr>
-                        <td>3rd year students : </td>
-                        <td>{stats.all_third_year}</td>
-                      </tr>
-                      <tr>
-                        <td>4th year students : </td>
-                        <td>{stats.all_fourth_year}</td>
-                      </tr>
-                      <tr>
-                        <td>Total Faculties : </td>
-                        <td>{stats.total_faculties}</td>
-                      </tr>
-                      <tr>
-                        <td>Total Departments : </td>
-                        <td>7</td>
-                      </tr>
-                    </table>
                   </div>
-                </>
-              )}
-              {college === "GCET" && (
-                <>
-                  <div className="graph">
-                    <RadialChart
-                      data={gcetDeptData}
-                      animation={{ duration: 400 }}
-                      showLabels={true}
-                      height={250}
-                      width={250}
-                      labelsStyle={{
-                        fill: "black",
-                        dominantBaseline: "middle",
-                        textAnchor: "middle",
-                      }}
+                )}
+                {college === "MBIT" && (
+                  <div>
+                    <Chart
+                      chartType="PieChart"
+                      data={mbit_data}
+                      options={options1}
                     />
-                    <center>
-                      <h3>GCET</h3>
-                    </center>
-                    <table>
-                      <tr>
-                        <td>CP Department : </td>
-                        <td>{stats.gcet_cp}</td>
-                      </tr>
-                      <tr>
-                        <td>IT Department : </td>
-                        <td>{stats.gcet_it}</td>
-                      </tr>
-                      <tr>
-                        <td>EC Department : </td>
-                        <td>{stats.gcet_ec}</td>
-                      </tr>
-                      <tr>
-                        <td>EE Department : </td>
-                        <td>{stats.gcet_ee}</td>
-                      </tr>
-                      <tr>
-                        <td>ME Department : </td>
-                        <td>{stats.gcet_me}</td>
-                      </tr>
-                      <tr>
-                        <td>MC Department : </td>
-                        <td>{stats.gcet_mc}</td>
-                      </tr>
-                      <tr>
-                        <td>CH Department : </td>
-                        <td>{stats.gcet_ch}</td>
-                      </tr>
-                    </table>
                   </div>
-
-                  <div className="graph">
-                    <RadialChart
-                      data={gcetData}
-                      animation={{ duration: 400 }}
-                      showLabels={true}
-                      height={250}
-                      width={250}
-                      labelsStyle={{
-                        fill: "black",
-                        dominantBaseline: "middle",
-                        textAnchor: "middle",
-                      }}
+                )}
+                {college === "ADIT" && (
+                  <div>
+                    <Chart
+                      chartType="PieChart"
+                      data={adit_data}
+                      options={options1}
                     />
-                    <center>
-                      <h3>GCET</h3>
-                    </center>
-                    <table>
-                      <tr>
-                        <td>1st year students : </td>
-                        <td>{stats.gcet_first_year}</td>
-                      </tr>
-                      <tr>
-                        <td>2nd year students : </td>
-                        <td>{stats.gcet_second_year}</td>
-                      </tr>
-                      <tr>
-                        <td>3rd year students : </td>
-                        <td>{stats.gcet_third_year}</td>
-                      </tr>
-                      <tr>
-                        <td>4th year students : </td>
-                        <td>{stats.gcet_fourth_year}</td>
-                      </tr>
-                      <tr>
-                        <td>Total Faculties : </td>
-                        <td>{stats.gcet_faculties}</td>
-                      </tr>
-                      <tr>
-                        <td>Total Departments : </td>
-                        <td>7</td>
-                      </tr>
-                    </table>
                   </div>
-                </>
-              )}
-              {college === "ADIT" && (
-                <>
-                  <div className="graph">
-                    <RadialChart
-                      data={aditDeptData}
-                      animation={{ duration: 400 }}
-                      showLabels={true}
-                      height={250}
-                      width={250}
-                      labelsStyle={{
-                        fill: "black",
-                        dominantBaseline: "middle",
-                        textAnchor: "middle",
-                      }}
-                    />
-                    <center>
-                      <h3>ADIT</h3>
-                    </center>
-                    <table>
-                      <tr>
-                        <td>CP Department : </td>
-                        <td>{stats.adit_cp}</td>
-                      </tr>
-                      <tr>
-                        <td>IT Department : </td>
-                        <td>{stats.adit_it}</td>
-                      </tr>
-                      <tr>
-                        <td>EC Department : </td>
-                        <td>{stats.adit_ec}</td>
-                      </tr>
-                      <tr>
-                        <td>EE Department : </td>
-                        <td>{stats.adit_ee}</td>
-                      </tr>
-                      <tr>
-                        <td>ME Department : </td>
-                        <td>{stats.adit_me}</td>
-                      </tr>
-                      <tr>
-                        <td>MC Department : </td>
-                        <td>{stats.adit_mc}</td>
-                      </tr>
-                      <tr>
-                        <td>CH Department : </td>
-                        <td>{stats.adit_ch}</td>
-                      </tr>
-                    </table>
+                )}
+              </div>
+              <div className="stats">
+                <div>
+                  <div className="org-info2">
+                    <p>PhD Faculties : {data.total_phd}</p>
                   </div>
-
-                  <div className="graph">
-                    <RadialChart
-                      data={aditData}
-                      animation={{ duration: 400 }}
-                      showLabels={true}
-                      height={250}
-                      width={250}
-                      labelsStyle={{
-                        fill: "black",
-                        dominantBaseline: "middle",
-                        textAnchor: "middle",
-                      }}
-                    />
-                    <center>
-                      <h3>ADIT</h3>
-                    </center>
-                    <table>
-                      <tr>
-                        <td>1st year students : </td>
-                        <td>{stats.adit_first_year}</td>
-                      </tr>
-                      <tr>
-                        <td>2nd year students : </td>
-                        <td>{stats.adit_second_year}</td>
-                      </tr>
-                      <tr>
-                        <td>3rd year students : </td>
-                        <td>{stats.adit_third_year}</td>
-                      </tr>
-                      <tr>
-                        <td>4th year students : </td>
-                        <td>{stats.adit_fourth_year}</td>
-                      </tr>
-                      <tr>
-                        <td>Total Faculties : </td>
-                        <td>{stats.adit_faculties}</td>
-                      </tr>
-                      <tr>
-                        <td>Total Departments : </td>
-                        <td>7</td>
-                      </tr>
-                    </table>
+                  <div className="org-info2">
+                    <p>PhD Pursuing Faculties : {data.total_pur_phd}</p>
                   </div>
-                </>
-              )}
-              {college === "MBIT" && (
-                <>
-                  <div className="graph">
-                    <RadialChart
-                      data={mbitDeptData}
-                      animation={{ duration: 400 }}
-                      showLabels={true}
-                      height={250}
-                      width={250}
-                      labelsStyle={{
-                        fill: "black",
-                        dominantBaseline: "middle",
-                        textAnchor: "middle",
-                      }}
-                    />
-                    <center>
-                      <h3>MBIT</h3>
-                    </center>
-                    <table>
-                      <tr>
-                        <td>CP Department : </td>
-                        <td>{stats.mbit_cp}</td>
-                      </tr>
-                      <tr>
-                        <td>IT Department : </td>
-                        <td>{stats.mbit_it}</td>
-                      </tr>
-                    </table>
+                </div>
+                <div>
+                  <div className="org-info2">
+                    <p>Master's Faculties : {data.total_mtech}</p>
                   </div>
-
-                  <div className="graph">
-                    <RadialChart
-                      data={mbitData}
-                      animation={{ duration: 400 }}
-                      showLabels={true}
-                      height={250}
-                      width={250}
-                      labelsStyle={{
-                        fill: "black",
-                        dominantBaseline: "middle",
-                        textAnchor: "middle",
-                      }}
-                    />
-                    <center>
-                      <h3>MBIT</h3>
-                    </center>
-                    <table>
-                      <tr>
-                        <td>1st year students : </td>
-                        <td>{stats.mbit_first_year}</td>
-                      </tr>
-                      <tr>
-                        <td>2nd year students : </td>
-                        <td>{stats.mbit_second_year}</td>
-                      </tr>
-                      <tr>
-                        <td>3rd year students : </td>
-                        <td>{stats.mbit_third_year}</td>
-                      </tr>
-                      <tr>
-                        <td>4th year students : </td>
-                        <td>{stats.mbit_fourth_year}</td>
-                      </tr>
-                      <tr>
-                        <td>Total Faculties : </td>
-                        <td>{stats.mbit_faculties}</td>
-                      </tr>
-                      <tr>
-                        <td>Total Departments : </td>
-                        <td>2</td>
-                      </tr>
-                    </table>
+                  <div className="org-info2">
+                    <p>Total Faculties : {data.total_faculties}</p>
                   </div>
-                </>
-              )}
+                </div>
+                <div>
+                  <div className="org-info2">
+                    <p>Male Students : {data.male_students}</p>
+                  </div>
+                  <div className="org-info2">
+                    <p>Female Students : {data.female_students}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="graph">
+                <div className="clg-dropdown">
+                  <span>
+                    Department :{" "}
+                    <select onChange={(e) => setDepartment(e.target.value)}>
+                      <option value="All" selected>
+                        All
+                      </option>
+                      <option value="CP">CP</option>
+                      <option value="IT">IT</option>
+                      <option value="CSD">CSD</option>
+                      <option value="ME">ME</option>
+                    </select>
+                  </span>
+                </div>
+                <div>
+                  <Chart chartType="PieChart" data={data1} options={options1} />
+                </div>
+              </div>
             </div>
           </div>
-          <div className="placement-dtl">
+          <div className="placement-dtl" style={{ height: "600px" }}>
             <h2>Placement Details</h2>
-            <div>
-              {college === "ALL" && (
-                <div className="clg-placements">
-                  <XYPlot xType="ordinal" stackBy="y" width={400} height={400}>
-                    <VerticalGridLines />
-                    <HorizontalGridLines />
-                    <XAxis />
-                    <YAxis />
-                    <VerticalBarSeries
-                      color="#12939A"
-                      data={[
-                        { x: "2018", y: "85" },
-                        { x: "2019", y: "75" },
-                        { x: "2020", y: "95" },
-                        { x: "2021", y: "110" },
-                        { x: "2021", y: "110" },
-                      ]}
-                    />
-                  </XYPlot>
-                  <h3>GCET</h3>
+            <div className="placement-graphs">
+              <div className="clg-placement">
+                <div className="clg-dropdown">
+                  <span>
+                    College :{" "}
+                    <select onChange={(e) => setCollege1(e.target.value)}>
+                      <option value="All" selected>
+                        All
+                      </option>
+                      <option value="GCET">GCET</option>
+                      <option value="ADIT">ADIT</option>
+                      <option value="MBIT">MBIT</option>
+                    </select>
+                  </span>
                 </div>
-              )}
-
-              {college === "GCET" && (
-                <div className="clg-placements">
-                  <XYPlot xType="ordinal" stackBy="y" width={400} height={400}>
-                    <VerticalGridLines />
-                    <HorizontalGridLines />
-                    <XAxis />
-                    <YAxis />
-                    <VerticalBarSeries
-                      color="#12939A"
-                      data={[
-                        { x: "2018", y: "85" },
-                        { x: "2019", y: "75" },
-                        { x: "2020", y: "95" },
-                        { x: "2021", y: "110" },
-                      ]}
+                <div>
+                  {college1 === "ALL" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={data2}
+                      options={options2}
                     />
-                  </XYPlot>
-                  <h3>GCET</h3>
-                </div>
-              )}
-
-              {college === "ADIT" && (
-                <div className="clg-placements">
-                  <XYPlot xType="ordinal" stackBy="y" width={400} height={400}>
-                    <VerticalGridLines />
-                    <HorizontalGridLines />
-                    <XAxis />
-                    <YAxis />
-                    <VerticalBarSeries
-                      color="#12939A"
-                      data={[
-                        { x: "2018", y: "85" },
-                        { x: "2019", y: "75" },
-                        { x: "2020", y: "95" },
-                        { x: "2021", y: "110" },
-                      ]}
+                  )}
+                  {college1 === "GCET" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={gcet_placement_data}
+                      options={options2}
                     />
-                  </XYPlot>
-                  <h3>ADIT</h3>
-                </div>
-              )}
-
-              {college === "MBIT" && (
-                <div className="clg-placements">
-                  <XYPlot xType="ordinal" stackBy="y" width={400} height={400}>
-                    <VerticalGridLines />
-                    <HorizontalGridLines />
-                    <XAxis />
-                    <YAxis />
-                    <VerticalBarSeries
-                      color="#12939A"
-                      data={[
-                        { x: "2018", y: "85" },
-                        { x: "2019", y: "75" },
-                        { x: "2020", y: "95" },
-                        { x: "2021", y: "110" },
-                      ]}
+                  )}
+                  {college1 === "MBIT" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={mbit_placement_data}
+                      options={options2}
                     />
-                  </XYPlot>
-                  <h3>MBIT</h3>
+                  )}
+                  {college1 === "ADIT" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={adit_placement_data}
+                      options={options2}
+                    />
+                  )}
                 </div>
-              )}
+              </div>
+              <div className="clg-placement">
+                <div className="clg-dropdown">
+                  <span>
+                    Department :{" "}
+                    <select onChange={(e) => setDepartment(e.target.value)}>
+                      <option value="CP" selected>
+                        CP
+                      </option>
+                      <option value="IT">IT</option>
+                      <option value="EC">EC</option>
+                      <option value="ME">ME</option>
+                      <option value="MC">MC</option>
+                      <option value="EE">EE</option>
+                      <option value="CH">CH</option>
+                    </select>
+                  </span>
+                </div>
+                <div>
+                  {department === "CP" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={cp_placement_data}
+                      options={options2}
+                    />
+                  )}
+                  {department === "IT" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={it_placement_data}
+                      options={options2}
+                    />
+                  )}
+                  {department === "EC" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={ec_placement_data}
+                      options={options2}
+                    />
+                  )}
+                  {department === "EE" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={ee_placement_data}
+                      options={options2}
+                    />
+                  )}
+                  {department === "ME" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={me_placement_data}
+                      options={options2}
+                    />
+                  )}
+                  {department === "MC" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={mc_placement_data}
+                      options={options2}
+                    />
+                  )}
+                  {department === "Ch" && (
+                    <Chart
+                      chartType="Bar"
+                      width="100%"
+                      height="400px"
+                      data={ch_placement_data}
+                      options={options2}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

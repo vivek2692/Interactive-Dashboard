@@ -8,6 +8,7 @@ const Faculty = require("../models/facultyModel");
 const Coursera = require("../models/courseraModel");
 const Result = require("../models/resultModel");
 const Subject = require("../models/subjectModel");
+const Placement = require("../models/placementModel");
 
 //Register Admin
 const AdminRegister = async (req, res) => {
@@ -335,6 +336,44 @@ const AdminStats = async (req, res) => {
   const mbit_students = await Student.find({ college: "MBIT" });
   const adit_students = await Student.find({ college: "ADIT" });
 
+  const placements = await Placement.find();
+
+  const gcet_placement = await Placement.find({ college: "GCET" });
+  const mbit_placement = await Placement.find({ college: "MBIT" });
+  const adit_placement = await Placement.find({ college: "ADIT" });
+
+  const cp_placement = await Placement.find({ department: "CP" });
+  const it_placement = await Placement.find({ department: "IT" });
+  const ec_placement = await Placement.find({ department: "EE" });
+  const ee_placement = await Placement.find({ department: "EC" });
+  const me_placement = await Placement.find({ department: "ME" });
+  const mc_placement = await Placement.find({ department: "MC" });
+  const ch_placement = await Placement.find({ department: "CH" });
+
+  obj.gcet_placement = gcet_placement.length;
+  obj.mbit_placement = mbit_placement.length;
+  obj.adit_placement = adit_placement.length;
+
+  obj.cp_placement = cp_placement.length;
+  obj.it_placement = it_placement.length;
+  obj.ec_placement = ec_placement.length;
+  obj.ee_placement = ee_placement.length;
+  obj.me_placement = me_placement.length;
+  obj.mc_placement = mc_placement.length;
+  obj.ch_placement = ch_placement.length;
+
+  const total_phd = await Faculty.find({ qualification: "Ph.D." });
+  const total_pur_phd = await Faculty.find({ qualification: "Pursuing Ph.D." });
+  const total_mtech = await Faculty.find({ qualification: "M.Tech." });
+  const male_students = await Student.find({ gender: "Male" });
+  const female_students = await Student.find({ gender: "Female" });
+
+  obj.total_phd = total_phd.length;
+  obj.total_pur_phd = total_pur_phd.length;
+  obj.total_mtech = total_mtech.length;
+  obj.male_students = male_students.length;
+  obj.female_students = female_students.length;
+
   let all_fy = [];
   let all_sy = [];
   let all_ty = [];
@@ -537,6 +576,8 @@ const AdminStats = async (req, res) => {
       mbit_faculties.push(faculty);
     }
   });
+
+  obj.total_placements = placements.length;
 
   obj.gcet_students = gcet_students.length;
   obj.mbit_students = mbit_students.length;
@@ -814,6 +855,8 @@ const showBackLogStudents = async (req, res, next) => {
         });
       });
       resultArr.push({
+        enrollment_no: resultStd.enrollment_no,
+        name: resultStd.name,
         college: college,
         department: department,
         current_semester: current_semester,
@@ -826,6 +869,22 @@ const showBackLogStudents = async (req, res, next) => {
   res.status(200).send({ status: "success", data: resultArr });
 };
 
+const getPalcementDetial = async (req, res, next) => {
+  const { college, department, from, to } = req.body;
+  console.log(req.body);
+  let placementArr = [];
+  for (i = from; i <= to; i++) {
+    const placements = await Placement.find({
+      college: { $in: college },
+      department: { $in: department },
+      placement_year: i,
+    });
+    placements.map((placement) => {
+      placementArr.push(placement);
+    });
+  }
+  res.status(200).send({ status: "success", data: placementArr });
+};
 module.exports = {
   AdminRegister,
   AdminLogin,
@@ -844,4 +903,5 @@ module.exports = {
   patchUpdateFaculty,
   calculateSGPA,
   showBackLogStudents,
+  getPalcementDetial,
 };

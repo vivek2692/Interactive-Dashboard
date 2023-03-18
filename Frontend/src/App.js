@@ -44,6 +44,8 @@ import StudentCompetitivePerformance from "./Student/Competitive Exams/student-c
 import StudentExtracurricular from "./Student/Extracurricular Achievements/student-extracurricular";
 import StudentViewResult from "./Student/View Result/student-view-result";
 import StudentUpcomingEvent from "./Student/Upcoming Events/student-upcoming-event";
+import AdminStudentBacklog from "./Admin/Student Backlog/admin-student-backlog";
+import AdminStudentBacklogResult from "./Admin/Student Backlog/student-backlog-marks";
 
 function App() {
   return (
@@ -68,6 +70,14 @@ function App() {
           {/* Admin Routes */}
           <Route path="/admin/home" element={<AdminHome />} />
           <Route path="/admin/students" element={<AdminUsers />} />
+          <Route
+            path="/admin/student-backlog"
+            element={<AdminStudentBacklog />}
+          />
+          <Route
+            path="/admin/student-backlog/add-marks"
+            element={<AdminStudentBacklogResult />}
+          />
           <Route path="/admin/faculties" element={<AdminFaculties />} />
           <Route path="/admin/students/info/:id" element={<ViewStudent />} />
           <Route path="/admin/faculties/info/:id" element={<ViewFaculty />} />
@@ -99,7 +109,10 @@ function App() {
             element={<ViewPlacement />}
           />
           <Route path="/admin/coursera-details" element={<AdminCoursera />} />
-          <Route path="/admin/student-result" element={<AdminStudentResult />} />
+          <Route
+            path="/admin/student-result"
+            element={<AdminStudentResult />}
+          />
           <Route path="/admin/users/student/*" element={<ErrorPage />} />
           <Route path="/faculty/home" element={<FacultyHome />} />
           <Route path="/faculty/students" element={<FacultyUsers />} />

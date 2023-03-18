@@ -13,28 +13,65 @@ function StudentHome() {
   const student = useSelector((state) => state.user.userInfo);
   // console.log(student)
   const [courses, setCourses] = useState([]);
+  const [data, setData] = useState([]);
 
-  useEffect(() => {
-    const fetchCourse = async() => {
-      const obj = {enrollment_no: student.enrollment_no, college: student.college, department: student.department, current_semester: student.current_semester}
-      await axios.post("http://localhost:8000/api/student/getStudentCourses",obj)
-      .then((res) => {
-        const data = res.data.data;
-        setCourses(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-    }
-
-    fetchCourse();
-  },[])
-
-  // let Users = [];
-  // let Courses = [];
+  const [enrollment, setEnrollment] = useState(student.enrollment_no);
+  const [semester, setSemester] = useState(6);
   const [college, setCollege] = useState(student.college);
   const [department, setDepartment] = useState(student.department);
   const [resultComponent, setResultComponent] = useState("Mid Semester");
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      const obj = {
+        enrollment_no: student.enrollment_no,
+        college: student.college,
+        department: student.department,
+        current_semester: student.current_semester,
+      };
+      await axios
+        .post("http://localhost:8000/api/student/getStudentCourses", obj)
+        .then((res) => {
+          const data = res.data.data;
+          console.log("course", data);
+          setCourses(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    fetchCourse();
+  }, [semester]);
+
+  useEffect(() => {
+    const data = {
+      college: college,
+      department: department,
+      enrollment_no: enrollment,
+      current_semester: Number(semester),
+    };
+
+    console.log("data", data);
+    const fetchRes = async () => {
+      await axios
+        .post("http://localhost:8000/api/student/view-result", data)
+        .then((res) => {
+          const data = res.data;
+          console.log("result", data.data);
+          setData(data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    fetchRes();
+  }, [semester]);
+
+  // let Users = [];
+  // let Courses = [];
+
   let srno1 = 1;
   let srno2 = 1;
 
@@ -79,24 +116,8 @@ function StudentHome() {
             <div className="student-academics-info">
               <div className="sem-filter">
                 <span>
-                  College :{" "}
-                  <select onChange={(e) => setCollege(e.target.value)}>
-                    <option value={student.college} selected>
-                      {student.college}
-                    </option>
-                  </select>
-                </span>
-                <span>
-                  Department :{" "}
-                  <select onChange={(e) => setDepartment(e.target.value)}>
-                    <option value={student.department} selected>
-                      {student.department}
-                    </option>
-                  </select>
-                </span>
-                <span>
                   Semester :{" "}
-                  <select>
+                  <select onChange={(e) => setSemester(e.target.value)}>
                     <option value="1" selected>
                       1
                     </option>
@@ -118,7 +139,7 @@ function StudentHome() {
                     <table border={1}>
                       <tr>
                         <th>Sr. No.</th>
-                        <th>Code</th>
+                        {/* <th>Code</th> */}
                         <th>Title</th>
                         <th>Type</th>
                         <th>Credits</th>
@@ -127,10 +148,10 @@ function StudentHome() {
                         return (
                           <tr>
                             <td>{srno1++}</td>
-                            <td>{100+srno1-1}</td>
-                            <td>{course}</td>
-                            <td>{"subject"}</td>
-                            <td>{3}</td>
+                            {/* <td>{100 + srno1 - 1}</td> */}
+                            <td>{course.sub_name}</td>
+                            <td>{course.type}</td>
+                            <td>{course.sub_cred}</td>
                           </tr>
                         );
                       })}
@@ -145,7 +166,9 @@ function StudentHome() {
                       <select
                         onChange={(e) => setResultComponent(e.target.value)}
                       >
-                        <option value="Mid Semester">Mid Semester</option>
+                        <option value="Mid Semester" selected>
+                          Mid Semester
+                        </option>
                         <option value="Internal Practical">
                           Internal Practical
                         </option>
@@ -155,16 +178,27 @@ function StudentHome() {
                   <table border={1}>
                     <tr>
                       <th>Sr. No.</th>
-                      <th>Code</th>
+                      <th>Type</th>
                       <th>Title</th>
                       <th>Marks</th>
                     </tr>
-                    <tr>
-                      <td>{srno2}</td>
-                      <td>101</td>
-                      <td>Advance Web Development</td>
-                      <td>36</td>
-                    </tr>
+                    {data.map((res) => {
+                      console.log(res);
+                      return res.result.map((sub) => {
+                        return (
+                          <tr>
+                            <td>{srno2}</td>
+                            <td>{sub.type}</td>
+                            <td>{sub.sub_name}</td>
+                            {resultComponent === "Internal Practical" ? (
+                              <td>{sub.internal_prac}</td>
+                            ) : (
+                              <td>{sub.mid_sem}</td>
+                            )}
+                          </tr>
+                        );
+                      });
+                    })}
                   </table>
                 </div>
               </div>

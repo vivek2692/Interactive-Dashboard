@@ -6,9 +6,10 @@ import { FiUsers } from "react-icons/fi";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { CgOrganisation } from "react-icons/cg";
 import { TbCertificate } from "react-icons/tb";
-import { BsFileSpreadsheet } from "react-icons/bs";
+import { MdOutlinePendingActions } from "react-icons/md";
 import { ImBooks } from "react-icons/im";
 import { SiCoursera } from "react-icons/si";
+import { HiHome } from "react-icons/hi";
 
 function AdminNavBar() {
   //const navigate = useNavigate();
@@ -36,7 +37,7 @@ function AdminNavBar() {
         <li>
           <Link to="/admin/home">
             <span>
-              <TfiDashboard style={iconStyles} />
+              <HiHome style={iconStyles} />
             </span>
             {openMenu && <span className="text">Home</span>}
           </Link>
@@ -88,6 +89,14 @@ function AdminNavBar() {
               <TbCertificate style={iconStyles} />
             </span>
             {openMenu && <span className="text">Result Filling</span>}
+          </Link>
+        </li>
+        <li>
+          <Link to="/admin/student-backlog">
+            <span>
+              <MdOutlinePendingActions style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Student Backlog Details</span>}
           </Link>
         </li>
       </ul>

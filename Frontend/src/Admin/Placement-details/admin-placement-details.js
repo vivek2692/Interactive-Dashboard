@@ -15,6 +15,8 @@ function AdminPlacement() {
   const [year, setYear] = useState("");
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
 
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
 
@@ -42,14 +44,24 @@ function AdminPlacement() {
   };
 
   useEffect(() => {
+    if (Number(from) > Number(to)) {
+      let temp = from;
+      setTo(from);
+      setFrom(temp);
+    }
+    const obj = {
+      department: selectedCheckboxes,
+      college: selectedCheckboxes2,
+      from: Number(from),
+      to: Number(to),
+    };
     const fetchData = async () => {
       await axios
-        .get(
-          `http://localhost:8000/api/faculty/placement/all-placements?college=${college}&department=${department}&placement_year=${year}`
-        )
+        .post(`http://localhost:8000/api/admin/show-placement`, obj)
         .then((res) => {
           const data = res.data.data;
           setUsers(data);
+          console.log(data);
         })
         .catch((err) => {
           console.log(err);
@@ -57,7 +69,7 @@ function AdminPlacement() {
     };
 
     fetchData();
-  }, [college, department, year]);
+  }, [selectedCheckboxes, selectedCheckboxes2, from, to]);
 
   const handleSearch = async (e) => {
     setSearch(e.target.value);
@@ -274,10 +286,28 @@ function AdminPlacement() {
                     <option value="2018">2018</option>
                   </select> */}
                   <span>
-                    From : <input style={{ width: "100px" }} type="text" />
+                    From{" "}
+                    <select onChange={(e) => setFrom(e.target.value)}>
+                      <option>--Select Year--</option>
+                      <option value={2018}>2018</option>
+                      <option value={2019}>2019</option>
+                      <option value={2020}>2020</option>
+                      <option value={2021}>2021</option>
+                      <option value={2022}>2022</option>
+                      <option value={2023}>2023</option>
+                    </select>
                   </span>
                   <span>
-                    To : <input style={{ width: "100px" }} type="text" />
+                    To{" "}
+                    <select onChange={(e) => setTo(e.target.value)}>
+                      <option>--Select Year--</option>
+                      <option value={2018}>{2018}</option>
+                      <option value={2019}>2019</option>
+                      <option value={2020}>2020</option>
+                      <option value={2021}>2021</option>
+                      <option value={2022}>2022</option>
+                      <option value={2023}>2023</option>
+                    </select>
                   </span>
                 </span>
               </div>

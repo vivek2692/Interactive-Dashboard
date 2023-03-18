@@ -9,6 +9,7 @@ import { ImBooks } from "react-icons/im";
 import { SiCoursera } from "react-icons/si";
 import { TbCertificate } from "react-icons/tb";
 import { GiJusticeStar } from "react-icons/gi";
+import { HiHome } from "react-icons/hi";
 
 function FacultyNavBar() {
   //const navigate = useNavigate();
@@ -36,7 +37,7 @@ function FacultyNavBar() {
         <li>
           <Link to="/faculty/home">
             <span>
-              <TfiDashboard style={iconStyles} />
+              <HiHome style={iconStyles} />
             </span>
             {openMenu && <span className="text">Home</span>}
           </Link>

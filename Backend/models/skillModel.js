@@ -33,8 +33,8 @@ const skillSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  skills: [String],
-  hobbies: [String],
+  profSkills: [String],
+  other: [String],
 });
 
 module.exports = mongoose.model("Skill", skillSchema);

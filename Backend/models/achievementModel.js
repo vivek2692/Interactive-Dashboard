@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 const achievementSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   enrollment_no: {
     type: String,
-    required: true
+    required: true,
   },
   event_name: {
     type: String,

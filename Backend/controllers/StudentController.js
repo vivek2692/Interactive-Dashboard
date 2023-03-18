@@ -450,7 +450,7 @@ const addSkills = async (req, res, next) => {
     current_semester,
     department,
     college,
-    skills,
+    profSkills,
   } = req.body;
   if (
     name &&
@@ -461,7 +461,7 @@ const addSkills = async (req, res, next) => {
     current_semester &&
     department &&
     college &&
-    skills
+    profSkills
   ) {
     const skilledStd = await Skill.findOne({ enrollment_no });
     if (!skilledStd) {
@@ -474,7 +474,7 @@ const addSkills = async (req, res, next) => {
         current_semester,
         department,
         college,
-        skills,
+        profSkills,
       });
       const result = await newSkilledStd.save();
       return res
@@ -482,11 +482,11 @@ const addSkills = async (req, res, next) => {
         .send({ data: result, msg: "Skill Add Successfully" });
     } else {
       let updateSkill = [];
-      for (i = 0; i < skilledStd.skills.length; i++) {
-        updateSkill.push(skilledStd.skills[i]);
+      for (i = 0; i < skilledStd.profSkills.length; i++) {
+        updateSkill.push(skilledStd.profSkills[i]);
       }
-      for (i = 0; i < skills.length; i++) {
-        updateSkill.push(skills[i]);
+      for (i = 0; i < profSkills.length; i++) {
+        updateSkill.push(profSkills[i]);
       }
       const updateSkilledStudent = await Skill.findOneAndUpdate(
         { enrollment_no },
@@ -510,7 +510,7 @@ const addHobby = async (req, res, next) => {
     current_semester,
     department,
     college,
-    hobbies,
+    other,
   } = req.body;
   if (
     name &&
@@ -521,7 +521,7 @@ const addHobby = async (req, res, next) => {
     current_semester &&
     department &&
     college &&
-    hobbies
+    other
   ) {
     const skilledStd = await Skill.findOne({ enrollment_no });
     if (!skilledStd) {
@@ -534,7 +534,7 @@ const addHobby = async (req, res, next) => {
         current_semester,
         department,
         college,
-        hobbies,
+        other,
       });
       const result = await newSkilledStd.save();
       return res
@@ -542,15 +542,15 @@ const addHobby = async (req, res, next) => {
         .send({ data: result, msg: "Hobby Add Successfully" });
     } else {
       let updateSkill = [];
-      for (i = 0; i < skilledStd.hobbies.length; i++) {
-        updateSkill.push(skilledStd.hobbies[i]);
+      for (i = 0; i < skilledStd.other.length; i++) {
+        updateSkill.push(skilledStd.other[i]);
       }
-      for (i = 0; i < hobbies.length; i++) {
-        updateSkill.push(hobbies[i]);
+      for (i = 0; i < other.length; i++) {
+        updateSkill.push(other[i]);
       }
       const updateSkilledStudent = await Skill.findOneAndUpdate(
         { enrollment_no },
-        { hobbies: updateSkill },
+        { other: updateSkill },
         { runValidators: true, new: true, setDefaultsOnInsert: true }
       );
       return res.status(200).send({ msg: "Hobby updated Successfully" });

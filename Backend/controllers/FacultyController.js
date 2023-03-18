@@ -9,6 +9,7 @@ const Event = require("../models/eventModel");
 const Skill = require("../models/skillModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const moment = require("moment");
 
 //Register Faculty
 const FacultyRegister = async (req, res) => {
@@ -1321,6 +1322,106 @@ const searchSkill = async (req, res, next) => {
     .send({ data: data, msg: "Event fetched Successfully" });
 };
 
+const BirthdayWish = async (req, res) => {
+  const { college, department } = req.body;
+  // console.log(req.body);
+
+  const today = moment().format("MM-DD");
+  console.log(today);
+
+  let arr = Number(today.split("-")[1]);
+  // console.log(arr);
+  arr++;
+
+  const tomorrow = today.split("-")[0];
+  let str = tomorrow + "-" + arr.toString();
+
+  // console.log(str);
+
+  const tommorowBirthDay = await Student.aggregate([
+    {
+      $addFields: {
+        birthdayMonthDay: {
+          $substr: ["$birthday", 5, 5],
+        },
+      },
+    },
+    {
+      $match: {
+        $expr: {
+          $eq: ["$birthdayMonthDay", str],
+        },
+        department: department,
+        college: college,
+      },
+    },
+  ]);
+
+  await Student.aggregate([
+    {
+      $addFields: {
+        birthdayMonthDay: {
+          $substr: ["$birthday", 5, 5],
+        },
+      },
+    },
+    {
+      $match: {
+        $expr: {
+          $eq: ["$birthdayMonthDay", today],
+        },
+        department: department,
+        college: college,
+      },
+    },
+  ])
+    .then((students) => {
+      res.status(200).send({
+        status: "success",
+        data: { today: students, tommorow: tommorowBirthDay },
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({ status: "failed" });
+    });
+};
+
+const SendWish = async (req, res) => {
+  const { users } = req.body;
+  console.log(users);
+
+  let testAccount = await nodemailer.createTestAccount();
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp-mail.outlook.com",
+    secureConnection: false, // TLS requires secureConnection to be false
+    port: 587,
+    auth: {
+      user: "cvmuh82@outlook.com",
+      pass: "Cvmtestdemo",
+    },
+  });
+  let emails = [];
+  users.map((user) => {
+    emails.push(user.email);
+  });
+  const mailOptions = {
+    from: '"CVM University" <cvmuh82@outlook.com>', // sender address
+    to: emails, // list of receivers
+    subject: "Birthday Wish", // Subject line
+    text: `Happy Birthday!`, // plain text body
+    html: `CVM University is wishing you a very happy birthday!`, // html body
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      return console.log(error);
+    }
+
+    // res.status(StatusCodes.OK).json({ otpsent: true });
+    res.send({ status: "success", msg: "wish sent successfully" });
+  });
+};
+
 module.exports = {
   FacultyRegister,
   FacultyLogin,
@@ -1357,4 +1458,6 @@ module.exports = {
   deleteEvent,
   fetchEvent,
   searchSkill,
+  BirthdayWish,
+  SendWish,
 };

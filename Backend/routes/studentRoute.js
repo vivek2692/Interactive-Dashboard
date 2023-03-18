@@ -69,7 +69,7 @@ router.post("/getStudentCourses", GetStudentCourses);
 
 //skills and hobbies
 router.post("/add-skills", addSkills);
-router.post("/add-hobbies", addHobby);
+router.post("/add-other", addHobby);
 router.post("/fetch-skill", getFetchSkill);
 
 router.post("/view-result", viewResult);

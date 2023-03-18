@@ -35,6 +35,8 @@ const {
   deleteEvent,
   fetchEvent,
   searchSkill,
+  BirthdayWish,
+  SendWish,
 } = require("../controllers/FacultyController");
 
 const router = express.Router();
@@ -88,5 +90,9 @@ router.get("/fetch-event", fetchEvent);
 
 //Skill-search
 router.post("/search-skill", searchSkill);
+
+//Birthday Wish
+router.post("/birthday", BirthdayWish);
+router.post("/sendWish", SendWish);
 
 module.exports = router;

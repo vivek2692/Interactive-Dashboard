@@ -1,22 +1,20 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import MultiStepProgressBar from "./progress-bar";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { useForm } from 'react-step-builder';
 
 function SubForm2(props) {
-
   const [images, setImages] = useState({});
   const navigate = useNavigate();
 
   const handleFileChange = (event, fieldName) => {
     setImages({
       ...images,
-      [fieldName]: event.target.files[0]
+      [fieldName]: event.target.files[0],
     });
     // props.setState({ fieldName: event.target.files[0] });
   };
-
 
   // const { register } = useForm();
 
@@ -42,9 +40,9 @@ function SubForm2(props) {
     console.log(props.state);
     const data = new FormData();
 
-    for(const key in props.state){
-      if(key !== "files"){
-        data.append(key,props.state[key]);
+    for (const key in props.state) {
+      if (key !== "files" && key !== "birthday") {
+        data.append(key, props.state[key]);
       }
     }
 
@@ -52,20 +50,20 @@ function SubForm2(props) {
       data.append(key, images[key]);
     }
 
+    data.append("birthday", new Date(props.state.birthday));
+
     console.log("data", data);
     await axios
-      .post("http://localhost:8000/api/student/register", data,
-      {
+      .post("http://localhost:8000/api/student/register", data, {
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }
-      )
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((res) => {
         const data = res.data;
         // console.log(data);
         alert("Student registered successfully!");
-        navigate("/admin/users");
+        navigate("/admin/students");
       })
       .catch((err) => {
         console.log(err);
@@ -242,7 +240,7 @@ function SubForm2(props) {
                 className="file-upload"
                 // onChange={props.handleChange}
                 // onChange={(e) => props.setState(e.target.files)}
-                onChange={(event) => handleFileChange(event, 'AadharCard')}
+                onChange={(event) => handleFileChange(event, "AadharCard")}
                 // {...register('AadharCard')}
               />
             </td>
@@ -256,7 +254,7 @@ function SubForm2(props) {
                 className="file-upload"
                 // onChange={props.handleChange}
                 // onChange={(e) => props.setState(e.target.files)}
-                onChange={(event) => handleFileChange(event, 'hsc_marksheet')}
+                onChange={(event) => handleFileChange(event, "hsc_marksheet")}
                 // {...register('hsc_marksheet')}
               />
             </td>
@@ -270,7 +268,7 @@ function SubForm2(props) {
                 className="file-upload"
                 // onChange={props.handleChange}
                 // onChange={(e) => props.setState(e.target.files)}
-                onChange={(event) => handleFileChange(event, 'ssc_marksheet')}
+                onChange={(event) => handleFileChange(event, "ssc_marksheet")}
                 // {...register('ssc_marksheet')}
               />
             </td>
@@ -284,7 +282,7 @@ function SubForm2(props) {
                 className="file-upload"
                 // onChange={props.handleChange}
                 // onChange={(e) => props.setState(e.target.files)}
-                onChange={(event) => handleFileChange(event, 'lc')}
+                onChange={(event) => handleFileChange(event, "lc")}
                 // {...register('lc')}
               />
             </td>
@@ -299,7 +297,9 @@ function SubForm2(props) {
                   className="file-upload"
                   // onChange={props.handleChange}
                   // onChange={(e) => props.setState(e.target.files)}
-                  onChange={(event) => handleFileChange(event, 'gujcet_marksheet')}
+                  onChange={(event) =>
+                    handleFileChange(event, "gujcet_marksheet")
+                  }
                   // {...register('gujcet_marksheet')}
                 />
               </td>
@@ -315,7 +315,9 @@ function SubForm2(props) {
                   className="file-upload"
                   // onChange={props.handleChange}
                   // onChange={(e) => props.setState(e.target.files)}
-                  onChange={(event) => handleFileChange(event, 'acpc_admission_letter')}
+                  onChange={(event) =>
+                    handleFileChange(event, "acpc_admission_letter")
+                  }
                   // {...register('acpc_admission_letter')}
                 />
               </td>
@@ -333,7 +335,9 @@ function SubForm2(props) {
                   className="file-upload"
                   // onChange={props.handleFileChange}
                   // onChange={(e) => props.setState(e.target.files)}
-                  onChange={(event) => handleFileChange(event, 'migration_certificate')}
+                  onChange={(event) =>
+                    handleFileChange(event, "migration_certificate")
+                  }
                   // {...register('migration_certificate')}
                 />
               </td>
