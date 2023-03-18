@@ -19,6 +19,7 @@ const StudentRegister = async (req, res) => {
     email,
     enrollment_no,
     department,
+    birthday,
     college,
     gender,
     contact,
@@ -37,6 +38,7 @@ const StudentRegister = async (req, res) => {
     enrollment_no &&
     department &&
     college &&
+    birthday &&
     gender &&
     contact &&
     admission_source &&
@@ -131,6 +133,7 @@ const StudentRegister = async (req, res) => {
           department,
           college,
           gender,
+          birthday,
           contact,
           admission_source,
           admission_year,
