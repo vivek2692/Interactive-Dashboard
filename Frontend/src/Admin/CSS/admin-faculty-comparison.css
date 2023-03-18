@@ -1,0 +1,50 @@
+.admin-faculty-comparison-page {
+    height: auto;
+    padding: 9vh 3vw 8vh 6vw;
+}
+
+.faculty-filter {
+    width: fit-content;
+    min-width: 100%;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.faculty-filter span {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 10px;
+}
+
+.faculty-filter div {
+    margin: 15px 0px 5px;
+}
+
+.comparison-profiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 20px;
+}
+
+.profile-card {
+    padding: 20px;
+    width: fit-content;
+    min-width: 90%;
+    height: 400px;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 0 3px rgb(188, 188, 188);
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-card table {
+    font-size: 16px;
+    color: rgb(105, 105, 105);
+}

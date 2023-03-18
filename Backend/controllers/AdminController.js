@@ -742,22 +742,24 @@ const endSemMarks = async (req, res, next) => {
             semester,
           });
           subjects.subs.map((subjectObj) => {
-            if (subjectObj.sub_name === subject) {
+            if (subjectObj.sub_name == subject) {
               intSubObj.sub_credit = subjectObj.sub_credits;
             }
           });
           subjects.open_elective.map((subjectObj) => {
-            if (subjectObj.sub_name === subject) {
+            if (subjectObj.sub_name == subject) {
               intSubObj.sub_credit = subjectObj.sub_credits;
             }
           });
           subjects.core_elective.map((subjectObj) => {
-            if (subjectObj.sub_name === subject) {
+            if (subjectObj.sub_name == subject) {
               intSubObj.sub_credit = subjectObj.sub_credits;
             }
           });
         }
+        // console.log("credit-last",intSubObj);
       });
+      // console.log(resultStd);
       await resultStd.save();
     } catch (err) {
       console.log(err);

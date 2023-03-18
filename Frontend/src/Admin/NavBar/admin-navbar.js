@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, Router, useNavigate, NavLink } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { TfiDashboard } from "react-icons/tfi";
+import { HiHome } from "react-icons/hi";
 import { FiUsers } from "react-icons/fi";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { MdCompareArrows } from "react-icons/md";
 import { CgOrganisation } from "react-icons/cg";
 import { TbCertificate } from "react-icons/tb";
 import { MdOutlinePendingActions } from "react-icons/md";
 import { ImBooks } from "react-icons/im";
 import { SiCoursera } from "react-icons/si";
-import { HiHome } from "react-icons/hi";
 
 function AdminNavBar() {
   //const navigate = useNavigate();
@@ -58,7 +57,14 @@ function AdminNavBar() {
             {openMenu && <span className="text">Faculty Details</span>}
           </Link>
         </li>
-
+        <li>
+          <Link to="/admin/faculty-comparison">
+            <span>
+              <MdCompareArrows style={iconStyles} />
+            </span>
+            {openMenu && <span className="text">Faculty Comparison</span>}
+          </Link>
+        </li>
         <li>
           <Link to="/admin/courses">
             <span>

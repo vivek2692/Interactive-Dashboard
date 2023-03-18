@@ -35,12 +35,8 @@ const {
   deleteEvent,
   fetchEvent,
   searchSkill,
-<<<<<<< Updated upstream
   BirthdayWish,
   SendWish,
-=======
-  BirthdayWishes,
->>>>>>> Stashed changes
 } = require("../controllers/FacultyController");
 
 const router = express.Router();
@@ -95,13 +91,8 @@ router.get("/fetch-event", fetchEvent);
 //Skill-search
 router.post("/search-skill", searchSkill);
 
-<<<<<<< Updated upstream
 //Birthday Wish
 router.post("/birthday", BirthdayWish);
 router.post("/sendWish", SendWish);
-=======
-// Get Birthday
-router.get("/birthday", BirthdayWishes)
->>>>>>> Stashed changes
 
 module.exports = router;

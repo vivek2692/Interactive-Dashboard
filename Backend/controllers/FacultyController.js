@@ -828,11 +828,14 @@ const FacultyStats = async (req, res) => {
   const faculties = await Faculty.find({ college });
   const deptFaculties = await Faculty.find({ college, department });
   const depStudents = await Student.find({ college, department });
+  const placements = await Placement.find({college, department});
+
 
   const obj = {};
   obj.total_students = students.length;
   obj.total_faculties = faculties.length;
   obj.dept_faculties = deptFaculties.length;
+  obj.total_placements = placements.length;
 
   if (college === "GCET") {
     const gcet_cp = [];
@@ -1342,7 +1345,6 @@ const searchSkill = async (req, res, next) => {
     .send({ data: data, msg: "Event fetched Successfully" });
 };
 
-<<<<<<< Updated upstream
 const BirthdayWish = async (req, res) => {
   const { college, department } = req.body;
   // console.log(req.body);
@@ -1377,10 +1379,6 @@ const BirthdayWish = async (req, res) => {
       },
     },
   ]);
-=======
-const BirthdayWishes = async (req, res) => {
-  const today = moment().format("MM-DD");
->>>>>>> Stashed changes
 
   await Student.aggregate([
     {
@@ -1395,16 +1393,12 @@ const BirthdayWishes = async (req, res) => {
         $expr: {
           $eq: ["$birthdayMonthDay", today],
         },
-<<<<<<< Updated upstream
         department: department,
         college: college,
-=======
->>>>>>> Stashed changes
       },
     },
   ])
     .then((students) => {
-<<<<<<< Updated upstream
       res.status(200).send({
         status: "success",
         data: { today: students, tommorow: tommorowBirthDay },
@@ -1451,17 +1445,6 @@ const SendWish = async (req, res) => {
   });
 };
 
-=======
-      console.log(students);
-      res.status(200).send({status: "success", data: students});
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send({status: "failed"});
-    });
-};
-
->>>>>>> Stashed changes
 module.exports = {
   FacultyRegister,
   FacultyLogin,
@@ -1498,10 +1481,6 @@ module.exports = {
   deleteEvent,
   fetchEvent,
   searchSkill,
-<<<<<<< Updated upstream
   BirthdayWish,
   SendWish,
-=======
-  BirthdayWishes,
->>>>>>> Stashed changes
 };

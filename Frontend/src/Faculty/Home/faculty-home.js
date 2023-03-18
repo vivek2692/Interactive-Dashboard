@@ -17,6 +17,7 @@ function FacultyHome() {
   const [department, setDepartment] = useState(dept);
   const [today, setToday] = useState([]);
   const [tomorrow, setTomorrow] = useState([]);
+  const [data, setData] = useState({});
 
   const handleClick = async () => {
     const obj = { users: today };
@@ -30,6 +31,20 @@ function FacultyHome() {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    const fetchData = async() => {
+      const obj = {college: clg, department: dept};
+      await axios.post("http://localhost:8000/api/faculty/stats",obj)
+      .then((res) => {
+        const temp = res.data.data;
+        console.log(temp);
+        setData(temp);
+      })
+    }
+
+    fetchData();
+  },[])
 
   let srno1 = 1;
   let srno2 = 1;
@@ -55,12 +70,14 @@ function FacultyHome() {
   }, []);
 
   const data1 = [
-    ["Task", "Hours per Day"],
-    ["CP", 11],
-    ["IT", 12],
-    ["ME", 8],
-    ["MC", 15],
-    ["CH", 7],
+    ["Department", "No. of Students"],
+    ["CP", data.cp],
+    ["IT", data.it],
+    ["EC", data.ec],
+    ["EE", data.ee],
+    ["ME", data.me],
+    ["MC", data.mc],
+    ["CH", data.ch],
   ];
 
   const options1 = {
@@ -75,6 +92,9 @@ function FacultyHome() {
       2: { color: "#2B60DE" },
       3: { color: "#357EC7" },
       4: { color: "#6698FF" },
+      5: { color: "#050a30" },
+      6: { color: "#41729f" },
+      7: { color: "#d4f1f4" },
     },
     height: 400,
     width: 400,
@@ -82,10 +102,18 @@ function FacultyHome() {
 
   const data2 = [
     ["Year", "Placements"],
-    ["2014", 250],
-    ["2015", 263],
-    ["2016", 225],
-    ["2017", 278],
+    ["2020", 0],
+    ["2021", 0],
+    ["2022", 0],
+    ["2023", data.total_placements],
+  ];
+
+  const data3 = [
+    ["Year", "No. of Students"],
+    ["First", data.first_year],
+    ["Second", data.second_year],
+    ["Third", data.third_year],
+    ["Final", data.fourth_year],
   ];
 
   const options2 = {
@@ -113,18 +141,18 @@ function FacultyHome() {
               <div>
                 <div>
                   <div className="org-info">
-                    <p>Total Students : </p>
+                    <p>Total Students : {data.total_students}</p>
                   </div>
                   <div className="org-info">
-                    <p>Total Programs Offered : </p>
+                    <p>Total Programs Offered : {college === "MBIT" ? 2 : 7}</p>
                   </div>
                 </div>
                 <div>
                   <div className="org-info">
-                    <p>Total Faculties : </p>
+                    <p>Total Faculties : {data.total_faculties}</p>
                   </div>
                   <div className="org-info">
-                    <p>No. of Placements in last year : </p>
+                    <p>No. of Placements : {data.total_placements}</p>
                   </div>
                 </div>
               </div>
@@ -137,7 +165,7 @@ function FacultyHome() {
             <div className="clg-graphs">
               <div className="graph">
                 <div>
-                  <Chart chartType="PieChart" data={data1} options={options1} />
+                  <Chart chartType="PieChart" data={data3} options={options1} />
                 </div>
               </div>
               <div className="clg-placement">

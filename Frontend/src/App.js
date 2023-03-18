@@ -46,6 +46,7 @@ import StudentViewResult from "./Student/View Result/student-view-result";
 import StudentUpcomingEvent from "./Student/Upcoming Events/student-upcoming-event";
 import AdminStudentBacklog from "./Admin/Student Backlog/admin-student-backlog";
 import AdminStudentBacklogResult from "./Admin/Student Backlog/student-backlog-marks";
+import AdminFacultyComparison from "./Admin/Faculty Comparison/admin-faculty-comparison";
 
 function App() {
   return (
@@ -102,6 +103,10 @@ function App() {
           <Route
             path="/admin/faculties/add-faculty"
             element={<AdminAddFaculty />}
+          />
+          <Route
+            path="/admin/faculty-comparison"
+            element={<AdminFacultyComparison />}
           />
           <Route path="/admin/placement-details" element={<AdminPlacement />} />
           <Route
