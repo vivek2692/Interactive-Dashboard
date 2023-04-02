@@ -26,7 +26,7 @@ function AdminFacultyComparison() {
     }
 
     fetchData();
-  },[])
+  },[college, department])
   return (
     <div className="admin-page">
       {/* <Router> */}
@@ -77,9 +77,9 @@ function AdminFacultyComparison() {
                   />
                   <div>
                     <center>
-                      <h3 color="black">{faculty.name}</h3>
+                      <h3 color="black">"Manan Rajpara"</h3>
                       <p style={{ color: "gray", fontSize: "14px" }}>
-                        {faculty.qualification}
+                        PhD
                       </p>
                     </center>
                   </div>

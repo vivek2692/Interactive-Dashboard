@@ -2,14 +2,14 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 const connectDB = require("./config/connectDB.js");
 const AdminRoute = require("./routes/adminRoute.js");
 const FacultyRoute = require("./routes/facultyRoute.js");
 const StudentRoute = require("./routes/studentRoute.js");
 
-dotenv.config()
+dotenv.config();
 mongoose.set('strictQuery', true);
 
 const app = express();

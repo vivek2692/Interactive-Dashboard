@@ -690,7 +690,7 @@ const SearchingCoursera = async (req, res) => {
 };
 
 const endSemMarks = async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const subject = req.body.subject;
   const obj = req.body.obj;
   const batch = req.body.batch;
@@ -741,26 +741,28 @@ const endSemMarks = async (req, res, next) => {
             department,
             semester,
           });
-          subjects.subs.map((subjectObj) => {
-            if (subjectObj.sub_name == subject) {
+          subjects.subs.map(async (subjectObj) => {
+            if (subjectObj.sub_name === subject) {
               intSubObj.sub_credit = subjectObj.sub_credits;
+              await resultStd.save();
             }
           });
-          subjects.open_elective.map((subjectObj) => {
-            if (subjectObj.sub_name == subject) {
+          subjects.open_elective.map(async (subjectObj) => {
+            if (subjectObj.sub_name === subject) {
               intSubObj.sub_credit = subjectObj.sub_credits;
+              await resultStd.save();
             }
           });
-          subjects.core_elective.map((subjectObj) => {
-            if (subjectObj.sub_name == subject) {
+          subjects.core_elective.map(async (subjectObj) => {
+            if (subjectObj.sub_name === subject) {
               intSubObj.sub_credit = subjectObj.sub_credits;
+              await resultStd.save();
             }
           });
         }
-        // console.log("credit-last",intSubObj);
       });
       // console.log(resultStd);
-      await resultStd.save();
+      // await resultStd.save();
     } catch (err) {
       console.log(err);
       return res
